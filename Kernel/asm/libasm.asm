@@ -1,4 +1,5 @@
 GLOBAL cpuVendor
+GLOBAL getKey
 
 section .text
 	
@@ -23,5 +24,18 @@ cpuVendor:
 	pop rbx
 
 	mov rsp, rbp
+	pop rbp
+	ret
+
+getKey:
+	push rbp
+	mov rbp,rsp 
+	;Armado del stack frame
+
+	in al, 0x60;Lee la tecla presionada
+	movzx eax, al; guarda en eax el byte, y extiende con ceros
+
+	;Desarmado del stack frame
+	mov rsp,rbp
 	pop rbp
 	ret
