@@ -84,19 +84,20 @@ void drawChar(uint32_t hexColor, char character){
 
 	for(int i=0; i< 32;i++){
 		if (i % 2 == 0 && i != 0) {
-			current = x;  
+			current = x;
             y += size;  // Salto a la siguiente fila de píxeles
         }
-		font[i + index*32] & (char)0x01 ? drawSquare(current, y, size, hexColor ) : 1;
+		font[i + index*32] & (char)0x01 ? drawSquare(hexColor, size,current ,y ) : 0;
 		current += size;
 		uint8_t aux = 0x02;
 
         for (int j = 0; j < 8; j++) {
             // Comprueba cada bit de la fuente y dibuja un píxel si está activo
-            ((uint8_t)font[i + (index * 32)] & (uint8_t)aux) >> j ? drawSquare(current, y, size, hexColor) : 0;
+            ((uint8_t)font[i + (index * 32)] & (uint8_t)aux) >> j ? drawSquare(hexColor, size, current, y) : 0;
             current += size;  // Avanza a la siguiente posición horizontal
             aux <<= 1;  // Desplaza el bit auxiliar hacia la izquierda
         }
 
 	}
+    cursorX += size*8;
 }
