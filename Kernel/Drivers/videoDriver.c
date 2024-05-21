@@ -1,4 +1,9 @@
-#include <videoDriver.h>
+#include "include/videoDriver.h"
+#include "include/fonts.h"
+#include "../include/naiveConsole.h"
+#include <naiveConsole.h>
+#include <lib.h>
+
 
 struct vbe_mode_info_structure {
 	uint16_t attributes;		// deprecated, only bit 7 should be of interest to you, and it indicates the mode supports a linear frame buffer.
@@ -74,7 +79,7 @@ void drawChar(uint32_t hexColor, char character){
 	int y = cursorY;
 	int current = x;
 	int index = character - 33;
-	if(character == " ")
+	if(character == ' ')
 		return;
 
 	for(int i=0; i< 32;i++){
@@ -88,7 +93,7 @@ void drawChar(uint32_t hexColor, char character){
 
         for (int j = 0; j < 8; j++) {
             // Comprueba cada bit de la fuente y dibuja un píxel si está activo
-            ((uint8_t)font[i + (index * 32)] & (uint8_t)aux) >> j ? put_square(current, y, size, hexColor) : 0;
+            ((uint8_t)font[i + (index * 32)] & (uint8_t)aux) >> j ? drawSquare(current, y, size, hexColor) : 0;
             current += size;  // Avanza a la siguiente posición horizontal
             aux <<= 1;  // Desplaza el bit auxiliar hacia la izquierda
         }
