@@ -11,5 +11,6 @@ void drawRectangle(uint32_t color, uint32_t x, uint32_t y, uint32_t height, uint
 
 void putPixel(uint32_t hexColor, uint32_t x, uint32_t y);
 
+void drawWord(uint32_t hexColor,char * str);
 
 #endif

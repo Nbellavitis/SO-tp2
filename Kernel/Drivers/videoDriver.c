@@ -49,8 +49,8 @@ VBEInfoPtr VBE_mode_info = (VBEInfoPtr) 0x0000000000005C00;
 
 uint32_t cursorX  = 0;
 uint32_t cursorY  = 0;
-uint32_t size = FONT_SIZE;
-
+uint32_t sizeX = FONT_SIZE;
+uint32_t sizeY = FONT_SIZE * 2;
 // uint8_t buff[256*16];  
 
 // extern void getVGAfont(uint8_t * buffer);
@@ -75,29 +75,40 @@ void drawSquare(uint32_t hexColor, uint32_t side_length, uint32_t x, uint32_t y)
 	drawRectangle(hexColor, x, y, side_length, side_length);
 }
 void drawChar(uint32_t hexColor, char character){
+	if(cursorX == 64*sizeX*8 ){
+		cursorY+=sizeY*8;
+		cursorX=0;
+	}
 	int x = cursorX;
 	int y = cursorY;
 	int current = x;
 	int index = character - 33;
-	if(character == ' ')
+	if(character == ' '){
+	cursorX += sizeX*8;
 		return;
-
+}
+	
 	for(int i=0; i< 32;i++){
 		if (i % 2 == 0 && i != 0) {
 			current = x;
-            y += size;  // Salto a la siguiente fila de píxeles
+            y += sizeX;  // Salto a la siguiente fila de píxeles
         }
-		font[i + index*32] & (char)0x01 ? drawSquare(hexColor, size,current ,y ) : 0;
-		current += size;
+		font[i + index*32] & (char)0x01 ? drawSquare(hexColor, sizeX,current ,y ) : 0;
+		current += sizeX;
 		uint8_t aux = 0x02;
 
         for (int j = 0; j < 8; j++) {
             // Comprueba cada bit de la fuente y dibuja un píxel si está activo
-            ((uint8_t)font[i + (index * 32)] & (uint8_t)aux) >> j ? drawSquare(hexColor, size, current, y) : 0;
-            current += size;  // Avanza a la siguiente posición horizontal
+            ((uint8_t)font[i + (index * 32)] & (uint8_t)aux) >> j ? drawSquare(hexColor, sizeX, current, y) : 0;
+            current += sizeX;  // Avanza a la siguiente posición horizontal
             aux <<= 1;  // Desplaza el bit auxiliar hacia la izquierda
         }
 
 	}
-    cursorX += size*8;
+    cursorX += sizeX*8;
+}
+void drawWord(uint32_t hexColor,char * str){
+	for(int i=0;str[i]!='\0';i++){
+		drawChar(hexColor,str[i]);
+	}
 }

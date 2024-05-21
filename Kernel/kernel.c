@@ -82,6 +82,7 @@ void * initializeKernelBinary()
 
 int main()
 {	
+	drawWord(0x00FF0000,"11111111111111111111111111111111111111111111111111111111111111123");
 	ncPrint("[Kernel Main]");
 	ncNewline();
 	ncPrint("  Sample code module at 0x");
