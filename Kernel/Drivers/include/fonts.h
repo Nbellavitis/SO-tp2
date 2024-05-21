@@ -1,6 +1,5 @@
 #ifndef FONT_H
 #define FONT_H
-
 #include <stdint.h>
 #define DEFAULT_CHAR_HEIGHT = 16
 #define DEFAULT_CHAR_WIDTH = 8

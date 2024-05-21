@@ -3,7 +3,7 @@
 #include <lib.h>
 #include <moduleLoader.h>
 #include <naiveConsole.h>
-
+#include "Drivers/include/keyboardDriver.h"
 extern uint8_t text;
 extern uint8_t rodata;
 extern uint8_t data;
@@ -82,24 +82,7 @@ void * initializeKernelBinary()
 
 int main()
 {	
-	drawWord(0x00FF0000,"11111111111111111111111111111111111111111111111111111111111111123");
-	ncPrint("[Kernel Main]");
-	ncNewline();
-	ncPrint("  Sample code module at 0x");
-	ncPrintHex((uint64_t)sampleCodeModuleAddress);
-	ncNewline();
-	ncPrint("  Calling the sample code module returned: ");
-	ncPrintHex(((EntryPoint)sampleCodeModuleAddress)());
-	ncNewline();
-	ncNewline();
-
-	ncPrint("  Sample data module at 0x");
-	ncPrintHex((uint64_t)sampleDataModuleAddress);
-	ncNewline();
-	ncPrint("  Sample data module contents: ");
-	ncPrint((char*)sampleDataModuleAddress);
-	ncNewline();
-
-	ncPrint("[Finished]");
+	load_idt();
+	 while(1);
 	return 0;
 }

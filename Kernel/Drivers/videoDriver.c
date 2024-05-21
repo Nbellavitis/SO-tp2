@@ -3,7 +3,8 @@
 #include "../include/naiveConsole.h"
 #include <naiveConsole.h>
 #include <lib.h>
-
+#include "../include/keyboardBuffer.h"
+#include "include/scanCode.h"
 
 struct vbe_mode_info_structure {
 	uint16_t attributes;		// deprecated, only bit 7 should be of interest to you, and it indicates the mode supports a linear frame buffer.
@@ -87,6 +88,24 @@ void drawChar(uint32_t hexColor, char character){
 	cursorX += sizeX*8;
 		return;
 }
+	if(character == '\n'){
+		cursorX=0;
+		cursorY+=sizeY*8;
+		return;
+	}
+	if(character == '\b'){
+		if(cursorX== 0){
+			if(cursorY == 0){
+				return;
+			}else{
+				cursorY-=sizeY*8;
+				cursorX=sizeX*64*8;
+			}
+		}
+		cursorX-=sizeX*8;
+		drawRectangle(0x00000000,cursorX,cursorY,sizeY*8,sizeX*8);
+		return;
+	}
 	
 	for(int i=0; i< 32;i++){
 		if (i % 2 == 0 && i != 0) {
@@ -110,5 +129,13 @@ void drawChar(uint32_t hexColor, char character){
 void drawWord(uint32_t hexColor,char * str){
 	for(int i=0;str[i]!='\0';i++){
 		drawChar(hexColor,str[i]);
+	}
+}
+
+void drawBuffer(uint32_t hexColor){
+	int aux = getBufferLen();
+	char * buff = getBufferAddress();
+	for(int i=0;i<aux;i++){
+		drawChar(hexColor,buff[i]);
 	}
 }

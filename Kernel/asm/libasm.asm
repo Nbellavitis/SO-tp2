@@ -28,14 +28,11 @@ cpuVendor:
 	ret
 
 getKey:
-	push rbp
-	mov rbp,rsp 
-	;Armado del stack frame
-
-	in al, 0x60;Lee la tecla presionada
-	movzx eax, al; guarda en eax el byte, y extiende con ceros
-
-	;Desarmado del stack frame
-	mov rsp,rbp
-	pop rbp
-	ret
+  push rbp
+  mov rbp, rsp
+  mov rax, 0
+  in al, 0x60       ; lee la TECLA PRESIONADA desde el puerto 60h
+_good:  
+  mov rsp, rbp 
+  pop rbp
+  ret
