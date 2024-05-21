@@ -42,10 +42,56 @@ typedef struct vbe_mode_info_structure * VBEInfoPtr;
 
 VBEInfoPtr VBE_mode_info = (VBEInfoPtr) 0x0000000000005C00;
 
-void putPixel(uint32_t hexColor, uint64_t x, uint64_t y) {
+uint32_t cursorX  = 0;
+uint32_t cursorY  = 0;
+uint32_t size = FONT_SIZE;
+
+// uint8_t buff[256*16];  
+
+// extern void getVGAfont(uint8_t * buffer);
+
+void putPixel(uint32_t hexColor, uint32_t x, uint32_t y) {
     uint8_t * framebuffer = (uint8_t *) VBE_mode_info->framebuffer;
     uint64_t offset = (x * ((VBE_mode_info->bpp)/8)) + (y * VBE_mode_info->pitch);
     framebuffer[offset]     =  (hexColor) & 0xFF;
     framebuffer[offset+1]   =  (hexColor >> 8) & 0xFF; 
     framebuffer[offset+2]   =  (hexColor >> 16) & 0xFF;
+}
+
+void drawRectangle(uint32_t color, uint32_t x, uint32_t y, uint32_t height, uint32_t width){
+	for(int i=0; i< width; i++){
+		for(int j=0; j < height; j++){
+			putPixel(color, x + i , y + j);
+		}
+	}
+}
+
+void drawSquare(uint32_t hexColor, uint32_t side_length, uint32_t x, uint32_t y){
+	drawRectangle(hexColor, x, y, side_length, side_length);
+}
+void drawChar(uint32_t hexColor, char character){
+	int x = cursorX;
+	int y = cursorY;
+	int current = x;
+	int index = character - 33;
+	if(character == " ")
+		return;
+
+	for(int i=0; i< 32;i++){
+		if (i % 2 == 0 && i != 0) {
+			current = x;  
+            y += size;  // Salto a la siguiente fila de píxeles
+        }
+		font[i + index*32] & (char)0x01 ? drawSquare(current, y, size, hexColor ) : 1;
+		current += size;
+		uint8_t aux = 0x02;
+
+        for (int j = 0; j < 8; j++) {
+            // Comprueba cada bit de la fuente y dibuja un píxel si está activo
+            ((uint8_t)font[i + (index * 32)] & (uint8_t)aux) >> j ? put_square(current, y, size, hexColor) : 0;
+            current += size;  // Avanza a la siguiente posición horizontal
+            aux <<= 1;  // Desplaza el bit auxiliar hacia la izquierda
+        }
+
+	}
 }
