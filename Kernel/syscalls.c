@@ -32,29 +32,16 @@ void sys_read(int descriptor, char * save, int len){
     }
 
 }
-void printSeconds(){
-    uint8_t seconds = getSeconds();
-    ncPrintHex((uint64_t)seconds);
-}
 
-void printMinutes(){
-    uint8_t minutes = getMinutes();
-    ncPrintHex((uint64_t)minutes);
-}
+int getHours();
+int getMinutes();
+int getSeconds();
 
-void printHours(){
-    uint8_t hours = getHours();
-    hours = (hours + 21) % 24;
-    ncPrintHex((uint64_t)hours);
-}
-
-
-void printCurrentHour(){
-    ncPrint("Hours: ");
-    printHours();
-    ncPrint(" Minutes: ");
-    printMinutes();
-    ncPrint(" Seconds: ");
-    printSeconds();
-    ncNewline();
+void clock(char * buffer){
+    int digits = uintToBase(getHours(), buffer, 10);
+    buffer[digits ++ ] = ':'
+    digits = uintToBase(getMinutes(),buffer,10);
+    buffer[digits++] = ':'
+    digits = uintToBase(getSeconds(), buffer, 10);
+    buffer[digits] = '\0';
 }
