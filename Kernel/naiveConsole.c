@@ -93,3 +93,15 @@ static uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base)
 
 	return digits;
 }
+int getHours();
+int getMinutes();
+int getSeconds();
+void clock(char * buffer){
+
+    int digits = uintToBase(getHours(), buffer, 10);
+    buffer[digits ++ ] = ':';
+    digits = uintToBase(getMinutes(),buffer,10);
+    buffer[digits++] = ':';
+    digits = uintToBase(getSeconds(), buffer, 10);
+    buffer[digits] = '\0';
+}

@@ -13,5 +13,7 @@ void putPixel(uint32_t hexColor, uint32_t x, uint32_t y);
 
 void drawWord(uint32_t hexColor,char * str);
 
+void drawWordLen(uint32_t hexColor,char * str,int len);
+
 void drawBuffer(uint32_t hexColor);
 #endif

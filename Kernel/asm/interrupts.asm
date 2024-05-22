@@ -140,7 +140,7 @@ _irq05Handler:
 	irqHandlerMaster 5
 
 
-_irq80handler:
+_irq80Handler:
     pushState
 
     mov r9, r8

@@ -3,6 +3,3 @@
 //
 
 #include "include/lib.h"
-char getChar(){
-    return
-}

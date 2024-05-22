@@ -19,8 +19,8 @@ char * getBufferAddress(){
 char getCharAt(int position){
     return ptr->buffer[position % BUFF_SIZE];
 }
- void consumeBuffAt(int pos){
-     ptr->buff[pos] = 0;
+ void consumeBufferAt(int pos){
+     ptr->buffer[pos] = 0;
     incBufferLen(-1);
     setPos(pos + 1);
  }

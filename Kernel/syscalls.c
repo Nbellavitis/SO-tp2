@@ -1,9 +1,10 @@
 //
 // Created by nicol on 5/22/2024.
 //
-#include "drivers/include/videoDriver.h"
+#include "Drivers/include/videoDriver.h"
 #include "include/syscalls.h"
 #include "include/keyboardBuffer.h"
+#include <naiveConsole.h>
 #define MIN(x,y) x < y ? x : y
 
 void sys_write(int descriptor, char * str, int len){
@@ -14,6 +15,7 @@ void sys_write(int descriptor, char * str, int len){
         case ERROUT:
             drawWordLen(0x00ff0000, str, len);
         default: // poner error aca
+        return;
     }
 
 }
@@ -33,15 +35,5 @@ void sys_read(int descriptor, char * save, int len){
 
 }
 
-int getHours();
-int getMinutes();
-int getSeconds();
 
-void clock(char * buffer){
-    int digits = uintToBase(getHours(), buffer, 10);
-    buffer[digits ++ ] = ':'
-    digits = uintToBase(getMinutes(),buffer,10);
-    buffer[digits++] = ':'
-    digits = uintToBase(getSeconds(), buffer, 10);
-    buffer[digits] = '\0';
-}
+
