@@ -13,8 +13,9 @@ int getBufferPosition();
 void setPos(int newPosition); //unsigned??
 char * getBufferAddress();
 char getCharAt(int position);
-//void consumeBufferAt(int position);
+void consumeBufferAt(int position);
 void cleanBuffer();
 int getBufferLen();
+void incBufferLen(int n);
 
 #endif

@@ -3,6 +3,9 @@
 //
 #include "drivers/include/videoDriver.h"
 #include "syscalls.h"
+#include "include/keyboardBuffer.h"
+#define MIN(x,y) x < y ? x : y
+
 void sys_write(int descriptor, char * str, int len){
     switch(descriptor){
         case STDOUT:
@@ -11,6 +14,21 @@ void sys_write(int descriptor, char * str, int len){
         case ERROUT:
             drawWordLen(0x00ff0000, str, len);
         default: // poner error aca
+    }
+
+}
+
+void sys_read(int descriptor, int len, char * save){
+    if(descriptor != STDIN){
+        // ERROR
+    }
+    int n;
+    int length = MIN(len, getBufferLen());
+
+    for(int i=0; i< length; i++){
+        n=getBufferPosition();
+        save[i] = getCharAt(n);
+        consumeBufferAt(n);
     }
 
 }

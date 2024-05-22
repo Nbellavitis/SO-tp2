@@ -4,9 +4,12 @@
 
 #ifndef TPE_SYSCALLS_H
 #define TPE_SYSCALLS_H
+#define STDIN 0
 #define STDOUT 1
 #define ERROUT 2
 
 void sys_write(int descriptor, char * str, int len);
+
+void sys_read(int descriptor, int len, char * save);
 
 #endif //TPE_SYSCALLS_H
