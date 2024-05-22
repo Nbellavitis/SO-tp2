@@ -12,6 +12,7 @@ GLOBAL _irq02Handler
 GLOBAL _irq03Handler
 GLOBAL _irq04Handler
 GLOBAL _irq05Handler
+GLOBAL _irq80Handler
 
 GLOBAL _exception0Handler
 
@@ -137,6 +138,21 @@ _irq04Handler:
 ;USB
 _irq05Handler:
 	irqHandlerMaster 5
+
+
+_irq80handler:
+    pushState
+
+    mov r9, r8
+    	mov r8, rcx
+    	mov rcx, rdx
+    	mov rdx, rsi
+    	mov rsi, rdi
+    	mov rdi, 80h
+    	call irqDispatcher
+
+    popState
+    iretq
 
 
 ;Zero Division Exception

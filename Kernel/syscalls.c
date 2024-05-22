@@ -18,7 +18,7 @@ void sys_write(int descriptor, char * str, int len){
 
 }
 
-void sys_read(int descriptor, int len, char * save){
+void sys_read(int descriptor, char * save, int len){
     if(descriptor != STDIN){
         // ERROR
     }
