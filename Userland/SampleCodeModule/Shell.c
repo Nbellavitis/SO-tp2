@@ -1,5 +1,6 @@
-#include <Shell.h>
-#include <buffer.h>
+#include "include/Shell.h"
+#include "include/buffer.h"
+#include "include/lib.h"
 
 static char buffer[BUFFER_SIZE] = {0};
 
@@ -14,10 +15,10 @@ void startingLine(){
 void bufferControl(){
     int i = 0;
     while (i < BUFFER_SIZE) {
-        char c = getChar();
+        char c = getC();
 
         if (c == '\n'){
-            putChar(c);
+            putC(c);
             if (i == 0){
                 clearBuffer();
                 return;
@@ -31,12 +32,12 @@ void bufferControl(){
             if (i > 0){
                 i--;               //borro el ultimo caracter
             }
-            putChar(c);
+            putC(c);
 
         }else{
             if (i != BUFFER_SIZE-1){
                 buffer[i++] = c;   //guardo el caracter en el buffer
-                putChar(c);
+                putC(c);
             }
         }
     }
