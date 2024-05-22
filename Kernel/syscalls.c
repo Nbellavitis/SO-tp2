@@ -2,7 +2,7 @@
 // Created by nicol on 5/22/2024.
 //
 #include "drivers/include/videoDriver.h"
-#include "syscalls.h"
+#include "include/syscalls.h"
 #include "include/keyboardBuffer.h"
 #define MIN(x,y) x < y ? x : y
 
@@ -31,4 +31,30 @@ void sys_read(int descriptor, int len, char * save){
         consumeBufferAt(n);
     }
 
+}
+void printSeconds(){
+    uint8_t seconds = getSeconds();
+    ncPrintHex((uint64_t)seconds);
+}
+
+void printMinutes(){
+    uint8_t minutes = getMinutes();
+    ncPrintHex((uint64_t)minutes);
+}
+
+void printHours(){
+    uint8_t hours = getHours();
+    hours = (hours + 21) % 24;
+    ncPrintHex((uint64_t)hours);
+}
+
+
+void printCurrentHour(){
+    ncPrint("Hours: ");
+    printHours();
+    ncPrint(" Minutes: ");
+    printMinutes();
+    ncPrint(" Seconds: ");
+    printSeconds();
+    ncNewline();
 }

@@ -23,7 +23,6 @@ void keyboard_handler()
             setPos(--buff_pos);
             incBufferLen(-1);
         }
-        drawChar(0x00FF0000,keyMap[keyMapRow][code]);
     }
 	} else {               // Key released
     code-=0x80;

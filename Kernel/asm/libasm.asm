@@ -1,5 +1,8 @@
 GLOBAL cpuVendor
 GLOBAL getKey
+GLOBAL getHours
+GLOBAL getMinutes
+GLOBAL getSeconds
 
 section .text
 	
@@ -36,3 +39,40 @@ _good:
   mov rsp, rbp 
   pop rbp
   ret
+
+  getHours:
+  	push rbp
+  	mov rbp, rsp
+
+  	mov al, 4
+  	out 0x70, al
+  	in al, 0x71
+
+  	mov rsp, rbp
+  	pop rbp
+  	ret
+
+  getMinutes:
+  	push rbp
+  	mov rbp, rsp
+
+  	mov al, 2
+  	out 0x70, al
+  	in al, 0x71
+
+  	mov rsp, rbp
+  	pop rbp
+  	ret
+
+  getSeconds:
+  	push rbp
+  	mov rbp, rsp
+
+  	mov al, 0
+  	out 0x70, al
+  	in al, 0x71
+
+  	mov rsp, rbp
+  	pop rbp
+  	ret
+
