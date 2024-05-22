@@ -131,6 +131,11 @@ void drawWord(uint32_t hexColor,char * str){
 		drawChar(hexColor,str[i]);
 	}
 }
+void drawWordLen(uint32_t hexColor,char * str, int len){
+    for(int i=0;i<len;i++){
+        drawChar(hexColor,str[i]);
+    }
+}
 
 void drawBuffer(uint32_t hexColor){
 	int aux = getBufferLen();
