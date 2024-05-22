@@ -144,13 +144,15 @@ _irq80Handler:
     pushState
 
     mov r9, r8
-    	mov r8, rcx
-    	mov rcx, rdx
-    	mov rdx, rsi
-    	mov rsi, rdi
-    	mov rdi, 80h
-    	call irqDispatcher
-
+    mov r8, rcx
+    mov rcx, rdx
+    mov rdx, rsi
+    mov rsi, rdi
+    mov rdi, 0x80
+    call irqDispatcher
+    ; signal pic EOI (End of Interrupt)
+    mov al, 20h
+    out 20h, al
     popState
     iretq
 

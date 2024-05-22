@@ -1,5 +1,5 @@
 #include "include/Shell.h"
-#include "include/buffer.h"
+#include "include/Buffer.h"
 #include "include/lib.h"
 
 static char buffer[BUFFER_SIZE] = {0};

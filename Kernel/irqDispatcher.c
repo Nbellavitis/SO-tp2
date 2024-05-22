@@ -16,7 +16,7 @@ void irqDispatcher(uint64_t irq,uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64
         case 0x80:
             int_80(rdi, rsi,  rdx, rcx, r8, r9);
             break;
-	}
+        }
 	return;
 }
 

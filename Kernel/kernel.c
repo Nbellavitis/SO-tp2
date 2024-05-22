@@ -3,7 +3,10 @@
 #include <lib.h>
 #include <moduleLoader.h>
 #include <naiveConsole.h>
+#include <idtLoader.h>
 #include "Drivers/include/keyboardDriver.h"
+#include "Drivers/include/videoDriver.h"
+
 extern uint8_t text;
 extern uint8_t rodata;
 extern uint8_t data;
@@ -81,8 +84,10 @@ void * initializeKernelBinary()
 }
 
 int main()
-{	
+{
 	load_idt();
-	 while(1);
+    ((EntryPoint)sampleCodeModuleAddress)();
+
+    while(1);
 	return 0;
 }
