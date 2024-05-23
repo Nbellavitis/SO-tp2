@@ -1,5 +1,6 @@
 #include "include/Buffer.h"
 #include "include/lib.h"
+#include "include/usrSysCall.h"
 
 void clearBuffer(char * buffer){
     for(int i = 0; i < BUFFER_SIZE; i++){
@@ -34,8 +35,9 @@ void lineRead(char *buffer) {
 
     }
     if (strcmp(buffer, "time") == 0) {
-        // Do something for the "time" command
-        putString("checking time");
+        char * time;
+        call_timeClock(time);
+        putString(time);
         putString("\n");
     }
     if (strcmp(buffer, "check Exception") == 0) {
@@ -54,7 +56,7 @@ void lineRead(char *buffer) {
         putString("\n");
     }
     if(strcmp(buffer,"clean")){
-        
+
     }
     // Add more conditions for other commands if needed
 }
