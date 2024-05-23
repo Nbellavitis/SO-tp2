@@ -25,7 +25,7 @@ void bufferControl(){
                 return;
             }
             buffer[i]=0;
-            //lineRead(buffer);
+            lineRead(buffer);
             clearBuffer();         //para limpiarlo ahora q lineRead no lo uso
             return;
 
@@ -36,7 +36,7 @@ void bufferControl(){
             }
 
         }else{
-            if (i != BUFFER_SIZE-1){
+            if (i < BUFFER_SIZE){
                 buffer[i++] = c;   //guardo el caracter en el buffer
                 putC(c);
             }
