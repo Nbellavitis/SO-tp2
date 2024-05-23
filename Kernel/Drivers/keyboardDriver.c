@@ -16,7 +16,7 @@ void keyboard_handler()
     }
     else if(keyMap[keyMapRow][code]!=0){
         if(keyMap[keyMapRow][code]!='\b'){
-        buff[buff_pos++]=keyMap[keyMapRow][code];
+        buff[buff_pos]=keyMap[keyMapRow][code];
         incBufferLen(1);
         setPos(buff_pos);
         }else{

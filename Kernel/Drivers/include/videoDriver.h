@@ -2,7 +2,7 @@
 #define VIDEODRIVER_H
 
 #include <stdint.h>
-#define FONT_SIZE 2
+#define FONT_SIZE 1
 
 
 void drawChar(uint32_t hexColor, char character);

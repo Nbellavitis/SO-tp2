@@ -1,14 +1,14 @@
 #include "include/Shell.h"
 #include "include/Buffer.h"
 #include "include/lib.h"
-
+#include <stdio.h>
 static char buffer[BUFFER_SIZE] = {0};
 
 //void lineRead(char * buffer);
 
 void startingLine(){
     char * startingLine = "$>";
-    print(startingLine);
+    putString(startingLine);
     clearBuffer();
 }
 
@@ -16,7 +16,8 @@ void bufferControl(){
     int i = 0;
     while (i < BUFFER_SIZE) {
         char c = getC();
-
+          
+        if(c!=0){
         if (c == '\n'){
             putC(c);
             if (i == 0){
@@ -40,7 +41,7 @@ void bufferControl(){
                 putC(c);
             }
         }
-    }
+    }}
     return;
 }
 

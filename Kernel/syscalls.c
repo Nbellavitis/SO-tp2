@@ -5,6 +5,7 @@
 #include "include/syscalls.h"
 #include "include/keyboardBuffer.h"
 #include <naiveConsole.h>
+#include <stdio.h>
 #define MIN(x,y) x < y ? x : y
 
 void sys_write(int descriptor, char * str, int len){
@@ -21,10 +22,18 @@ void sys_write(int descriptor, char * str, int len){
 }
 
 void sys_read(int descriptor, char * save, int len){
+    
     if(descriptor != STDIN){
         // ERROR
     }
-    int n;
+   
+    int n=getBufferPosition();
+ 
+    if(getCharAt(n)==0){
+        *save=0;
+        return;
+    }
+    
     int length = MIN(len, getBufferLen());
 
     for(int i=0; i< length; i++){
@@ -32,7 +41,6 @@ void sys_read(int descriptor, char * save, int len){
         save[i] = getCharAt(n);
         consumeBufferAt(n);
     }
-
 }
 
 
