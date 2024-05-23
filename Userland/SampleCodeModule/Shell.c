@@ -65,37 +65,32 @@ void lineRead(char *buffer) {
             putString(commands[i]);
             putString("\n");
         }
-    }
-    if (strcmp(buffer, "eliminator") == 0) {
+    }else if (strcmp(buffer, "eliminator") == 0) {
         // Do something for the "eliminator" command
         putString("playing eliminator");
         putString("\n");
 
-    }
-    if (strcmp(buffer, "time") == 0) {
+    }else if (strcmp(buffer, "time") == 0) {
         char * time;
         call_timeClock(time);
         putString(time);
         putString("\n");
-    }
-    if (strcmp(buffer, "check Exception") == 0) {
+    }else if (strcmp(buffer, "check Exception") == 0) {
         // Do something for the "check" command
         putString("checking exception");
         putString("\n");
-    }
-    if (strcmp(buffer, "incSize") == 0) {
+    }else if (strcmp(buffer, "incSize") == 0) {
         // Do something for the "incSize" command
         putString("incrementing size");
         putString("\n");
-    }
-    if (strcmp(buffer, "getRegisters") == 0) {
-        // Do something for the "getRegisters" command
-        putString("geting Registers");
+    }else if (strcmp(buffer, "getRegisters") == 0) {
+        call_regState();
         putString("\n");
-    }
-    if(strcmp(buffer,"clean")){
-        //clearn a la terminal y empezarla de cero
-        
+    }else if(strcmp(buffer,"clear")){
+    }else{
+        putString(buffer);
+        putString(":command not found");
+        putString("\n");
     }
 }
 

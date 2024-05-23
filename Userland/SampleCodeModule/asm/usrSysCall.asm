@@ -25,3 +25,5 @@ call_sys_read:
     call_to_handler 2
 call_timeClock:
     call_to_handler 3
+call_regState:
+    call_to_handler 4

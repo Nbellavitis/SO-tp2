@@ -3,6 +3,7 @@ GLOBAL getKey
 GLOBAL getHours
 GLOBAL getMinutes
 GLOBAL getSeconds
+GLOBAL regState
 
 section .text
 	
@@ -76,3 +77,18 @@ _good:
   	pop rbp
   	ret
 
+regState:
+	lea rdi, [myBuffer]
+    mov [rdi], rax         
+    mov [rdi+8], rbx        
+    mov [rdi+16], rcx        
+    mov [rdi+24], rdx        
+    mov [rdi+32], rsi        
+    mov [rdi+40], rdi       
+    mov [rdi+48], rbp      
+
+	mov rax, myBuffer
+	ret
+
+section .bss
+mybuff: resq 8
