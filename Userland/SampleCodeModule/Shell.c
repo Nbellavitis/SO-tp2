@@ -32,8 +32,8 @@ void bufferControl(){
         }else if (c == '\b'){
             if (i > 0){
                 i--;               //borro el ultimo caracter
+                putC(c);
             }
-            putC(c);
 
         }else{
             if (i != BUFFER_SIZE-1){
