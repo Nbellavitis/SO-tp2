@@ -38,7 +38,6 @@ static void int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint6
             //tengo en rsi una string donde va a ir el tiempo
             //tengo que agarrar los minutos las horas y los segundo y meterlo en uno
         case 4:
-            regState();
             //devuelve los registros a rsi
         default:
             return;

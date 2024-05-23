@@ -84,9 +84,11 @@ void lineRead(char *buffer) {
         putString("incrementing size");
         putString("\n");
     }else if (strcmp(buffer, "getRegisters") == 0) {
-        call_regState();
+        //call_regState();
         putString("\n");
-    }else if(strcmp(buffer,"clear")){
+    }else if(strcmp(buffer,"clear")==0){
+        putC('C');
+       putString("\n");
     }else{
         putString(buffer);
         putString(":command not found");
