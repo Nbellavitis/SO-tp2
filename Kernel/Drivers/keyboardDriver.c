@@ -15,14 +15,9 @@ void keyboard_handler()
       keyMapRow=1;
     }
     else if(keyMap[keyMapRow][code]!=0){
-        if(keyMap[keyMapRow][code]!='\b'){
         buff[buff_pos]=keyMap[keyMapRow][code];
         incBufferLen(1);
         setPos(buff_pos);
-        }else{
-            setPos(--buff_pos);
-            incBufferLen(-1);
-        }
     }
 	} else {               // Key released
     code-=0x80;
