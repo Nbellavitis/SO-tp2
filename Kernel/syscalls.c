@@ -59,11 +59,6 @@ void twoChars(char * first,int j, char * app){
         first[j+i] = app[i];
     }
 }
-void sys_setFontSize(int size){
-    if(size<=0){
-        // ERROR
-    }
-    setFontSize(size);
-}
+
 
 

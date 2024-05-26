@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #define FONT_SIZE 1
+#define FONT_BIG 2
 
 
 void drawChar(uint32_t hexColor, char character);
@@ -17,6 +18,8 @@ void drawWordLen(uint32_t hexColor,char * str,int len);
 
 void drawBuffer(uint32_t hexColor);
 
-void setFontSize(uint32_t size);
+void setFontSize();
+
+void clear();
 
 #endif

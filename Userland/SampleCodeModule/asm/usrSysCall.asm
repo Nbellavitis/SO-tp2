@@ -3,6 +3,7 @@ GLOBAL call_sys_write
 GLOBAL call_timeClock
 GLOBAL call_setFontSize
 GLOBAL call_regState
+GLOBAL call_clear
 
 section .text
 
@@ -29,5 +30,7 @@ call_timeClock:
     call_to_handler 3
 call_regState:
     call_to_handler 4
+call_clear:
+    call_to_handler 5
 call_setFontSize:
     call_to_handler 13

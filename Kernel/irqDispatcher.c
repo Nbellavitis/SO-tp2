@@ -1,6 +1,7 @@
 #include <time.h>
 #include <stdint.h>
 #include "Drivers/include/keyboardDriver.h"
+#include "Drivers/include/videoDriver.h"
 #include "include/libasm.h"
 #include <syscalls.h>
 static void int_20();
@@ -36,13 +37,16 @@ static void int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint6
             sys_read(rsi,(char *) rdx, rcx);
             return;
         case 3:
-            sys_readTime(rdi);
+            sys_readTime(rsi);
             return;
         case 4:
-            getRegisters(rdi);
+            getRegisters(rsi);
+            return;
+        case 5:
+            clear();
             return;
         case 13:
-            sys_setFontSize(rdi);
+            setFontSize();
             return;
         default:
             return;
