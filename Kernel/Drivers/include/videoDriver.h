@@ -16,4 +16,7 @@ void drawWord(uint32_t hexColor,char * str);
 void drawWordLen(uint32_t hexColor,char * str,int len);
 
 void drawBuffer(uint32_t hexColor);
+
+void setFontSize(uint32_t size);
+
 #endif

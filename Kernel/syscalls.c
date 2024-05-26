@@ -4,6 +4,7 @@
 #include "Drivers/include/videoDriver.h"
 #include "include/syscalls.h"
 #include "include/keyboardBuffer.h"
+#include "include/libasm.h"
 #include <naiveConsole.h>
 #include <stdio.h>
 #define MIN(x,y) x < y ? x : y
@@ -42,6 +43,27 @@ void sys_read(int descriptor, char * save, int len){
         consumeBufferAt(n);
     }
 }
-
+void sys_readTime(char * time){
+    char hours[3];
+    char minutes[3];
+    char seconds[3];
+    twoChars(time,0,hours);
+    time[2] = ':';
+    twoChars(time,3,minutes);
+    time[5] = ':';
+    twoChars(time,6,seconds);
+    
+}
+void twoChars(char * first,int j, char * app){
+    for(int i = 0; i < 2;i++){
+        first[j+i] = app[i];
+    }
+}
+void sys_setFontSize(int size){
+    if(size<=0){
+        // ERROR
+    }
+    setFontSize(size);
+}
 
 

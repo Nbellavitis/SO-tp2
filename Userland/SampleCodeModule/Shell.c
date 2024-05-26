@@ -4,6 +4,7 @@
 #include "include/usrSysCall.h"
 #include <stdio.h>
 static char buffer[BUFFER_SIZE] = {0};
+int exitFlag =0;
 
 //void lineRead(char * buffer);
 
@@ -51,44 +52,48 @@ const char *commands[] = {
     "eliminator",
     "time",
     "check Exception",
-    "incSize",
+    "setFont",
     "getRegisters",
-    "clear"
+    "clear",
+    "exit"
 };
 
 void lineRead(char *buffer) {
     if (strcmp(buffer, "help") == 0) {
         putString("Las siguientes comandos pueden ser utilizadas: \n");
-        
-        // Loop through the commands array and print each command
         for (int i = 0; i < sizeof(commands) / sizeof(commands[0]); i++) {
             putString(commands[i]);
             putString("\n");
         }
     }else if (strcmp(buffer, "eliminator") == 0) {
-        // Do something for the "eliminator" command
         putString("playing eliminator");
         putString("\n");
 
     }else if (strcmp(buffer, "time") == 0) {
-        char * time;
-        call_timeClock(time);
-        putString(time);
+        char time[9];//Viene dada por el formato hh:mm:ss por eso son 8 mas la terminacion en cero
+        //call_timeClock(time);
+       //putString(time);
         putString("\n");
     }else if (strcmp(buffer, "check Exception") == 0) {
-        // Do something for the "check" command
         putString("checking exception");
         putString("\n");
-    }else if (strcmp(buffer, "incSize") == 0) {
-        // Do something for the "incSize" command
-        putString("incrementing size");
+    }else if (strcmp(buffer, "setFont") == 0) {
+        int size;
+        putString("Input size:\n");
+        clearBuffer();
+        //falta hacer un scan para guardar el size
+        //se podria hacer buffer control y en vez de line read se para como parametro una funcion ene este caso scanf
+        call_setFontSize(0.5);
         putString("\n");
     }else if (strcmp(buffer, "getRegisters") == 0) {
         //call_regState();
         putString("\n");
     }else if(strcmp(buffer,"clear")==0){
-        putC('C');
        putString("\n");
+    }else if(strcmp(buffer,"exit")==0){
+        exitFlag=1;
+        //Limpiaria la pantalla aca
+        return;
     }else{
         putString(buffer);
         putString(":command not found");
@@ -97,7 +102,7 @@ void lineRead(char *buffer) {
 }
 
 int shellInit() {
-    while(1){
+    while(!exitFlag){
         startingLine();
         bufferControl();
     }

@@ -54,7 +54,6 @@ uint32_t sizeX = FONT_SIZE;
 uint32_t sizeY = FONT_SIZE * 2;
 // uint8_t buff[256*16];  
 
-// extern void getVGAfont(uint8_t * buffer);
 
 void putPixel(uint32_t hexColor, uint32_t x, uint32_t y) {
     uint8_t * framebuffer = (uint8_t *) VBE_mode_info->framebuffer;
@@ -143,4 +142,9 @@ void drawBuffer(uint32_t hexColor){
 	for(int i=0;i<aux;i++){
 		drawChar(hexColor,buff[i]);
 	}
+}
+
+void setFontSize(uint32_t size){
+	sizeX=size;
+	sizeY=size*2;
 }
