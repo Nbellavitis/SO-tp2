@@ -12,7 +12,6 @@ void exceptionDispatcher(int exception) {
 		invalid_opcode();
 		}
 	//Se deben imprimir los registros
-	//y una opcion para reinciar el shhell
 }
 
 static void zero_division() {

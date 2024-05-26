@@ -61,7 +61,9 @@ void print(const char * str, ...){
                 }
                 case 'x':{
                     int * d = va_arg(args,int*);
-                    putInt(*d);
+                    char s[17];
+                    toHexa(d,s);
+                    putString(s);
                     break;
                 }
             }
@@ -73,6 +75,25 @@ void print(const char * str, ...){
 
     va_end(args);
     return;
+}
+
+void toHexa(int * num, char * str){
+    int i = 0;
+    do {
+        int b = *num % 16;
+        str[i++] = (b < 10) ? ('0' + b) : ('A' + b - 10);
+        *num /= 16;
+    } while (*num != 0);
+    str[i] = '\0';
+
+    int len = i;
+    for (int j = 0; j < len / 2; j++) {
+        char temp = str[j];
+        str[j] = str[len - j - 1];
+        str[len - j - 1] = temp;
+    }
+
+
 }
 int strlen(const char *str) {
     int length = 0;
