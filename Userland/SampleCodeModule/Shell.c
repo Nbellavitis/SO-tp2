@@ -81,12 +81,11 @@ void lineRead(char *buffer) {
         putString("\n");
     }else if (strcmp(buffer, "setFont") == 0) {
         int size;
-        putString("Input size:\n");
+        call_clear();
         clearBuffer();
         //falta hacer un scan para guardar el size
         //se podria hacer buffer control y en vez de line read se para como parametro una funcion ene este caso scanf
-        call_setFontSize(0.5);
-        putString("\n");
+        call_setFontSize();
     }else if (strcmp(buffer, "getRegisters") == 0) {
         uint64_t regs[16];
         call_regState(regs);
@@ -108,7 +107,8 @@ void lineRead(char *buffer) {
         print("R14: 0x%x\n", regs[14]);
         print("R15: 0x%x\n", regs[15]);
     }else if(strcmp(buffer,"clear")==0){
-       putString("\n");
+        call_clear();
+        clearBuffer();
     }else if(strcmp(buffer,"exit")==0){
         exitFlag=1;
         //Limpiaria la pantalla aca
@@ -119,6 +119,7 @@ void lineRead(char *buffer) {
         putString("\n");
     }
 }
+
 
 int shellInit() {
     while(!exitFlag){
