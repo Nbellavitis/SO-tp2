@@ -16,7 +16,7 @@ void startingLine(){
 
 void bufferControl(){
     int i = 0;
-    while (i < BUFFER_SIZE) {
+    while (1) {
         char c = getC();
           
         if(c!=0){
@@ -43,7 +43,9 @@ void bufferControl(){
                 putC(c);
             }
         }
-    }}
+    }
+
+    }
     return;
 }
 

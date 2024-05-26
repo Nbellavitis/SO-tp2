@@ -60,7 +60,7 @@ void print(const char * str, ...){
                     break;
                 }
                 case 'x':{
-                    int * d = va_arg(args,char*);
+                    int * d = va_arg(args,int*);
                     putInt(*d);
                     break;
                 }
