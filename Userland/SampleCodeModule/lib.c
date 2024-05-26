@@ -59,6 +59,11 @@ void print(const char * str, ...){
                     putString(s);
                     break;
                 }
+                case 'x':{
+                    int * d = va_arg(args,char*);
+                    putInt(*d);
+                    break;
+                }
             }
         } else {
             putC(*str);

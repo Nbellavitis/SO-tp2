@@ -2,6 +2,7 @@ GLOBAL call_sys_read
 GLOBAL call_sys_write
 GLOBAL call_timeClock
 GLOBAL call_setFontSize
+GLOBAL call_regState
 
 section .text
 

@@ -3,6 +3,7 @@ GLOBAL getKey
 GLOBAL getHours
 GLOBAL getMinutes
 GLOBAL getSeconds
+GLOBAL getRegisters
 
 section .text
 	
@@ -75,6 +76,46 @@ _good:
   	mov rsp, rbp
   	pop rbp
   	ret
+
+
+
+getRegisters:
+	push rbp
+	mov rbp,rsp
+
+	push rdx
+	mov rdx, rdi
+	mov [rdx], rax
+	mov [rdx+8],rbx
+	mov [rdx+16],rcx
+
+	push rax
+	mov rax,[rbp+8]
+	mov [rdx+24],rax
+	pop rax
+	mov [rdx+32],rsi
+	mov [rdx+40],rdi
+	mov [rdx+48],rsp
+	push rax
+	mov rax,[rbp-8]
+	mov [rdx+56],rax
+	pop rax
+	mov [rdx+64],r8
+	mov [rdx+72],r9
+	mov [rdx+80],r10
+	mov [rdx+88],r11
+	mov [rdx+96],r12
+	mov [rdx+104],r13
+	mov [rdx+112],r14
+	mov [rdx+120],r15
+	pop rdx
+	leave
+	ret
+
+
+
+
+
 
 
 

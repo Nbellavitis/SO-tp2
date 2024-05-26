@@ -86,8 +86,25 @@ void lineRead(char *buffer) {
         call_setFontSize(0.5);
         putString("\n");
     }else if (strcmp(buffer, "getRegisters") == 0) {
-        //call_regState();
-        putString("\n");
+        uint64_t regs[16];
+        call_regState(regs);
+        print("Register values:\n");
+        print("RAX: 0x%x\n", regs[0]);
+        print("RBX: 0x%x\n", regs[1]);
+        print("RCX: 0x%x\n", regs[2]);
+        print("RDX: 0x%x\n", regs[3]);
+        print("RSI: 0x%x\n", regs[4]);
+        print("RDI: 0x%x\n", regs[5]);
+        print("RSP: 0x%x\n", regs[6]);
+        print("RBP: 0x%x\n", regs[7]);
+        print("R8:  0x%x\n", regs[8]);
+        print("R9:  0x%x\n", regs[9]);
+        print("R10: 0x%x\n", regs[10]);
+        print("R11: 0x%x\n", regs[11]);
+        print("R12: 0x%x\n", regs[12]);
+        print("R13: 0x%x\n", regs[13]);
+        print("R14: 0x%x\n", regs[14]);
+        print("R15: 0x%x\n", regs[15]);
     }else if(strcmp(buffer,"clear")==0){
        putString("\n");
     }else if(strcmp(buffer,"exit")==0){
