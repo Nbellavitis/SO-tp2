@@ -7,17 +7,19 @@ static void zero_division();
 static void invalid_opcode();
 
 void exceptionDispatcher(int exception) {
+    drawWord(0x00ff0000,"hola");
 	if (exception == ZERO_EXCEPTION_ID){
 		zero_division();
 	}else{
 		invalid_opcode();
 		}
-	printRegisters();
+	//printRegisters();
 }
 
 static void zero_division() {
 	drawWord(0x00FF0000, "No se puede dividir por 0");
 	newLine();
+    return;
 }
 
 static void invalid_opcode(){

@@ -101,6 +101,9 @@ void lineRead(char *buffer) {
     }else if(strcmp(buffer,"Div0")==0){
         call_div0();
         return;
+    }else if(strcmp(buffer,"InvalidOp")==0){
+        call_InvalidOp();
+        return;
     }else{
         putString(buffer);
         putString(":command not found");
@@ -116,7 +119,9 @@ int shellInit() {
     }
     return 0;
 }
-
+void call_InvalidOp(){
+    InvalidOpasm();
+}
 void call_div0(){
     int a=7;
     int b=0;

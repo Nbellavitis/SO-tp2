@@ -24,4 +24,5 @@ void call_drawWordColorAt(uint64_t hexColor, char* word, uint32_t x, uint32_t y)
 void call_characterAt(uint64_t hexColor, char c, uint32_t x, uint32_t y);
 void call_beep(int freq, int time);
 void call_clear();
+void InvalidOpasm();
 #endif /* USERSYSCALLS_H */

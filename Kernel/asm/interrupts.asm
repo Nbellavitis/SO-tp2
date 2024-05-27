@@ -15,11 +15,16 @@ GLOBAL _irq05Handler
 GLOBAL _irq80Handler
 
 GLOBAL _exception0Handler
+GLOBAL _exception6Handler
 
 EXTERN irqDispatcher
 EXTERN exceptionDispatcher
-
+EXTERN retUserland
+EXTERN getStackBase
+EXTERN clear
+EXTERN printRegisters
 SECTION .text
+
 
 %macro pushState 0
 	push rax
@@ -75,11 +80,15 @@ SECTION .text
 
 %macro exceptionHandler 1
 	pushState
-
 	mov rdi, %1 ; pasaje de parametro
 	call exceptionDispatcher
-
+	call clear
 	popState
+	call getStackBase
+	sub rax, 20h
+	mov qword [rsp+8*3], rax
+	call retUserland
+	mov qword [rsp], rax
 	iretq
 %endmacro
 
@@ -150,7 +159,6 @@ _irq80Handler:
     mov rsi, rdi
     mov rdi, 0x80
     call irqDispatcher
-    ; signal pic EOI (End of Interrupt)
     mov al, 20h
     out 20h, al
     popState
@@ -161,12 +169,14 @@ _irq80Handler:
 _exception0Handler:
 	exceptionHandler 0
 
-haltcpu:
-	cli
-	hlt
-	ret
+
+_exception6Handler:
+	exceptionHandler 6
 
 
 
-SECTION .bss
-	aux resq 1
+
+
+	SECTION .bss
+    	aux resq 1
+

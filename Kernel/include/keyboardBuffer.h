@@ -10,7 +10,7 @@ struct keyboard_buffer {
     char buffer[BUFF_SIZE];
 };
 int getBufferPosition();
-void setPos(int newPosition); //unsigned??
+void setPos(int newPosition);
 char * getBufferAddress();
 char getCharAt(int position);
 void consumeBufferAt(int position);

@@ -4,7 +4,7 @@ GLOBAL call_timeClock
 GLOBAL call_setFontSize
 GLOBAL call_printRegisters
 GLOBAL call_clear
-
+GLOBAL InvalidOpasm
 section .text
 
 %macro call_to_handler 1
@@ -34,3 +34,7 @@ call_clear:
     call_to_handler 5
 call_setFontSize:
     call_to_handler 13
+InvalidOpasm:
+    mov rax, 0x12345678
+    rdpmc
+    ret
