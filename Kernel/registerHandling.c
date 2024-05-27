@@ -1,5 +1,6 @@
 #include "include/libasm.h"
 #include <stdint.h>
+#include "include/registerHandling.h"
 #include "Drivers/include/videoDriver.h"
 #define SIZE 17
 char* register_names[SIZE] = {"rip", "rax", "rbx", "rcx", "rdx", "rsi", "rdi", "rbp", "rsp","r8 ", "r9 ", "r10", "r11", "r12", "r13", "r14", "r15"};

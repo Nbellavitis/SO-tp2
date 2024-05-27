@@ -5,6 +5,7 @@
 #include "include/libasm.h"
 #include <syscalls.h>
 #include <naiveConsole.h>
+#include "include/registerHandling.h"
 static void int_20();
 static void int_21();
 static void int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);

@@ -57,7 +57,9 @@ const char *commands[] = {
     "setFont",
     "getRegisters",
     "clear",
-    "exit"
+    "exit",
+    "Div0",
+    "InvalidOp"
 };
 
 void lineRead(char *buffer) {
@@ -96,6 +98,9 @@ void lineRead(char *buffer) {
          call_clear();
         clearBuffer();
         return;
+    }else if(strcmp(buffer,"Div0")==0){
+        call_div0();
+        return;
     }else{
         putString(buffer);
         putString(":command not found");
@@ -110,4 +115,10 @@ int shellInit() {
         bufferControl();
     }
     return 0;
+}
+
+void call_div0(){
+    int a=7;
+    int b=0;
+    a=a/b;
 }

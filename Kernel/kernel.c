@@ -36,6 +36,10 @@ void * getStackBase()
 	);
 }
 
+void * retUserland(){
+	return sampleCodeModuleAddress;
+}
+
 void * initializeKernelBinary()
 {
 	char buffer[10];
