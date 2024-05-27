@@ -40,7 +40,7 @@ static void int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint6
             sys_readTime(rsi);
             return;
         case 4:
-            getRegisters(rsi);
+            //IMPRIMR REGISTROS
             return;
         case 5:
             clear();

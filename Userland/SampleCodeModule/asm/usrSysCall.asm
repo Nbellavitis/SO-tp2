@@ -2,7 +2,7 @@ GLOBAL call_sys_read
 GLOBAL call_sys_write
 GLOBAL call_timeClock
 GLOBAL call_setFontSize
-GLOBAL call_regState
+GLOBAL call_printRegisters
 GLOBAL call_clear
 
 section .text
@@ -28,7 +28,7 @@ call_sys_read:
     call_to_handler 2
 call_timeClock:
     call_to_handler 3
-call_regState:
+call_printRegisters:
     call_to_handler 4
 call_clear:
     call_to_handler 5
