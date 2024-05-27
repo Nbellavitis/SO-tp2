@@ -72,9 +72,9 @@ void lineRead(char *buffer) {
         putString("\n");
 
     }else if (strcmp(buffer, "time") == 0) {
-        char time[9];//Viene dada por el formato hh:mm:ss por eso son 8 mas la terminacion en cero
-        //call_timeClock(time);
-       //putString(time);
+        char time[9];                               //Viene dada por el formato hh:mm:ss por eso son 8 mas la terminacion en cero
+        call_timeClock(time);
+        putString(time);
         putString("\n");
     }else if (strcmp(buffer, "check Exception") == 0) {
         putString("checking exception");
@@ -93,7 +93,8 @@ void lineRead(char *buffer) {
         clearBuffer();
     }else if(strcmp(buffer,"exit")==0){
         exitFlag=1;
-        //Limpiaria la pantalla aca
+         call_clear();
+        clearBuffer();
         return;
     }else{
         putString(buffer);

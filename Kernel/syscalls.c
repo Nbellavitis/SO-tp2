@@ -43,6 +43,13 @@ void sys_read(int descriptor, char * save, int len){
         consumeBufferAt(n);
     }
 }
+
+void twoChars(char * first,int j, char * app){
+    for(int i = 0; i < 2;i++){
+        first[j+i] = app[i];
+    }
+}
+
 void sys_readTime(char * time){
     char hours[3];
     char minutes[3];
@@ -54,11 +61,7 @@ void sys_readTime(char * time){
     twoChars(time,6,seconds);
     
 }
-void twoChars(char * first,int j, char * app){
-    for(int i = 0; i < 2;i++){
-        first[j+i] = app[i];
-    }
-}
+
 
 
 

@@ -1,6 +1,5 @@
 #include <naiveConsole.h>
 
-static uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base);
 
 static char buffer[64] = { '0' };
 static uint8_t * const video = (uint8_t*)0xB8000;
@@ -61,13 +60,29 @@ void ncClear()
 	currentVideo = video;
 }
 
-static uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base)
+int getHours();
+int getMinutes();
+int getSeconds();
+int gmtM3(int hours){
+	hours=(hours + 21) % 24;
+	return hours;
+}
+void clock(char * buffer){
+ 	int digits = uintToBase(gmtM3(getHours()), buffer, 10);
+	buffer[digits++] = ':';
+	digits += uintToBase(getMinutes(), buffer+digits, 10);
+	buffer[digits++] = ':';
+	digits += uintToBase(getSeconds(), buffer+digits, 10);
+	buffer[digits++] ='\0';
+}
+
+uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base)
 {
 	char *p = buffer;
 	char *p1, *p2;
 	uint32_t digits = 0;
 
-	//Calculate characters for each digit
+	
 	do
 	{
 		uint32_t remainder = value % base;
@@ -76,10 +91,10 @@ static uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base)
 	}
 	while (value /= base);
 
-	// Terminate string in buffer.
+	
 	*p = 0;
 
-	//Reverse string in buffer.
+
 	p1 = buffer;
 	p2 = p - 1;
 	while (p1 < p2)
@@ -92,16 +107,4 @@ static uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base)
 	}
 
 	return digits;
-}
-int getHours();
-int getMinutes();
-int getSeconds();
-void clock(char * buffer){
-
-    int digits = uintToBase(getHours(), buffer, 10);
-    buffer[digits ++ ] = ':';
-    digits = uintToBase(getMinutes(),buffer,10);
-    buffer[digits++] = ':';
-    digits = uintToBase(getSeconds(), buffer, 10);
-    buffer[digits] = '\0';
 }

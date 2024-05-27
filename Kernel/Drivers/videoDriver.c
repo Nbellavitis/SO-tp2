@@ -5,7 +5,6 @@
 #include <lib.h>
 #include "../include/keyboardBuffer.h"
 #include "include/scanCode.h"
-
 struct vbe_mode_info_structure {
 	uint16_t attributes;		// deprecated, only bit 7 should be of interest to you, and it indicates the mode supports a linear frame buffer.
 	uint8_t window_a;			// deprecated
@@ -89,8 +88,7 @@ void drawChar(uint32_t hexColor, char character){
 		return;
 }
 	if(character == '\n'){
-		cursorX=0;
-		cursorY+=sizeY*8;
+		newLine();
 		return;
 	}
 	if(character == '\b'){
@@ -148,7 +146,7 @@ void drawBuffer(uint32_t hexColor){
 void setFontSize(){
     if(sizeX == FONT_BIG){
         sizeX =FONT_SIZE ;
-        sizeY =FONT_SIZE ;
+        sizeY =FONT_SIZE * 2 ;
         return;
     }
     sizeX = FONT_BIG ;
@@ -168,4 +166,15 @@ void clear_bg(uint64_t hexColor){
 void clear(){
     clear_bg(bg_color);
     return;
+}
+
+void newLine(){
+	cursorX=0;
+	cursorY+=sizeY*8;
+}
+void drawRegister(int reg){
+	char buff[256]={0};
+	uintToBase(reg, buff, 16);
+	drawWord(0xFFFFFFFF,buff);
+	newLine();
 }

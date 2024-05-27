@@ -4,6 +4,7 @@
 #include "Drivers/include/videoDriver.h"
 #include "include/libasm.h"
 #include <syscalls.h>
+#include <naiveConsole.h>
 static void int_20();
 static void int_21();
 static void int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
@@ -37,10 +38,10 @@ static void int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint6
             sys_read(rsi,(char *) rdx, rcx);
             return;
         case 3:
-            sys_readTime(rsi);
+            clock((char *) rsi);
             return;
         case 4:
-            //IMPRIMR REGISTROS
+            printRegisters();
             return;
         case 5:
             clear();

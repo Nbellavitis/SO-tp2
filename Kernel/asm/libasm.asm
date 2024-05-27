@@ -41,10 +41,16 @@ _good:
   pop rbp
   ret
 
-  getHours:
+ getHours:
   	push rbp
   	mov rbp, rsp
-
+      xor rax, rax
+        xor rdi, rdi
+        mov al, 0x0B
+        out 70h, al
+        in al, 71h
+        or al, 0x04
+        out 71h, al
   	mov al, 4
   	out 0x70, al
   	in al, 0x71
@@ -56,7 +62,13 @@ _good:
   getMinutes:
   	push rbp
   	mov rbp, rsp
-
+     xor rax, rax
+       xor rdi, rdi
+       mov al, 0x0B
+       out 70h, al
+       in al, 71h
+       or al, 0x04
+       out 71h, al
   	mov al, 2
   	out 0x70, al
   	in al, 0x71
@@ -68,7 +80,13 @@ _good:
   getSeconds:
   	push rbp
   	mov rbp, rsp
-
+    xor rax, rax
+      xor rdi, rdi
+      mov al, 0x0B
+      out 70h, al
+      in al, 71h
+      or al, 0x04
+      out 71h, al
   	mov al, 0
   	out 0x70, al
   	in al, 0x71
@@ -77,36 +95,33 @@ _good:
   	pop rbp
   	ret
 
-
-
 getRegisters:
 	push rbp
 	mov rbp,rsp
-
-	mov [rdi], rax
-	mov [rdi+8],rbx
-	mov [rdi+16],rcx
-
 	push rax
-	mov rax,[rbp+8]
-	mov [rdi+24],rax
+	mov rax,$
+	mov [rdi],rax
 	pop rax
-	mov [rdi+32],rsi
-	mov [rdi+40],rdi
-	mov [rdi+48],rsp
-	push rax
-	mov rax,[rbp-8]
-	mov [rdi+56],rax
+	mov [rdi+8],rax
+	mov [rdi+16],rbx
+	mov [rdi+24],rcx
+	mov [rdi+32],rdx
+	mov [rdi+40],rsi
+	mov [rdi+48],rdi
+	mov [rdi+56],rbx
+	
+	mov [rdi+64],rsp
+	mov [rdi+72],r8
+	mov [rdi+80],r9
+	mov [rdi+88],r10
+	mov [rdi+96],r11
+	mov [rdi+104],r12
+	mov [rdi+112],r13
+	mov [rdi+120],r14
+	mov [rdi+128],r15
+	pop rcx
+	pop rbx
 	pop rax
-	mov [rdi+64],r8
-	mov [rdi+72],r9
-	mov [rdi+80],r10
-	mov [rdi+88],r11
-	mov [rdi+96],r12
-	mov [rdi+104],r13
-	mov [rdi+112],r14
-	mov [rdi+120],r15
-	pop rdi
 	leave
 	ret
 
