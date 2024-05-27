@@ -52,7 +52,16 @@ uint32_t cursorY  = 0;
 uint32_t sizeX = FONT_SIZE;
 uint32_t sizeY = FONT_SIZE * 2;
 uint32_t bg_color = 0x00000000;
-// uint8_t buff[256*16];  
+// uint8_t buff[256*16];
+
+void moveUpwards(){
+    char * dest = (char *)(uintptr_t) VBE_mode_info->framebuffer;
+    char * src = dest +  VBE_mode_info->pitch * sizeY * 8;
+    uint64_t size = (VBE_mode_info->height - sizeY * 8)* VBE_mode_info->pitch;
+    memcpy(dest, src, size);
+    drawRectangle(0x00000000,0, VBE_mode_info->height - sizeY * 8, sizeY * 8,VBE_mode_info->pitch );
+    cursorY -= 8*sizeY;
+}
 
 
 void putPixel(uint32_t hexColor, uint32_t x, uint32_t y) {
@@ -71,6 +80,11 @@ void drawRectangle(uint32_t color, uint32_t x, uint32_t y, uint32_t height, uint
 	}
 }
 
+void newLine(){
+    cursorX=0;
+    cursorY+=sizeY*8;
+}
+
 void drawSquare(uint32_t hexColor, uint32_t side_length, uint32_t x, uint32_t y){
 	drawRectangle(hexColor, x, y, side_length, side_length);
 }
@@ -79,6 +93,10 @@ void drawChar(uint32_t hexColor, char character){
 		cursorY+=sizeY*8;
 		cursorX=0;
 	}
+    if(cursorY >= (uint16_t) VBE_mode_info->height){
+        cursorX =0;
+        moveUpwards();
+    }
 	int x = cursorX;
 	int y = cursorY;
 	int current = x;
@@ -168,10 +186,6 @@ void clear(){
     return;
 }
 
-void newLine(){
-	cursorX=0;
-	cursorY+=sizeY*8;
-}
 void drawRegister(int reg){
 	char buff[256]={0};
 	uintToBase(reg, buff, 16);

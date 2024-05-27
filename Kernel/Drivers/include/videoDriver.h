@@ -22,4 +22,6 @@ void setFontSize();
 
 void clear();
 
+void newLine();
+
 #endif
