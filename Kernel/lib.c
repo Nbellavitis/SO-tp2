@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <time.h>
 
 void * memset(void * destination, int32_t c, uint64_t length)
 {
@@ -47,4 +48,10 @@ void * memcpy(void * destination, const void * source, uint64_t length)
 	}
 
 	return destination;
+}
+
+void sleepms(uint32_t ms){
+    uint32_t start = ticks_elapsed();
+    while (ms > 18* (ticks_elapsed() - start))
+        _hlt();
 }
