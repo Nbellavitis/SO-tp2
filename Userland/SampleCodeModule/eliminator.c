@@ -1,29 +1,33 @@
 #include "include/usrSysCall.h"
 #include "include/lib.h"
-#define TITLE 0
-static void buffRead();
-static void configuration();
-static void title();
+#include "include/buffer.h"
+#include "include/eliminator.h"
+
 int state,flag;
+char speed;
+static char buffer[BUFFER] = {0};
 uint16_t width,height;
+
+
 void startEliminator(){
     state=TITLE;
     height=call_getHeight();
     width=call_getWidth();
-     flag=1;
+    flag=1;
     call_clear();
     title();
     while(flag){
-    buffRead();
+        buffRead();
     }
 }
-static void buffRead(){
+void buffRead(){
     int i = 0;
     while (1) {
         char c = getC();
         if(c!=0){
             if (c == '\n' && state == TITLE){
                 call_clear();
+                state++;
                 configuration();
             }else if(c == 'x' && state == TITLE){
                 call_clear();
@@ -36,17 +40,67 @@ static void buffRead(){
 }
 }
 
-static void title(){
+void title(){
     call_setFontSize(2);
     call_moveCursorX((width/2)-(strlen("ELIMINATOR")/2) *8 * 2);
     call_moveCursorY(height/3);
-    print(0x00FF0000,"ELIMINATOR\n");
+    print(RED,"ELIMINATOR\n");
     call_moveCursorX((width/2)-(strlen("PRESS [ENTER] TO CONTINUE")/2) *8 * 2);
-    print(0x00FF0000,"PRESS [ENTER] TO CONTINUE\n");
+    print(RED,"PRESS [ENTER] TO CONTINUE\n");
     call_moveCursorX((width/2)-(strlen("PRESS [X] TO EXIT")/2) *8 * 2);
-    print(0x00FF0000,"PRESS [X] TO EXIT\n");
+    print(RED,"PRESS [X] TO EXIT\n");
 }
-static void configuration(){
-call_moveCursorX((width/2)-(strlen("CONFIGURATION")/2) *8 * 2);
-print(0x00FF0000,"CONFIGURATION\n");
+void configuration(){
+    call_moveCursorX((width/2)-(strlen("CONFIGURATION")/2) *8 * 2);
+    print(RED,"CONFIGURATION\n");
+    call_moveCursorX((width/2)-(strlen("PRESS [ENTER] TO START")/2) *8 * 2);
+    print(RED,"PRESS [ENTER] TO START\n");
+    while(state == CONFIGURATION){
+        print(RED,"GAME SPEED (1-4): ");
+        gameSpeed();
+        if(state == CONFIGURATION){
+            print(RED,"INVALID SPEED\n");
+        }
+    }
+    game();
+}
+
+void gameSpeed(){
+    int i = 0;
+    while (1) {
+        char c = getC();
+        if(c != 0){
+            if (c == '\n'){
+                putC(c,RED);
+                if (i == 0){
+                    clearBuffer();
+                    return;
+                }
+                if((buffer[0] == '1' || buffer[0] == '2' || buffer[0] == '3' || buffer[0] == '4') && i == 1){
+                    speed = buffer[0];
+                    state++;
+                }
+                buffer[i]=0;
+                clearBuffer();
+                return;
+            }else if (c == '\b'){
+                if (i > 0){
+                    i--;
+                    putC(c,RED);
+                }
+            }else{
+                if (i < RED){
+                    buffer[i++] = c;
+                    putC(c,RED);
+                }
+            }
+        }
+    }
+    return;
+}
+
+void game(){
+    call_clear();
+    call_drawRectangle(RED,0,0,height,width);
+    call_drawRectangle(BLACK, 10, 10, height - 20, width - 20);
 }
