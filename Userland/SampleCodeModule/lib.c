@@ -109,3 +109,29 @@ int strcmp( char *str1,  char *str2) {
     }
     return *(unsigned char *)str1 - *(unsigned char *)str2;
 }
+int strcmpSpace(char *str1, char *str2 ){
+    while (*str1 && *str2 && *str1 == *str2 ) {
+        str1++;
+        str2++;
+    }
+    if(*str1 == ' ' || *str2 == ' '){
+        return 0;
+    }
+    return *(unsigned char *)str1 - *(unsigned char *)str2;
+}
+
+int pow(int base, int pow){
+    int toR= 1;
+    for(int i=0; i< pow;i++){
+        toR*= base;
+    }
+    return toR;
+}
+int strToInt(char * str){
+    int n = strlen(str);
+    int rta=0;
+    for(int i=0; i<n; i++){
+       rta += (*str - '0') * pow(10,n-i-1);
+    }
+    return rta;
+}

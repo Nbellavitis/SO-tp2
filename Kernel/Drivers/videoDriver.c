@@ -161,14 +161,12 @@ void drawBuffer(uint32_t hexColor){
 	}
 }
 
-void setFontSize(){
-    if(sizeX == FONT_BIG){
-        sizeX =FONT_SIZE ;
-        sizeY =FONT_SIZE * 2 ;
+void setFontSize(uint32_t size){
+    if(size > 10){
         return;
     }
-    sizeX = FONT_BIG ;
-    sizeY = FONT_BIG * 2 ;
+    sizeX = size ;
+    sizeY = size * 2 ;
 }
 void clear_bg(uint64_t hexColor){
     for (int x = 0; x < VBE_mode_info->width; x++){
@@ -189,6 +187,6 @@ void clear(){
 void drawRegister(int reg){
 	char buff[256]={0};
 	uintToBase(reg, buff, 16);
-	drawWord(0xFFFFFFFF,buff);
+	drawWord(0x00FFFFFF,buff);
 	newLine();
 }
