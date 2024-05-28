@@ -64,4 +64,6 @@ void sys_readTime(char * time){
 
 
 
-
+void printTitle(){
+    drawWordAt(0X00FF0000,"ELIMINATOR",getWidth()/2-5*8,getHeight()/2);
+}

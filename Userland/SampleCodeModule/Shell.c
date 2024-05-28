@@ -2,6 +2,7 @@
 #include "include/Buffer.h"
 #include "include/lib.h"
 #include "include/usrSysCall.h"
+#include "include/eliminator.h"
 #include <stdio.h>
 static char buffer[BUFFER_SIZE] = {0};
 int exitFlag =0;
@@ -70,8 +71,7 @@ void lineRead(char *buffer) {
             putString("\n");
         }
     }else if (strcmp(buffer, "eliminator") == 0) {
-        putString("playing eliminator");
-        putString("\n");
+      startEliminator();
 
     }else if (strcmp(buffer, "time") == 0) {
         char time[9];                               //Viene dada por el formato hh:mm:ss por eso son 8 mas la terminacion en cero

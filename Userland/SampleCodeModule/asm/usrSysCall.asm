@@ -5,6 +5,7 @@ GLOBAL call_setFontSize
 GLOBAL call_printRegisters
 GLOBAL call_clear
 GLOBAL InvalidOpasm
+GLOBAL call_printTitle
 section .text
 
 %macro call_to_handler 1
@@ -32,6 +33,8 @@ call_printRegisters:
     call_to_handler 4
 call_clear:
     call_to_handler 5
+call_printTitle:
+    call_to_handler 6
 call_setFontSize:
     call_to_handler 13
 InvalidOpasm:

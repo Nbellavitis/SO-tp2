@@ -24,4 +24,9 @@ void clear();
 
 void newLine();
 
+uint16_t getWidth();
+
+uint16_t getHeight();
+
+void drawWordAt(uint32_t hexColor,char * str,uint32_t posX,uint32_t posY);
 #endif

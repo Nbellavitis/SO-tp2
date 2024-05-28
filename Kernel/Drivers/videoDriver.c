@@ -54,6 +54,14 @@ uint32_t sizeY = FONT_SIZE * 2;
 uint32_t bg_color = 0x00000000;
 // uint8_t buff[256*16];
 
+
+uint16_t getHeight(){
+	return VBE_mode_info->height;
+}
+uint16_t getWidth(){
+	return VBE_mode_info->width;
+}
+
 void moveUpwards(){
     char * dest = (char *)(uintptr_t) VBE_mode_info->framebuffer;
     char * src = dest +  VBE_mode_info->pitch * sizeY * 8;
@@ -189,4 +197,9 @@ void drawRegister(int reg){
 	uintToBase(reg, buff, 16);
 	drawWord(0x00FFFFFF,buff);
 	newLine();
+}
+void drawWordAt(uint32_t hexColor,char * str,uint32_t posX,uint32_t posY){
+	cursorX=posX;
+	cursorY=posY;
+	drawWord(hexColor,str);
 }

@@ -14,5 +14,5 @@ void sys_read(int descriptor, char * save,int len);
 
 void clock(char * buffer);
 
-
+void printTitle();
 #endif //TPE_SYSCALLS_H
