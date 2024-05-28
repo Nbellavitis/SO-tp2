@@ -12,7 +12,7 @@ void call_sys_write(int fd,char *buf, int size,uint32_t hexColor);
 void call_timeClock(char *buf);
 void call_printRegisters();
 void call_paintScreen(uint64_t hex);
-void call_drawRectangle(uint64_t color, uint32_t x, uint32_t y, uint32_t width, uint32_t height);
+void call_drawRectangle(uint64_t color, uint32_t x, uint32_t y, uint32_t height, uint32_t width);
 void call_drawBall( uint64_t color, uint64_t x, uint64_t y, uint64_t size);
 int call_getBufferPosition();
 int call_getCharAt(int pos);

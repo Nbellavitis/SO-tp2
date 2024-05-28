@@ -10,6 +10,7 @@ GLOBAL call_getHeight
 GLOBAL call_getWidth
 GLOBAL call_moveCursorX
 GLOBAL call_moveCursorY
+GLOBAL call_drawRectangle
 
 section .text
 
@@ -48,6 +49,8 @@ call_moveCursorX:
     call_to_handler 9
 call_moveCursorY:
     call_to_handler 10
+call_drawRectangle:
+    call_to_handler 11
 call_setFontSize:
     call_to_handler 13
 

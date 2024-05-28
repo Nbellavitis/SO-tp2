@@ -101,6 +101,6 @@ void gameSpeed(){
 
 void game(){
     call_clear();
-    call_drawRectangle(RED,0,0,width,height);
-    call_drawRectangle(BLACK,1,1,width - 1,height - 1);
+    call_drawRectangle(RED,0,0,height,width);
+    call_drawRectangle(BLACK, 10, 10, height - 20, width - 20);
 }
