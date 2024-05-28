@@ -62,6 +62,14 @@ uint16_t getWidth(){
 	return VBE_mode_info->width;
 }
 
+uint16_t getCursorX(){
+	return cursorX;
+}
+
+uint16_t getCursorY(){
+	return cursorY;
+}
+
 void moveUpwards(){
     char * dest = (char *)(uintptr_t) VBE_mode_info->framebuffer;
     char * src = dest +  VBE_mode_info->pitch * sizeY * 8;

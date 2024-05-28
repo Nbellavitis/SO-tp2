@@ -6,6 +6,7 @@
 #include <syscalls.h>
 #include <naiveConsole.h>
 #include "include/interrupts.h"
+#include "include/lib.h"
 static void int_20();
 static void int_21();
 static void int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
@@ -63,6 +64,9 @@ static void int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint6
             return;
         case 11:
             drawRectangle(rsi, rdx, rcx, r8, r9);
+            return;
+        case 12:
+            sleepms(rsi);
             return;
         case 13:
             setFontSize(rsi);

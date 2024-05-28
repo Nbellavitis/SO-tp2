@@ -8,6 +8,7 @@
 #define GAME 2
 #define RED 0x00FF0000
 #define BLACK 0x00000000
+#define GREEN 0x3342DD12
 
 void startEliminator();
 void buffRead();
