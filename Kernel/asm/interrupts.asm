@@ -84,6 +84,7 @@ SECTION .text
 	call exceptionDispatcher
 	call clear
 	popState
+
 	call getStackBase
 	sub rax, 20h
 	mov qword [rsp+8*3], rax
@@ -156,6 +157,7 @@ _irq80Handler:
 	push r14
 	push r15
 	push rbp
+
 	mov rbp, rsp
 	push r9
     mov r9, r8
@@ -164,9 +166,9 @@ _irq80Handler:
     mov rdx, rsi
     mov rsi, rdi
     mov rdi, 0x80
+
     call irqDispatcher
-    mov al, 20h
-    out 20h, al
+
     pop r9
     mov rsp, rbp
 	pop rbp
@@ -181,13 +183,16 @@ _irq80Handler:
 ;Zero Division Exception
 _exception0Handler:
 	exceptionHandler 0
-
+    jmp _halt
 
 _exception6Handler:
 	exceptionHandler 6
+    jmp _halt
 
-
-
+_halt:
+    cli
+    halt
+    ret
 
 
 	SECTION .bss

@@ -3,21 +3,31 @@
 #define INVALID_OPCODE_ID 6
 #include "Drivers/include/videoDriver.h"
 #include "include/registerHandling.h"
+#include "include/syscalls.h"
+#include "include/interrupts.h"
 static void zero_division();
 static void invalid_opcode();
 
 void exceptionDispatcher(int exception) {
-    drawWord(0x00ff0000,"hola");
 	if (exception == ZERO_EXCEPTION_ID){
 		zero_division();
 	}else{
 		invalid_opcode();
 		}
 	//printRegisters();
+    drawWord(0x00ff0000,"Press any key to continue");
+    while(1) {
+        char c;
+        _hlt();
+        sys_read(STDIN, &c, 1); // no se si esta bien usarlo asi
+        if (c != 0) {
+            return;
+        }
+    }
 }
 
 static void zero_division() {
-	drawWord(0x00FF0000, "No se puede dividir por 0");
+	drawWord(0x00FF0000, "Cannot divide by 0");
 	newLine();
     return;
 }
