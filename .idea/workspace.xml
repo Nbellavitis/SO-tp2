@@ -15,14 +15,7 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d4d4e356-4d74-4753-b135-cd3266810181" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Kernel/Drivers/videoDriver.c" beforeDir="false" afterPath="$PROJECT_DIR$/Kernel/Drivers/videoDriver.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Kernel/irqDispatcher.c" beforeDir="false" afterPath="$PROJECT_DIR$/Kernel/irqDispatcher.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Userland/SampleCodeModule/asm/usrSysCall.asm" beforeDir="false" afterPath="$PROJECT_DIR$/Userland/SampleCodeModule/asm/usrSysCall.asm" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Userland/SampleCodeModule/eliminator.c" beforeDir="false" afterPath="$PROJECT_DIR$/Userland/SampleCodeModule/eliminator.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Userland/SampleCodeModule/include/eliminator.h" beforeDir="false" afterPath="$PROJECT_DIR$/Userland/SampleCodeModule/include/eliminator.h" afterDir="false" />
-    </list>
+    <list default="true" id="d4d4e356-4d74-4753-b135-cd3266810181" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -125,10 +118,22 @@
       <workItem from="1716580902680" duration="576000" />
       <workItem from="1716835630336" duration="10736000" />
       <workItem from="1716923587110" duration="8234000" />
+      <workItem from="1716932628041" duration="299000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>
