@@ -3,6 +3,8 @@
     "files.associations": {
         "stdint.h": "c",
         "usrsyscall.h": "c",
-        "libasm.h": "c"
+        "libasm.h": "c",
+        "keyboarddriver.h": "c",
+        "scancode.h": "c"
     }
 }

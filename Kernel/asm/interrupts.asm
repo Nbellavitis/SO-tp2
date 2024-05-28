@@ -16,6 +16,7 @@ GLOBAL _irq80Handler
 
 GLOBAL _exception0Handler
 GLOBAL _exception6Handler
+GLOBAL getRegisters
 GLOBAL printRegistersAsm
 
 EXTERN irqDispatcher
@@ -27,7 +28,7 @@ EXTERN printRegisters
 SECTION .text
 
 
-%macro getRegisters 0
+%macro saveRegistersState 0
 	push rax
 	mov rax,$
 	mov [registers],rax
@@ -101,19 +102,21 @@ SECTION .text
 	iretq
 %endmacro
 
+getRegisters:
+	saveRegistersState
+	ret
 
 printRegistersAsm:
-			getRegisters
-			mov rsi,rdi
-			mov rdi,registers
-			call printRegisters
-			ret
+	mov rsi,rdi
+	mov rdi,registers
+	call printRegisters
+	ret
 
 
 %macro exceptionHandler 1
 	pushState
 	;Guardo el estado del registros
-	getRegisters
+	saveRegistersState
 	mov rdi,registers
 	mov rsi,0x00FF0000
 	call printRegisters

@@ -1,5 +1,6 @@
 #include "include/keyboardDriver.h"
 #include "../include/keyboardBuffer.h"
+#include "../include/interrupts.h"
 #include <stdio.h>
 #include "include/scanCode.h"
 #include "include/videoDriver.h"
@@ -15,9 +16,14 @@ void keyboard_handler()
       keyMapRow=1;
     }
     else if(keyMap[keyMapRow][code]!=0){
-        buff[buff_pos]=keyMap[keyMapRow][code];
-        incBufferLen(1);
-        setPos(buff_pos);
+        if(keyMap[keyMapRow][code] == ':'){
+          getRegisters();
+          printRegistersAsm(0x00FFFF00);
+        }else{
+          buff[buff_pos]=keyMap[keyMapRow][code];
+          incBufferLen(1);
+          setPos(buff_pos);
+        } 
     }
 	} else {               // Key released
     code-=0x80;

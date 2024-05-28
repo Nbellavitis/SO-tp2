@@ -42,6 +42,7 @@ static void int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint6
             clock((char *) rsi);
             return;
         case 4:
+            getRegisters();
             printRegistersAsm(0x00FFFFFF);
             return;
         case 5:
