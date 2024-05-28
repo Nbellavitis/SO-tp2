@@ -14,7 +14,6 @@ void exceptionDispatcher(int exception) {
 	}else{
 		invalid_opcode();
 		}
-	//printRegisters();
     drawWord(0x00ff0000,"Press any key to continue");
     while(1) {
         char c;

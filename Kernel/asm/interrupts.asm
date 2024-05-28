@@ -16,6 +16,7 @@ GLOBAL _irq80Handler
 
 GLOBAL _exception0Handler
 GLOBAL _exception6Handler
+GLOBAL printRegistersAsm
 
 EXTERN irqDispatcher
 EXTERN exceptionDispatcher
@@ -25,6 +26,30 @@ EXTERN clear
 EXTERN printRegisters
 SECTION .text
 
+
+%macro getRegisters 0
+	push rax
+	mov rax,$
+	mov [registers],rax
+	pop rax
+	mov [registers+8],rax
+	mov [registers+16],rbx
+	mov [registers+24],rcx
+	mov [registers+32],rdx
+	mov [registers+40],rsi
+	mov [registers+48],rdi
+	mov [registers+56],rbp
+	mov [registers+64],rsp
+	mov [registers+72],r8
+	mov [registers+80],r9
+	mov [registers+88],r10
+	mov [registers+96],r11
+	mov [registers+104],r12
+	mov [registers+112],r13
+	mov [registers+120],r14
+	mov [registers+128],r15
+	
+%endmacro
 
 %macro pushState 0
 	push rax
@@ -77,9 +102,22 @@ SECTION .text
 %endmacro
 
 
+printRegistersAsm:
+			getRegisters
+			mov rsi,rdi
+			mov rdi,registers
+			call printRegisters
+			ret
+
 
 %macro exceptionHandler 1
 	pushState
+	;Guardo el estado del registros
+	getRegisters
+	mov rdi,registers
+	mov rsi,0x00FF0000
+	call printRegisters
+	;llamo a funcion en c que imprime los registros
 	mov rdi, %1 ; pasaje de parametro
 	call exceptionDispatcher
 	call clear
@@ -195,6 +233,8 @@ _halt:
     ret
 
 
+
 	SECTION .bss
     	aux resq 1
+		registers resq 17
 

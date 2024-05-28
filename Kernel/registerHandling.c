@@ -7,12 +7,10 @@ char* register_names[SIZE] = {"rip", "rax", "rbx", "rcx", "rdx", "rsi", "rdi", "
     
 
     
-void printRegisters(){
-    uint64_t registers[SIZE];
-    getRegisters(registers);
+void printRegisters(uint64_t * registers,uint32_t colour){
     for (int i = 0; i < SIZE; ++i) {
-        drawWord(0xFFFFFFFF,register_names[i]);
-        drawWord(0xFFFFFFFF,": 0x");
-        drawRegister(registers[i]);
+        drawWord(colour,register_names[i]);
+        drawWord(colour,": 0x");
+        drawRegister(registers[i],colour);
     };
 }

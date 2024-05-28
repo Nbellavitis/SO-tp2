@@ -29,20 +29,3 @@ void keyboard_handler()
   return;
 }
 
-
-// void keyboard_handler(){
-//     uint16_t key=getKey();
-//     if(key > 0x80)
-//         return;
-//    int shift= (key < 0x80)
-//     char * buff = getBufferAddress();  
-//     int buff_pos = getBufferPosition();
-//     if (buff_pos+1 < BUFF_SIZE){
-//         setPos(buff_pos+1); 
-//         buff[buff_pos+1] = 0;  
-//     }else {
-//         return;
-//     }
-//     buff[buff_pos]=scancodeShiftToAscii[key];
-//     return;
-// }

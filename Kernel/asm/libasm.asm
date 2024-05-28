@@ -3,8 +3,6 @@ GLOBAL getKey
 GLOBAL getHours
 GLOBAL getMinutes
 GLOBAL getSeconds
-GLOBAL getRegisters
-
 section .text
 	
 cpuVendor:
@@ -94,37 +92,6 @@ _good:
   	mov rsp, rbp
   	pop rbp
   	ret
-
-getRegisters:
-	push rbp
-	mov rbp,rsp
-	push rax
-	mov rax,$
-	mov [rdi],rax
-	pop rax
-	mov [rdi+8],rax
-	mov [rdi+16],rbx
-	mov [rdi+24],rcx
-	mov [rdi+32],rdx
-	mov [rdi+40],rsi
-	mov [rdi+48],rdi
-	mov [rdi+56],rbx
-	
-	mov [rdi+64],rsp
-	mov [rdi+72],r8
-	mov [rdi+80],r9
-	mov [rdi+88],r10
-	mov [rdi+96],r11
-	mov [rdi+104],r12
-	mov [rdi+112],r13
-	mov [rdi+120],r14
-	mov [rdi+128],r15
-	pop rcx
-	pop rbx
-	pop rax
-	leave
-	ret
-
 
 
 

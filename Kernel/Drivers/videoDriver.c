@@ -170,7 +170,7 @@ void drawBuffer(uint32_t hexColor){
 }
 
 void setFontSize(uint32_t size){
-    if(size > 10){
+    if(size > 10 || size <=0){
         return;
     }
     sizeX = size ;
@@ -192,10 +192,10 @@ void clear(){
     return;
 }
 
-void drawRegister(int reg){
+void drawRegister(int reg,uint32_t colour){
 	char buff[256]={0};
 	uintToBase(reg, buff, 16);
-	drawWord(0x00FFFFFF,buff);
+	drawWord(colour,buff);
 	newLine();
 }
 
