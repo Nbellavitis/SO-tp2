@@ -105,11 +105,13 @@ void game(){
     call_clear();
     call_drawRectangle(RED,0,0,height,width);
     call_drawRectangle(BLACK, 10, 10, height - 20, width - 20);
+
     call_drawRectangle(RED,width/2,height/2,10,10);
     while(i<500){
     call_sleepms(100);
     call_drawRectangle(RED,width/2 + i,height/2 + j,10,10);
      i+=10;
      j+=10;  
+
     }
 }
