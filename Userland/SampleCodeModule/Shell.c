@@ -4,6 +4,7 @@
 #include "include/usrSysCall.h"
 #include "include/eliminator.h"
 #include <stdio.h>
+#define WHITE 0xFFFFFFFF
 static char buffer[BUFFER_SIZE] = {0};
 int exitFlag =0;
 
@@ -11,7 +12,7 @@ int exitFlag =0;
 
 void startingLine(){
     char * startingLine = "$>";
-    putString(startingLine);
+    putString(startingLine,WHITE);
     clearBuffer();
 }
 
@@ -22,26 +23,26 @@ void bufferControl(){
           
         if(c!=0){
         if (c == '\n'){
-            putC(c);
+            putC(c,WHITE);
             if (i == 0){
                 clearBuffer();
                 return;
             }
             buffer[i]=0;
-            lineRead(buffer);
+            lineRead(buffer,WHITE);
             clearBuffer();         //para limpiarlo ahora q lineRead no lo uso
             return;
 
         }else if (c == '\b'){
             if (i > 0){
                 i--;               //borro el ultimo caracter
-                putC(c);
+                putC(c,WHITE);
             }
 
         }else{
             if (i < BUFFER_SIZE){
                 buffer[i++] = c;   //guardo el caracter en el buffer
-                putC(c);
+                putC(c,WHITE);
             }
         }
     }
@@ -65,10 +66,10 @@ const char *commands[] = {
 
 void lineRead(char *buffer) {
     if (strcmp(buffer, "help") == 0) {
-        putString("Las siguientes comandos pueden ser utilizadas: \n");
+        putString("Las siguientes comandos pueden ser utilizadas: \n",WHITE);
         for (int i = 0; i < sizeof(commands) / sizeof(commands[0]); i++) {
-            putString(commands[i]);
-            putString("\n");
+            putString(commands[i],WHITE);
+            putString("\n",WHITE);
         }
     }else if (strcmp(buffer, "eliminator") == 0) {
       startEliminator();
@@ -76,11 +77,11 @@ void lineRead(char *buffer) {
     }else if (strcmp(buffer, "time") == 0) {
         char time[9];                               //Viene dada por el formato hh:mm:ss por eso son 8 mas la terminacion en cero
         call_timeClock(time);
-        putString(time);
-        putString("\n");
+        putString(time,WHITE);
+        putString("\n",WHITE);
     }else if (strcmp(buffer, "check Exception") == 0) {
-        putString("checking exception");
-        putString("\n");
+        putString("checking exception",WHITE);
+        putString("\n",WHITE);
     }else if (strcmpSpace(buffer, "setFont") == 0) {
         call_clear();
         clearBuffer();
@@ -102,9 +103,9 @@ void lineRead(char *buffer) {
         call_InvalidOp();
         return;
     }else{
-        putString(buffer);
-        putString(":command not found");
-        putString("\n");
+        putString(buffer,WHITE);
+        putString(":command not found",WHITE);
+        putString("\n",WHITE);
     }
 }
 

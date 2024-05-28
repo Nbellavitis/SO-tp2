@@ -198,6 +198,13 @@ void drawRegister(int reg){
 	drawWord(0x00FFFFFF,buff);
 	newLine();
 }
+
+void moveCursorX(uint16_t posX){
+		cursorX=posX;
+}
+void moveCursorY(uint16_t posY){
+	cursorY=posY;
+}
 void drawWordAt(uint32_t hexColor,char * str,uint32_t posX,uint32_t posY){
 	cursorX=posX;
 	cursorY=posY;

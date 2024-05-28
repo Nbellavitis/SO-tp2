@@ -8,7 +8,7 @@
 #define STDOUT 1
 #define ERROUT 2
 
-void sys_write(int descriptor, char * str, int len);
+void sys_write(int descriptor, char * str, int len,uint32_t hexColor);
 
 void sys_read(int descriptor, char * save,int len);
 

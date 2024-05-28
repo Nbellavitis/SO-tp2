@@ -7,13 +7,13 @@ char getC(){
     call_sys_read(STDIN,&c, 1);
     return c;
 }
-void putC(char c){
-    call_sys_write( STDOUT,&c, 1);
+void putC(char c,uint32_t hexColor){
+    call_sys_write( STDOUT,&c, 1,hexColor);
 }
 
-void putInt(int num){ // MODIFICAR DPS
+void putInt(int num,uint32_t hexColor){ 
         if (num < 0) {
-            putC('-');
+            putC('-',hexColor);
             num = -num;
         }
 
@@ -24,17 +24,17 @@ void putInt(int num){ // MODIFICAR DPS
 
         while (divisor > 0) {
             int digit = num / divisor;
-            putC('0' + digit);
+            putC('0' + digit,hexColor);
             num %= divisor;
             divisor /= 10;
         }
 }
-void putString(char * s){
-    call_sys_write( STDOUT,s, strlen(s));
+void putString(char * s,uint32_t hexColor){
+    call_sys_write( STDOUT,s, strlen(s),hexColor);
 }
 
 
-void print(const char * str, ...){
+void print(uint32_t hexColor,const char * str, ...){
     va_list args;
     va_start(args, str);
 
@@ -46,29 +46,29 @@ void print(const char * str, ...){
             switch(*str){
                 case 'c': {
                     char c = va_arg(args, char*);
-                    putC(c);
+                    putC(c,hexColor);
                     break;
                 }
                 case 'd': {
                     int d = va_arg(args, int*);
-                    putInt(d);
+                    putInt(d,hexColor);
                     break;
                 }
                 case 's': {
                     char* s = va_arg(args, char*);
-                    putString(s);
+                    putString(s,hexColor);
                     break;
                 }
                 case 'x':{
                     int * d = va_arg(args,int*);
                     char s[17];
                     toHexa(d,s);
-                    putString(s);
+                    putString(s,hexColor);
                     break;
                 }
             }
         } else {
-            putC(*str);
+            putC(*str,hexColor);
         }
         str++;
     }

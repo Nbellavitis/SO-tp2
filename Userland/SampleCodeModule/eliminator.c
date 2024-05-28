@@ -3,12 +3,16 @@
 #define TITLE 0
 static void buffRead();
 static void configuration();
-int state;
+static void title();
+int state,flag;
+uint16_t width,height;
 void startEliminator(){
     state=TITLE;
-    int flag=1;
+    height=call_getHeight();
+    width=call_getWidth();
+     flag=1;
     call_clear();
-    call_printTitle();
+    title();
     while(flag){
     buffRead();
     }
@@ -21,12 +25,28 @@ static void buffRead(){
             if (c == '\n' && state == TITLE){
                 call_clear();
                 configuration();
+            }else if(c == 'x' && state == TITLE){
+                call_clear();
+                call_setFontSize(1);
+                flag=0;
+                return;
             }
     }
     return;
 }
 }
 
+static void title(){
+    call_setFontSize(2);
+    call_moveCursorX((width/2)-(strlen("ELIMINATOR")/2) *8 * 2);
+    call_moveCursorY(height/3);
+    print(0x00FF0000,"ELIMINATOR\n");
+    call_moveCursorX((width/2)-(strlen("PRESS [ENTER] TO CONTINUE")/2) *8 * 2);
+    print(0x00FF0000,"PRESS [ENTER] TO CONTINUE\n");
+    call_moveCursorX((width/2)-(strlen("PRESS [X] TO EXIT")/2) *8 * 2);
+    print(0x00FF0000,"PRESS [X] TO EXIT\n");
+}
 static void configuration(){
-print("CONFIGURATION\n");
+call_moveCursorX((width/2)-(strlen("CONFIGURATION")/2) *8 * 2);
+print(0x00FF0000,"CONFIGURATION\n");
 }

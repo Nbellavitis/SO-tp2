@@ -8,7 +8,7 @@
 #define STDERR 2
 
 void call_sys_read(int fd,char *buf, int size);
-void call_sys_write(int fd,char *buf, int size);
+void call_sys_write(int fd,char *buf, int size,uint32_t hexColor);
 void call_timeClock(char *buf);
 void call_printRegisters();
 void call_paintScreen(uint64_t hex);
@@ -26,4 +26,8 @@ void call_beep(int freq, int time);
 void call_clear();
 void InvalidOpasm();
 void call_drawTitle();
+uint16_t call_getWidth();
+uint16_t call_getHeight();
+void call_moveCursorY(uint16_t posY);
+void call_moveCursorX(uint16_t posX);
 #endif /* USERSYSCALLS_H */

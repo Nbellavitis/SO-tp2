@@ -33,7 +33,7 @@ void int_21() {
 static void int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
     switch(rdi) {
         case 1:
-            sys_write(rsi, (char *)rdx, rcx);
+            sys_write(rsi, (char *)rdx, rcx,r8);
             return;
         case 2:
             sys_read(rsi,(char *) rdx, rcx);
@@ -49,6 +49,16 @@ static void int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint6
             return;
         case 6:
             printTitle();
+            return;
+        case 7:
+           return (getHeight());
+        case 8:
+           return (getWidth());
+        case 9:
+            moveCursorX((uint16_t)rsi);
+            return; 
+        case 10:
+            moveCursorY((uint16_t)rsi);
             return;
         case 13:
             setFontSize(rsi);

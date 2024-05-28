@@ -29,4 +29,6 @@ uint16_t getWidth();
 uint16_t getHeight();
 
 void drawWordAt(uint32_t hexColor,char * str,uint32_t posX,uint32_t posY);
+void moveCursorY(uint16_t posY);
+void moveCursorX(uint16_t posX);
 #endif

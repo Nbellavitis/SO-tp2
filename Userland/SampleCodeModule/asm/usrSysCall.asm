@@ -6,6 +6,11 @@ GLOBAL call_printRegisters
 GLOBAL call_clear
 GLOBAL InvalidOpasm
 GLOBAL call_printTitle
+GLOBAL call_getHeight
+GLOBAL call_getWidth
+GLOBAL call_moveCursorX
+GLOBAL call_moveCursorY
+
 section .text
 
 %macro call_to_handler 1
@@ -35,8 +40,17 @@ call_clear:
     call_to_handler 5
 call_printTitle:
     call_to_handler 6
+call_getHeight:
+    call_to_handler 7
+call_getWidth
+    call_to_handler 8
+call_moveCursorX:
+    call_to_handler 9
+call_moveCursorY:
+    call_to_handler 10
 call_setFontSize:
     call_to_handler 13
+
 InvalidOpasm:
     mov rax, 0x12345678
     rdpmc

@@ -150,8 +150,14 @@ _irq05Handler:
 
 
 _irq80Handler:
-    pushState
-
+ 	push rbx
+	push r12
+	push r13
+	push r14
+	push r15
+	push rbp
+	mov rbp, rsp
+	push r9
     mov r9, r8
     mov r8, rcx
     mov rcx, rdx
@@ -161,7 +167,14 @@ _irq80Handler:
     call irqDispatcher
     mov al, 20h
     out 20h, al
-    popState
+    pop r9
+    mov rsp, rbp
+	pop rbp
+	pop r15
+	pop r14
+	pop r13
+	pop r12
+	pop rbx
     iretq
 
 
