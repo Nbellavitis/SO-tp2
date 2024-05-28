@@ -44,7 +44,7 @@ call_printTitle:
     call_to_handler 6
 call_getHeight:
     call_to_handler 7
-call_getWidth
+call_getWidth:
     call_to_handler 8
 call_moveCursorX:
     call_to_handler 9

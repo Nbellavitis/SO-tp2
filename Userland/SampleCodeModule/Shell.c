@@ -7,7 +7,7 @@
 #define WHITE 0xFFFFFFFF
 static char buffer[BUFFER_SIZE] = {0};
 int exitFlag =0;
-
+int registerFlag = 0;
 //void lineRead(char * buffer);
 
 void startingLine(){
@@ -87,7 +87,7 @@ void lineRead(char *buffer) {
         clearBuffer();
         reSize(buffer);
     }else if (strcmp(buffer, "getRegisters") == 0) {
-        call_printRegisters();
+        call_printRegisters(1);
     }else if(strcmp(buffer,"clear")==0){
         call_clear();
         clearBuffer();
@@ -107,6 +107,8 @@ void lineRead(char *buffer) {
         putString(":command not found",WHITE);
         putString("\n",WHITE);
     }
+    call_printRegisters(0);
+ 
 }
 
 void reSize(char * buffer){

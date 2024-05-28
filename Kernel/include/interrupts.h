@@ -22,6 +22,7 @@ void _exception0Handler(void);
 void _exception6Handler(void);
 void _cli(void);
 void getRegisters();
+short getFlag();
 void printRegistersAsm(uint32_t colour);
 
 void _sti(void);

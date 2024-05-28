@@ -18,7 +18,6 @@ void keyboard_handler()
     else if(keyMap[keyMapRow][code]!=0){
         if(keyMap[keyMapRow][code] == ':'){
           getRegisters();
-          printRegistersAsm(0x00FFFF00);
         }else{
           buff[buff_pos]=keyMap[keyMapRow][code];
           incBufferLen(1);

@@ -44,8 +44,10 @@ static void int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint6
             clock((char *) rsi);
             return;
         case 4:
-            getRegisters();
-            printRegistersAsm(0x00FFFFFF);
+            if(getFlag() || rsi == 1){
+                printRegistersAsm(0x00FFFFFF);
+            }
+            //la idea faltaria que se prenda al pedir registros
             return;
         case 5:
             clear();

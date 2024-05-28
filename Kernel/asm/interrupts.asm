@@ -18,6 +18,7 @@ GLOBAL _exception0Handler
 GLOBAL _exception6Handler
 GLOBAL getRegisters
 GLOBAL printRegistersAsm
+GLOBAL getFlag
 
 EXTERN irqDispatcher
 EXTERN exceptionDispatcher
@@ -103,6 +104,7 @@ SECTION .text
 %endmacro
 
 getRegisters:
+	mov byte[flag],1
 	saveRegistersState
 	ret
 
@@ -110,8 +112,12 @@ printRegistersAsm:
 	mov rsi,rdi
 	mov rdi,registers
 	call printRegisters
+	mov byte[flag],0
 	ret
 
+getFlag:
+	movzx rax, byte[flag]
+	ret
 
 %macro exceptionHandler 1
 	pushState
@@ -240,4 +246,5 @@ _halt:
 	SECTION .bss
     	aux resq 1
 		registers resq 17
+		flag resq 1
 
