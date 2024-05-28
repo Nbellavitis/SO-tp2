@@ -2,9 +2,10 @@
 #include "include/lib.h"
 #include "include/Buffer.h"
 #include "include/eliminator.h"
-
-int state,flag;
+#define MOVE 10
+int state,flag,posXplay1,posYplay1,k,l;
 char speed;
+char prevKey1='s';
 static char buffer[BUFFER] = {0};
 uint16_t width,height;
 
@@ -34,8 +35,26 @@ void buffRead(){
                 call_setFontSize(1);
                 flag=0;
                 return;
-            }
+            } 
     }
+        if(state == GAME ){
+            if((c == 'w' && prevKey1 != 's') || prevKey1 =='w'){
+                prevKey1=c;
+                posYplay1-=MOVE;
+                return;
+            }else if((c == 's' && prevKey1 != 'w') || prevKey1 =='s'){
+                prevKey1=c;
+                posYplay1+=MOVE;
+                return;
+            }else if((c == 'd' &&  prevKey1 != 'a') || prevKey1 =='d'){
+                prevKey1=c;
+                posXplay1+=MOVE;
+                return;
+            } else if((c == 'a' &&  prevKey1 != 'd') || prevKey1 =='a'){
+                prevKey1=c;
+                posXplay1-=MOVE;
+                return;
+            }}
     return;
 }
 }
@@ -88,7 +107,8 @@ void gameSpeed(){
                     i--;
                     putC(c,RED);
                 }
-            }else{
+            }
+            else{
                 if (i < RED){
                     buffer[i++] = c;
                     putC(c,RED);
@@ -100,18 +120,16 @@ void gameSpeed(){
 }
 
 void game(){
-    int i,j,k,l;
-    i=j=k=l=0;
     call_clear();
+    int time=0;
     call_drawRectangle(RED,0,0,height,width);
     call_drawRectangle(BLACK, 10, 10, height - 20, width - 20);
-
-    call_drawRectangle(RED,width/2,height/2,10,10);
-    while(i<500){
-    call_sleepms(100);
-    call_drawRectangle(RED,width/2 + i,height/2 + j,10,10);
-     i+=10;
-     j+=10;  
-
+    posXplay1=width/2;
+    posYplay1=height/2;
+    while(1){
+    buffRead();
+    call_sleepms(50);
+    call_drawRectangle(RED,posXplay1,posYplay1,10,10);
+    time++;
     }
 }
