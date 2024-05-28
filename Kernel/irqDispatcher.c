@@ -65,9 +65,6 @@ static void int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint6
         case 11:
             drawRectangle(rsi, rdx, rcx, r8, r9);
             return;
-        case 12:
-            sleepms(rsi);
-            return;
         case 13:
             setFontSize(rsi);
             return;
