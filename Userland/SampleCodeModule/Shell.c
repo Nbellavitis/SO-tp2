@@ -54,20 +54,19 @@ void bufferControl(){
 
 // Define an array to store command strings
 const char *commands[] = {
-    "eliminator",
-    "time",
-    "check Exception",
-    "setFont",
-    "getRegisters",
-    "clear",
-    "exit",
-    "Div0",
-    "InvalidOp"
+    "eliminator: Game similar to tron(the movie)",
+    "time: shows the actual time",
+    "setFont: change the font size, receive an int from 1 to 5",
+    "getRegisters: show the actual state of the registers",
+    "clear: empty the terminal",
+    "exit: kills the terminal",
+    "Div0: test the exception of the cero division",
+    "InvalidOp: test the exception of an invalid operand"
 };
 
 void lineRead(char *buffer) {
     if (strcmp(buffer, "help") == 0) {
-        putString("Las siguientes comandos pueden ser utilizadas: \n",WHITE);
+        putString("The following commands may be used: \n",WHITE);
         for (int i = 0; i < sizeof(commands) / sizeof(commands[0]); i++) {
             putString(commands[i],WHITE);
             putString("\n",WHITE);
@@ -79,9 +78,6 @@ void lineRead(char *buffer) {
         char time[9];                               //Viene dada por el formato hh:mm:ss por eso son 8 mas la terminacion en cero
         call_timeClock(time);
         putString(time,WHITE);
-        putString("\n",WHITE);
-    }else if (strcmp(buffer, "check Exception") == 0) {
-        putString("checking exception",WHITE);
         putString("\n",WHITE);
     }else if (strcmpSpace(buffer, "setFont") == 0) {
         call_clear();
@@ -119,6 +115,9 @@ void reSize(char * buffer){
 
 
 int shellInit() {
+    char * start = "Welcome to shell.\n";
+    putString(start,WHITE);
+    clearBuffer();
     while(!exitFlag){
         startingLine();
         bufferControl();
