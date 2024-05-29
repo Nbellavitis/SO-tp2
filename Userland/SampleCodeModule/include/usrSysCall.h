@@ -22,7 +22,7 @@ int call_ticks_elapsed();
 void call_setFontSize(uint32_t size);
 void call_drawWordColorAt(uint64_t hexColor, char* word, uint32_t x, uint32_t y);
 void call_characterAt(uint64_t hexColor, char c, uint32_t x, uint32_t y);
-void call_beep(int freq, int time);
+void call_beep();
 void call_clear();
 void InvalidOpasm();
 void call_drawTitle();

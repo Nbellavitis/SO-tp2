@@ -12,6 +12,8 @@ GLOBAL call_moveCursorX
 GLOBAL call_moveCursorY
 GLOBAL call_drawRectangle
 GLOBAL call_sleepms
+GLOBAL call_beep
+
 
 section .text
 
@@ -56,6 +58,8 @@ call_sleepms:
     call_to_handler 12
 call_setFontSize:
     call_to_handler 13
+call_beep:
+    call_to_handler 14
 
 InvalidOpasm:
     mov rax, 0x12345678

@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include "Drivers/include/keyboardDriver.h"
 #include "Drivers/include/videoDriver.h"
+#include "Drivers/include/SoundDriver.h"
 #include "include/libasm.h"
 #include "include/lib.h"
 #include <syscalls.h>
@@ -74,6 +75,8 @@ static void int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint6
         case 13:
             setFontSize(rsi);
             return;
+        case 14:
+            beep();
         default:
             return;
     }

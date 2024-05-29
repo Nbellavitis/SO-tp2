@@ -270,6 +270,7 @@ void initializePositions(){
     posYplay2=HEIGHT-MOVE;
 }
 void midGame(){
+    call_beep();
     call_moveCursorX((WIDTH/2)-(strlen("Player 1:")/2) *8 * 2);
     call_moveCursorY(HEIGHT/4);
     print(RED,"Player 1: %d\n", points1);
