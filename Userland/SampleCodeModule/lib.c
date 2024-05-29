@@ -132,7 +132,7 @@ int strToInt(char * str){
     int n = strlen(str);
     int rta=0;
     for(int i=0; i<n; i++){
-       rta += (*str - '0') * pow(10,n-i-1);
+       rta += (str[i] - '0') * pow(10,n-i-1);
     }
     return rta;
 }

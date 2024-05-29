@@ -4,21 +4,21 @@
 #include "include/eliminator.h"
 #define MOVE 8
 void movePlayer1(int x,int y);
+void initializePositions();
+void midGame();
+void fillWithZeros();
 void movePlayer2(int x,int y);
 void checkPrevKey1();
 void checkPrevKey2();
-int state,flag,posXplay1,posYplay1,k,l,posXplay2,posYplay2, points1,points2;
+int state,flag,posXplay1,posYplay1,posXplay2,posYplay2,points1,points2;
 char speed;
 char prevKey1='s';
 char prevKey2='u';
 static char buffer[BUFFER] = {0};
-uint16_t width,height;
-
-
+static uint16_t PositionMatrix[HEIGHT/MOVE][WIDTH/MOVE];
 void startEliminator(){
     state=TITLE;
-    height=call_getHeight();
-    width=call_getWidth();
+    points1=points2=0;
     flag=1;
     call_clear();
     title();
@@ -31,7 +31,6 @@ void buffRead(){
     while (1) {
 
         char c = getC();
-
             if (c == '\n' && state == TITLE) {
                 call_clear();
                 state++;
@@ -41,6 +40,16 @@ void buffRead(){
                 call_setFontSize(1);
                 flag = 0;
                 return;
+            }else if(c == 'y' && state == MIDGAME){
+                state=GAME;
+                game();
+                return;
+            }else if(c == 'n' && state == MIDGAME){
+                call_clear();
+                call_setFontSize(1);
+                state=TITLE;
+                flag = 0;
+                return;
             }
             if (state == GAME) {
                 if (c == 'w' && prevKey1 != 's') {
@@ -48,7 +57,7 @@ void buffRead(){
                     movePlayer1(0, -MOVE);
 
                 }
-                if (c == 's' && prevKey1 != 'w') {
+                else if (c == 's' && prevKey1 != 'w') {
                     prevKey1 = c;
                     movePlayer1(0, MOVE);
 
@@ -89,18 +98,18 @@ void buffRead(){
 
 void title(){
     call_setFontSize(2);
-    call_moveCursorX((width/2)-(strlen("ELIMINATOR")/2) *8 * 2);
-    call_moveCursorY(height/3);
+    call_moveCursorX((WIDTH/2)-(strlen("ELIMINATOR")/2) *8 * 2);
+    call_moveCursorY(HEIGHT/3);
     print(RED,"ELIMINATOR\n");
-    call_moveCursorX((width/2)-(strlen("PRESS [ENTER] TO CONTINUE")/2) *8 * 2);
+    call_moveCursorX((WIDTH/2)-(strlen("PRESS [ENTER] TO CONTINUE")/2) *8 * 2);
     print(RED,"PRESS [ENTER] TO CONTINUE\n");
-    call_moveCursorX((width/2)-(strlen("PRESS [X] TO EXIT")/2) *8 * 2);
+    call_moveCursorX((WIDTH/2)-(strlen("PRESS [X] TO EXIT")/2) *8 * 2);
     print(RED,"PRESS [X] TO EXIT\n");
 }
 void configuration(){
-    call_moveCursorX((width/2)-(strlen("CONFIGURATION")/2) *8 * 2);
+    call_moveCursorX((WIDTH/2)-(strlen("CONFIGURATION")/2) *8 * 2);
     print(RED,"CONFIGURATION\n");
-    call_moveCursorX((width/2)-(strlen("PRESS [ENTER] TO START")/2) *8 * 2);
+    call_moveCursorX((WIDTH/2)-(strlen("PRESS [ENTER] TO START")/2) *8 * 2);
     print(RED,"PRESS [ENTER] TO START\n");
     while(state == CONFIGURATION){
         print(RED,"GAME SPEED (1-4): ");
@@ -110,13 +119,7 @@ void configuration(){
         }
     }
     game();
-    call_moveCursorX((width/2)-(strlen("Points 1:")/2) *8 * 2);
-    call_moveCursorY(height/4);
-    print(RED,"Points 1: %d\n", points1);
-    call_moveCursorX((width/2)-(strlen("Points 2:")/2) *8 * 2);
-    print(GREEN,"Points 2: %d\n", points2);
-
-
+    
 }
 
 void gameSpeed(){
@@ -131,7 +134,8 @@ void gameSpeed(){
                     return;
                 }
                 if((buffer[0] == '1' || buffer[0] == '2' || buffer[0] == '3' || buffer[0] == '4') && i == 1){
-                    speed = buffer[0];
+                    speed = strToInt(buffer[0]);
+                    
                     state++;
                 }
                 buffer[i]=0;
@@ -156,42 +160,30 @@ void gameSpeed(){
 
 void game(){
     call_clear();
-    call_drawRectangle(RED,0,0,height,width);
-    call_drawRectangle(BLACK, MOVE, MOVE, height - (MOVE*2), width - (MOVE*2));
-    posXplay1=width/2;
-    posXplay2=width/2;
-    posYplay1=0;
-    posYplay2=height-MOVE;
-    points1=points2=0;
-    uint16_t PositionMatrix[height/MOVE][width/MOVE];
-    for(int i=0;i<height/MOVE;i++){
-        for(int j=0;j<width/MOVE;j++){
-            if(i==0 || i==height/MOVE-1 || j==0 || j==width/MOVE-1){
-                PositionMatrix[i][j]=1;
-            }else
-                PositionMatrix[i][j]=0;
-        }
-    }
-
+    call_drawRectangle(RED,0,0,HEIGHT,WIDTH);
+    call_drawRectangle(BLACK, MOVE, MOVE, HEIGHT - (MOVE*2), WIDTH - (MOVE*2));
+    fillWithZeros();
+    initializePositions();
+    print(0xFFFFFFFF,"%d",speed);
+    state = GAME;
     while(state == GAME){
         buffRead();
-        call_sleepms(1);
-
-
+        call_sleepms(speed);
         if(PositionMatrix[posYplay1/MOVE][posXplay1/MOVE]==1){
             points2++;
             state++;
+            midGame();
             return;
         }else if(PositionMatrix[posYplay2/MOVE][posXplay2/MOVE]==1){
             points1++;
             state++;
+            midGame();
             return;
         }
         call_drawRectangle(RED,posXplay1,posYplay1,MOVE,MOVE);
         call_drawRectangle(GREEN,posXplay2,posYplay2,MOVE,MOVE);
-        PositionMatrix[posYplay2/MOVE][posXplay2/MOVE ]=1;
-        PositionMatrix[posYplay1/MOVE][posXplay1/MOVE ]=1;
-
+        PositionMatrix[posYplay2/MOVE][posXplay2/MOVE]=1;
+        PositionMatrix[posYplay1/MOVE][posXplay1/MOVE]=1;
     }
 }
 
@@ -204,7 +196,7 @@ void movePlayer2(int x,int y){
     posXplay2+=x;
 }
 void checkPrevKey1(){
-    if(prevKey1 =='w'){
+            if(prevKey1 =='w'){
                 movePlayer1(0,-MOVE);
                 return;
             }
@@ -237,4 +229,30 @@ void checkPrevKey2(){
                  movePlayer2(-MOVE,0);
                  return;
             }
+}
+void fillWithZeros(){
+    for(int i=0;i<HEIGHT/MOVE;i++){
+        for(int j=0;j<WIDTH/MOVE;j++){
+            if(i==0 || i==HEIGHT/MOVE-1 || j==0 || j==WIDTH/MOVE-1){
+                PositionMatrix[i][j]=1;
+            }else
+                PositionMatrix[i][j]=0;
+        }
+    }
+}
+void initializePositions(){
+    posXplay1=WIDTH/2;
+    posXplay2=WIDTH/2;
+    posYplay1=0;
+    posYplay2=HEIGHT-MOVE;
+}
+void midGame(){
+    call_moveCursorX((WIDTH/2)-(strlen("Player 1:")/2) *8 * 2);
+    call_moveCursorY(HEIGHT/4);
+    print(RED,"Player 1: %d\n", points1);
+    call_moveCursorX((WIDTH/2)-(strlen("Player 2:")/2) *8 * 2);
+    print(GREEN,"Player 2: %d\n", points2);
+    call_moveCursorX((WIDTH/2)-(strlen("Do you want to continue? [Y/N]")/2) *8 * 2);
+    print(RED,"Do you want to continue? [Y/N]\n");
+    return;
 }
