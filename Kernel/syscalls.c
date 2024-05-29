@@ -22,7 +22,7 @@ void sys_write(int descriptor, char * str, int len,uint32_t hexColor){
 
 }
 
-void sys_read(int descriptor, char * save, int len){
+int sys_read(int descriptor, char * save, int len){
     
     if(descriptor != STDIN){
         // ERROR
@@ -32,7 +32,7 @@ void sys_read(int descriptor, char * save, int len){
  
     if(getCharAt(n)==0){
         *save=0;
-        return;
+        return 0;
     }
     
     int length = MIN(len, getBufferLen());
@@ -42,6 +42,7 @@ void sys_read(int descriptor, char * save, int len){
         save[i] = getCharAt(n);
         consumeBufferAt(n);
     }
+    return length;
 }
 
 void twoChars(char * first,int j, char * app){

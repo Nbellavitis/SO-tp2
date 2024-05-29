@@ -19,7 +19,8 @@ void startingLine(){
 void bufferControl(){
     int i = 0;
     while (1) {
-        char c = getC();
+        char c;
+         getC(&c);
           
         if(c!=0){
         if (c == '\n'){

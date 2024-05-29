@@ -5,7 +5,7 @@
 #ifndef TPE_LIB_H
 #define TPE_LIB_H
 #include <stdint.h>
-char getC();
+int getC(char * c);
 void putC(char c,uint32_t hexColor);
 void putInt(int num,uint32_t hexColor);
 

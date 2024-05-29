@@ -7,7 +7,7 @@
 #define STDOUT 1
 #define STDERR 2
 
-void call_sys_read(int fd,char *buf, int size);
+int call_sys_read(int fd,char *buf, int size);
 void call_sys_write(int fd,char *buf, int size,uint32_t hexColor);
 void call_timeClock(char *buf);
 void call_printRegisters(int flag);

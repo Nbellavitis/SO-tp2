@@ -2,10 +2,8 @@
 #include "include/usrSysCall.h"
 #include <stdarg.h>
 
-char getC(){
-    char c;
-    call_sys_read(STDIN,&c, 1);
-    return c;
+int getC(char * c){
+    return call_sys_read(STDIN,c, 1);
 }
 void putC(char c,uint32_t hexColor){
     call_sys_write( STDOUT,&c, 1,hexColor);

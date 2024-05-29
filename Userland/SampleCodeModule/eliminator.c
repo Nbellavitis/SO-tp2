@@ -16,6 +16,43 @@ char prevKey1='s';
 char prevKey2='u';
 static char buffer[BUFFER] = {0};
 static uint16_t PositionMatrix[HEIGHT/MOVE][WIDTH/MOVE];
+
+void buffReadTitle(){
+    while(1) {
+        char c;
+        getC(&c);
+        if (c == '\n') {
+            call_clear();
+            state++;
+            configuration();
+            return;
+        } else if (c == 'x') {
+            call_clear();
+            call_setFontSize(1);
+            flag = 0;
+            return;
+        }
+    }
+}
+void buffReadMidGame(){
+    while(1) {
+        char c;
+        getC(&c);
+        if(c == 'y'){
+            state=GAME;
+            game();
+            return;
+        }else if(c == 'n'){
+            call_clear();
+            call_setFontSize(1);
+            state=TITLE;
+            flag = 0;
+            return;
+        }
+    }
+
+
+}
 void startEliminator(){
     state=TITLE;
     points1=points2=0;
@@ -23,7 +60,12 @@ void startEliminator(){
     call_clear();
     title();
     while(flag){
-        buffRead();
+        if(state == TITLE)
+            buffReadTitle();
+        if(state == MIDGAME)
+            buffReadMidGame();
+        if(state == GAME)
+            buffRead();
     }
 }
 
@@ -33,76 +75,40 @@ void clearBufferEliminator(){
     }
 }
 
-void buffRead(){
-    int i = 0;
-    while (1) {
 
-        char c = getC();
-            if (c == '\n' && state == TITLE) {
-                call_clear();
-                state++;
-                configuration();
-		        return;
-            } else if (c == 'x' && state == TITLE) {
-                call_clear();
-                call_setFontSize(1);
-                flag = 0;
-                return;
-            }else if(c == 'y' && state == MIDGAME){
-                state=GAME;
-                game();
-                return;
-            }else if(c == 'n' && state == MIDGAME){
-                call_clear();
-                call_setFontSize(1);
-                state=TITLE;
-                flag = 0;
-                return;
-            }
+void buffRead(){
+    char c;
+    while (getC(&c)) {
+
             if (state == GAME) {
                 if (c == 'w' && prevKey1 != 's') {
                     prevKey1 = c;
-                    movePlayer1(0, -MOVE);
-
                 }
                 else if (c == 's' && prevKey1 != 'w') {
                     prevKey1 = c;
-                    movePlayer1(0, MOVE);
 
                 } else if (c == 'd' && prevKey1 != 'a') {
                     prevKey1 = c;
-                    movePlayer1(MOVE, 0);
 
                 } else if (c == 'a' && prevKey1 != 'd') {
                     prevKey1 = c;
-                    movePlayer1(-MOVE, 0);
-                } else {
-                    checkPrevKey1();
+
                 }
                 if (c == 'u' && prevKey2 != 'j') {
                     prevKey2 = c;
-                    movePlayer2(0, -MOVE);
 
                 } else if (c == 'j' && prevKey2 != 'u') {
                     prevKey2 = c;
-                    movePlayer2(0, MOVE);
 
                 } else if (c == 'k' && prevKey2 != 'h') {
                     prevKey2 = c;
-                    movePlayer2(MOVE, 0);
 
                 } else if (c == 'h' && prevKey2 != 'k') {
                     prevKey2 = c;
-                    movePlayer2(-MOVE, 0);
-
-                } else {
-                    checkPrevKey2();
                 }
-
             }
-    return;
-
-}}
+}
+}
 
 void title(){
     call_setFontSize(2);
@@ -136,8 +142,9 @@ void configuration(){
 
 void gameSpeed(){
     int i = 0;
+    char c;
     while (1) {
-        char c = getC();
+        getC(&c);
         if(c != 0){
             if (c == '\n'){
                 putC(c,RED);
@@ -166,7 +173,6 @@ void gameSpeed(){
             }
         }
     }
-    return;
 }
 
 void game(){
@@ -177,8 +183,12 @@ void game(){
     initializePositions();
     print(0xFFFFFFFF,"%d",speed);
     state = GAME;
+    char c;
+    while(getC(&c));
     while(state == GAME){
         buffRead();
+        checkPrevKey1();
+        checkPrevKey2();
         call_sleepms(30/speed); //a mas velocidad mas rapido
         if(PositionMatrix[posYplay1/MOVE][posXplay1/MOVE]==1){
             points2++;
