@@ -6,7 +6,7 @@
 void movePlayer1(int x,int y);
 void checkPrevKey1();
 void checkPrevKey2();
-int state,flag,posXplay1,posYplay1,k,l,posXplay2,posYplay2;
+int state,flag,posXplay1,posYplay1,k,l,posXplay2,posYplay2, points1,points2;
 char speed;
 char prevKey1='s';
 char prevKey2='u';
@@ -105,6 +105,9 @@ void configuration(){
         }
     }
     game();
+    call_moveCursorX((width/2)-(strlen("CONFIGURATION")/2) *8 * 2);
+    print(RED,"CONFIGURATION\n");
+
 }
 
 void gameSpeed(){
@@ -145,15 +148,37 @@ void gameSpeed(){
 void game(){
     call_clear();
     call_drawRectangle(RED,0,0,height,width);
-    call_drawRectangle(BLACK, 10, 10, height - 20, width - 20);
+    call_drawRectangle(BLACK, MOVE, MOVE, height - (MOVE*2), width - (MOVE*2));
     posXplay1=posXplay2=width/2;
     posYplay1=0;
-    posYplay2=height-10;
-    while(1){
-    buffRead();
-    call_sleepms(5);
-    call_drawRectangle(RED,posXplay1,posYplay1,10,10);
-    call_drawRectangle(GREEN,posXplay2,posYplay2,10,10);
+    posYplay2=height-MOVE;
+    points1=points2=0;
+    uint16_t PositionMatrix[width/MOVE][height/MOVE];
+    for(int i=0;i<width/MOVE;i++){
+        for(int j=0;j<height/MOVE;j++){
+            if(i==0 || i==width/MOVE-1 || j==0 || j==height/MOVE-1){
+                PositionMatrix[i][j]=1;
+            }else
+                PositionMatrix[i][j]=0;
+        }
+    }
+
+    while(state == GAME){
+        buffRead();
+        call_sleepms(1);
+        if(PositionMatrix[posXplay1/MOVE][posYplay1/MOVE]==1){
+            points2++;
+            state++;
+            return;
+        }else if(PositionMatrix[posXplay2/MOVE][posYplay2/MOVE]==1){
+            points1++;
+            state++;
+            return;
+        }
+        PositionMatrix[posXplay1/MOVE][posYplay1/MOVE]=1;
+        PositionMatrix[posXplay2/MOVE][posYplay2/MOVE]=1;
+        call_drawRectangle(RED,posXplay1,posYplay1,MOVE,MOVE);
+        call_drawRectangle(GREEN,posXplay2,posYplay2,MOVE,MOVE);
     }
 }
 

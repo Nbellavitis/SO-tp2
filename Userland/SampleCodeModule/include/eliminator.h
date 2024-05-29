@@ -6,6 +6,7 @@
 #define TITLE 0
 #define CONFIGURATION 1
 #define GAME 2
+#define MIDGAME 3
 #define RED 0x00FF0000
 #define BLACK 0x00000000
 #define GREEN 0x3342DD12
