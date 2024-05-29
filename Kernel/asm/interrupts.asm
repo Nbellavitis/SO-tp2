@@ -31,7 +31,7 @@ SECTION .text
 
 %macro saveRegistersState 0
 	push rax
-	mov rax,$
+	mov rax,[rsp + 128]
 	mov [registers],rax
 	pop rax
 	mov [registers+8],rax
