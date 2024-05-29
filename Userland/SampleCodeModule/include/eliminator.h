@@ -18,5 +18,6 @@ void title();
 void configuration();
 void game();
 void gameSpeed();
+void clearBufferEliminator();
 
 #endif

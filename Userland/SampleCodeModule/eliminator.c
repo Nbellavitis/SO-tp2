@@ -26,6 +26,13 @@ void startEliminator(){
         buffRead();
     }
 }
+
+void clearBufferEliminator(){
+    for(int i=0;i<BUFFER;i++){
+        buffer[i]=0;
+    }
+}
+
 void buffRead(){
     int i = 0;
     while (1) {
@@ -35,6 +42,7 @@ void buffRead(){
                 call_clear();
                 state++;
                 configuration();
+		        return;
             } else if (c == 'x' && state == TITLE) {
                 call_clear();
                 call_setFontSize(1);
@@ -109,6 +117,10 @@ void title(){
 void configuration(){
     call_moveCursorX((WIDTH/2)-(strlen("CONFIGURATION")/2) *8 * 2);
     print(RED,"CONFIGURATION\n");
+	call_moveCursorX((WIDTH/2)-(strlen("PLAYER 1 (RED) MOVES WITH A-W-S-D")/2) *8 * 2);
+	print(RED,"PLAYER 1 (RED) MOVES WITH A-W-S-D\n");
+	call_moveCursorX((WIDTH/2)-(strlen("PLAYER 2 (GREEN) MOVES WITH H-U-J-K")/2) *8 * 2);
+	print(RED,"PLAYER 2 (GREEN) MOVES WITH H-U-J-K\n");
     call_moveCursorX((WIDTH/2)-(strlen("PRESS [ENTER] TO START")/2) *8 * 2);
     print(RED,"PRESS [ENTER] TO START\n");
     while(state == CONFIGURATION){
@@ -119,7 +131,7 @@ void configuration(){
         }
     }
     game();
-    
+    return;
 }
 
 void gameSpeed(){
@@ -130,16 +142,15 @@ void gameSpeed(){
             if (c == '\n'){
                 putC(c,RED);
                 if (i == 0){
-                    clearBuffer();
+                    clearBufferEliminator();
                     return;
                 }
                 if((buffer[0] == '1' || buffer[0] == '2' || buffer[0] == '3' || buffer[0] == '4') && i == 1){
-                    speed = strToInt(buffer[0]);
-                    
+                    speed = strToInt(buffer);
                     state++;
                 }
                 buffer[i]=0;
-                clearBuffer();
+                clearBufferEliminator();
                 return;
             }else if (c == '\b'){
                 if (i > 0){
@@ -168,7 +179,7 @@ void game(){
     state = GAME;
     while(state == GAME){
         buffRead();
-        call_sleepms(speed);
+        call_sleepms(30/speed); //a mas velocidad mas rapido
         if(PositionMatrix[posYplay1/MOVE][posXplay1/MOVE]==1){
             points2++;
             state++;
@@ -241,6 +252,8 @@ void fillWithZeros(){
     }
 }
 void initializePositions(){
+	prevKey1='s';
+	prevKey2='u';
     posXplay1=WIDTH/2;
     posXplay2=WIDTH/2;
     posYplay1=0;
@@ -254,5 +267,6 @@ void midGame(){
     print(GREEN,"Player 2: %d\n", points2);
     call_moveCursorX((WIDTH/2)-(strlen("Do you want to continue? [Y/N]")/2) *8 * 2);
     print(RED,"Do you want to continue? [Y/N]\n");
+
     return;
 }
