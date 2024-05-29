@@ -57,13 +57,6 @@ void print(uint32_t hexColor,const char * str, ...){
                     putString(s,hexColor);
                     break;
                 }
-                case 'x':{
-                    int * d = va_arg(args,int*);
-                    char s[17];
-                    toHexa(d,s);
-                    putString(s,hexColor);
-                    break;
-                }
             }
         } else {
             putC(*str,hexColor);
