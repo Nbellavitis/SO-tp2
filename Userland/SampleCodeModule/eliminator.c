@@ -2,8 +2,9 @@
 #include "include/lib.h"
 #include "include/Buffer.h"
 #include "include/eliminator.h"
-#define MOVE 10
+#define MOVE 8
 void movePlayer1(int x,int y);
+void movePlayer2(int x,int y);
 void checkPrevKey1();
 void checkPrevKey2();
 int state,flag,posXplay1,posYplay1,k,l,posXplay2,posYplay2, points1,points2;
@@ -28,56 +29,60 @@ void startEliminator(){
 void buffRead(){
     int i = 0;
     while (1) {
+
         char c = getC();
-        if(c!=0){
-            if (c == '\n' && state == TITLE){
+
+            if (c == '\n' && state == TITLE) {
                 call_clear();
                 state++;
                 configuration();
-            }else if(c == 'x' && state == TITLE){
+            } else if (c == 'x' && state == TITLE) {
                 call_clear();
                 call_setFontSize(1);
-                flag=0;
-                return;
-            } else if(state == GAME){
-                if(c == 'w' && prevKey1 != 's'){
-                prevKey1=c;
-                movePlayer1(0,-MOVE);
-                return;
-            }else if(c == 's' && prevKey1 != 'w' ){
-                prevKey1=c;
-                movePlayer1(0,MOVE);
-                return;
-            }else if(c == 'd' &&  prevKey1 != 'a'){
-                prevKey1=c;
-                 movePlayer1(MOVE,0);
-                return;
-            } else if(c == 'a' &&  prevKey1 != 'd'){
-                prevKey1=c;
-                movePlayer1(-MOVE,0);
-                return;
-            }else  if(c == 'u' && prevKey2 != 'j'){
-                prevKey2=c;
-                movePlayer2(0,-MOVE);
-                return;
-            }else if(c == 'j' && prevKey2 != 'u' ){
-                prevKey2=c;
-                movePlayer2(0,MOVE);
-                return;
-            }else if(c == 'k' &&  prevKey2 != 'h'){
-                prevKey2=c;
-                 movePlayer2(MOVE,0);
-                return;
-            } else if(c == 'h' &&  prevKey2 != 'k'){
-                prevKey2=c;
-                movePlayer2(-MOVE,0);
+                flag = 0;
                 return;
             }
-    }}
-        if(state == GAME ){
-            checkPrevKey1();
-            checkPrevKey2();
-           }
+            if (state == GAME) {
+                if (c == 'w' && prevKey1 != 's') {
+                    prevKey1 = c;
+                    movePlayer1(0, -MOVE);
+
+                }
+                if (c == 's' && prevKey1 != 'w') {
+                    prevKey1 = c;
+                    movePlayer1(0, MOVE);
+
+                } else if (c == 'd' && prevKey1 != 'a') {
+                    prevKey1 = c;
+                    movePlayer1(MOVE, 0);
+
+                } else if (c == 'a' && prevKey1 != 'd') {
+                    prevKey1 = c;
+                    movePlayer1(-MOVE, 0);
+                } else {
+                    checkPrevKey1();
+                }
+                if (c == 'u' && prevKey2 != 'j') {
+                    prevKey2 = c;
+                    movePlayer2(0, -MOVE);
+
+                } else if (c == 'j' && prevKey2 != 'u') {
+                    prevKey2 = c;
+                    movePlayer2(0, MOVE);
+
+                } else if (c == 'k' && prevKey2 != 'h') {
+                    prevKey2 = c;
+                    movePlayer2(MOVE, 0);
+
+                } else if (c == 'h' && prevKey2 != 'k') {
+                    prevKey2 = c;
+                    movePlayer2(-MOVE, 0);
+
+                } else {
+                    checkPrevKey2();
+                }
+
+            }
     return;
 
 }}
@@ -105,8 +110,12 @@ void configuration(){
         }
     }
     game();
-    call_moveCursorX((width/2)-(strlen("CONFIGURATION")/2) *8 * 2);
-    print(RED,"CONFIGURATION\n");
+    call_moveCursorX((width/2)-(strlen("Points 1:")/2) *8 * 2);
+    call_moveCursorY(height/4);
+    print(RED,"Points 1: %d\n", points1);
+    call_moveCursorX((width/2)-(strlen("Points 2:")/2) *8 * 2);
+    print(GREEN,"Points 2: %d\n", points2);
+
 
 }
 
@@ -149,14 +158,15 @@ void game(){
     call_clear();
     call_drawRectangle(RED,0,0,height,width);
     call_drawRectangle(BLACK, MOVE, MOVE, height - (MOVE*2), width - (MOVE*2));
-    posXplay1=posXplay2=width/2;
+    posXplay1=width/2;
+    posXplay2=width/2;
     posYplay1=0;
     posYplay2=height-MOVE;
     points1=points2=0;
-    uint16_t PositionMatrix[width/MOVE][height/MOVE];
-    for(int i=0;i<width/MOVE;i++){
-        for(int j=0;j<height/MOVE;j++){
-            if(i==0 || i==width/MOVE-1 || j==0 || j==height/MOVE-1){
+    uint16_t PositionMatrix[height/MOVE][width/MOVE];
+    for(int i=0;i<height/MOVE;i++){
+        for(int j=0;j<width/MOVE;j++){
+            if(i==0 || i==height/MOVE-1 || j==0 || j==width/MOVE-1){
                 PositionMatrix[i][j]=1;
             }else
                 PositionMatrix[i][j]=0;
@@ -166,19 +176,22 @@ void game(){
     while(state == GAME){
         buffRead();
         call_sleepms(1);
-        if(PositionMatrix[posXplay1/MOVE][posYplay1/MOVE]==1){
+
+
+        if(PositionMatrix[posYplay1/MOVE][posXplay1/MOVE]==1){
             points2++;
             state++;
             return;
-        }else if(PositionMatrix[posXplay2/MOVE][posYplay2/MOVE]==1){
+        }else if(PositionMatrix[posYplay2/MOVE][posXplay2/MOVE]==1){
             points1++;
             state++;
             return;
         }
-        PositionMatrix[posXplay1/MOVE][posYplay1/MOVE]=1;
-        PositionMatrix[posXplay2/MOVE][posYplay2/MOVE]=1;
         call_drawRectangle(RED,posXplay1,posYplay1,MOVE,MOVE);
         call_drawRectangle(GREEN,posXplay2,posYplay2,MOVE,MOVE);
+        PositionMatrix[posYplay2/MOVE][posXplay2/MOVE ]=1;
+        PositionMatrix[posYplay1/MOVE][posXplay1/MOVE ]=1;
+
     }
 }
 
