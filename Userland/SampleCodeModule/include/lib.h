@@ -10,6 +10,7 @@ void putC(char c,uint32_t hexColor);
 void putInt(int num,uint32_t hexColor);
 void print(uint32_t hexColor,const char * format, ...);
 int strcmp(char * str1, char * str2);
+int strcmpSpace(char * str1, char * str2);
 int strlen(const char *str);
 void putString(char * s,uint32_t hexColor);
 int strToInt(char * s);
