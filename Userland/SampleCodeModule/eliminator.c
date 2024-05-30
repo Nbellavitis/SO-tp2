@@ -10,12 +10,16 @@ void fillWithZeros();
 void movePlayer2(int x,int y);
 void checkPrevKey1();
 void checkPrevKey2();
-int state,flag,posXplay1,posYplay1,posXplay2,posYplay2,points1,points2;
+int state,flag;
 char speed;
-char prevKey1='s';
-char prevKey2='u';
 static char buffer[BUFFER] = {0};
 static uint16_t PositionMatrix[HEIGHT/MOVE][WIDTH/MOVE];
+
+typedef struct {
+    int posX, posY, points;
+    char prevKey;
+}player;
+player player1, player2;
 
 void buffReadTitle(){
     while(1) {
@@ -40,7 +44,7 @@ void buffReadMidGame(){
         getC(&c);
         if(c == 'y'){
             state=GAME;
-            game();
+            game(1);
             return;
         }else if(c == 'n'){
             call_clear();
@@ -55,7 +59,9 @@ void buffReadMidGame(){
 }
 void startEliminator(){
     state=TITLE;
-    points1=points2=0;
+    player1.prevKey = 's';
+    player2.prevKey = 'u';
+    player1.points=player2.points=0;
     flag=1;
     call_clear();
     title();
@@ -76,40 +82,41 @@ void clearBufferEliminator(){
 }
 
 
-void buffRead(int len){
+void buffRead(int len, int players){
     char c;
     int i=len * 4000;
     while (i > 0) {
         getC(&c);
         if (state == GAME) {
-                if (c == 'w' && prevKey1 != 's') {
-                    prevKey1 = c;
-                 
-                }
-                else if (c == 's' && prevKey1 != 'w') {
-                    prevKey1 = c;
-                  
+            if (c == 'w' && player1.prevKey != 's') {
+                player1.prevKey = c;
 
-                } else if (c == 'd' && prevKey1 != 'a') {
-                    prevKey1 = c;
-                   
+            } else if (c == 's' && player1.prevKey != 'w') {
+                player1.prevKey = c;
 
-                } else if (c == 'a' && prevKey1 != 'd') {
-                    prevKey1 = c;
-                    
+
+            } else if (c == 'd' && player1.prevKey != 'a') {
+                player1.prevKey = c;
+
+
+            } else if (c == 'a' && player1.prevKey != 'd') {
+                player1.prevKey = c;
+
+            }
+            if (players == 2){
+                if (c == 'u' && player2.prevKey != 'j') {
+                    player2.prevKey = c;
+
+                } else if (c == 'j' && player2.prevKey != 'u') {
+                    player2.prevKey = c;
+
+                } else if (c == 'k' && player2.prevKey != 'h') {
+                    player2.prevKey = c;
+                } else if (c == 'h' && player2.prevKey != 'k') {
+                    player2.prevKey = c;
+
                 }
-                if (c == 'u' && prevKey2 != 'j') {
-                    prevKey2 = c;
-                    
-                } else if (c == 'j' && prevKey2 != 'u') {
-                    prevKey2 = c;
-                    
-                } else if (c == 'k' && prevKey2 != 'h') {
-                    prevKey2 = c;
-                } else if (c == 'h' && prevKey2 != 'k') {
-                    prevKey2 = c;
-                  
-                }
+            }
             }
             i--;
 }
@@ -141,7 +148,7 @@ void configuration(){
             print(RED,"INVALID SPEED\n");
         }
     }
-    game();
+    game(1);
     return;
 }
 
@@ -180,78 +187,85 @@ void gameSpeed(){
     }
 }
 
-void game(){
+int checkMat( player* playerA, player* playerB){
+    if(PositionMatrix[playerA->posY /MOVE][playerA->posX/MOVE]==1){
+        playerB->points++;
+        state++;
+        midGame();
+        return 1;
+    }
+    return 0;
+}
+void setMat(player playerA){
+    PositionMatrix[playerA.posY/MOVE][playerA.posX/MOVE]=1;
+}
+void initGame(){
     call_clear();
     call_drawRectangle(RED,0,0,HEIGHT,WIDTH);
     call_drawRectangle(BLACK, MOVE, MOVE, HEIGHT - (MOVE*2), WIDTH - (MOVE*2));
     fillWithZeros();
     initializePositions();
     state = GAME;
+}
+
+void game(int players){
+   initGame();
     while(state == GAME){
-        buffRead(120/(3+speed));
+        buffRead(120/(3+speed), players);
+        if(players == 1)
+            pcDirChange();
         checkPrevKey1();
         checkPrevKey2();
-       // call_sleepms(30/speed); //a mas velocidad mas rapido
-        if(PositionMatrix[posYplay1/MOVE][posXplay1/MOVE]==1){
-            points2++;
-            state++;
-            midGame();
+        if(checkMat(&player1, &player2)){
             return;
-        }else if(PositionMatrix[posYplay2/MOVE][posXplay2/MOVE]==1){
-            points1++;
-            state++;
-            midGame();
+        }else if(checkMat(&player2, &player1)){
             return;
         }
-        call_drawRectangle(RED,posXplay1,posYplay1,MOVE,MOVE);
-        call_drawRectangle(GREEN,posXplay2,posYplay2,MOVE,MOVE);
-        PositionMatrix[posYplay2/MOVE][posXplay2/MOVE]=1;
-        PositionMatrix[posYplay1/MOVE][posXplay1/MOVE]=1;
+        call_drawRectangle(RED,player1.posX,player1.posY,MOVE,MOVE);
+        call_drawRectangle(GREEN,player2.posX,player2.posY,MOVE,MOVE);
+        setMat(player2);
+        setMat(player1);
     }
 }
 
-void movePlayer1(int x,int y){
-    posYplay1+=y;
-    posXplay1+=x;
-}
-void movePlayer2(int x,int y){
-    posYplay2+=y;
-    posXplay2+=x;
+void movePlayer(int x,int y, player * playerA){
+    playerA->posY+=y;
+    playerA->posX+=x;
 }
 void checkPrevKey1(){
-            if(prevKey1 =='w'){
-                movePlayer1(0,-MOVE);
-                return;
-            }
-            else if(prevKey1 =='s'){
-               movePlayer1(0,MOVE);
-               return;
-            }
-            else if(prevKey1 =='d'){
-                 movePlayer1(MOVE,0);
-                 return;
-            }
-            else if(prevKey1 =='a'){
-                 movePlayer1(-MOVE,0);
-                 return;
-}}
+    switch (player1.prevKey) {
+        case 'w':
+            movePlayer(0,-MOVE, &player1);
+            return;
+        case 's':
+            movePlayer(0,MOVE, &player1);
+            return;
+        case 'd':
+            movePlayer(MOVE,0, &player1);
+            return;
+        case 'a':
+            movePlayer(-MOVE,0, &player1);
+            return;
+
+    }
+
+}
 void checkPrevKey2(){
-      if(prevKey2 =='u'){
-                movePlayer2(0,-MOVE);
-                return;
-            }
-            else if(prevKey2 =='j'){
-               movePlayer2(0,MOVE);
-               return;
-            }
-            else if(prevKey2 =='k'){
-                 movePlayer2(MOVE,0);
-                 return;
-            }
-            else if(prevKey2 =='h'){
-                 movePlayer2(-MOVE,0);
-                 return;
-            }
+    switch (player2.prevKey) {
+        case 'u':
+            movePlayer(0,-MOVE,&player2);
+            return;
+        case 'j':
+            movePlayer(0,MOVE, &player2);
+            return;
+        case 'k':
+            movePlayer(MOVE,0, &player2);
+            return;
+        case 'h':
+            movePlayer(-MOVE,0,&player2);
+            return;
+    }
+
 }
 void fillWithZeros(){
     for(int i=0;i<HEIGHT/MOVE;i++){
@@ -264,22 +278,63 @@ void fillWithZeros(){
     }
 }
 void initializePositions(){
-	prevKey1='s';
-	prevKey2='u';
-    posXplay1=WIDTH/2;
-    posXplay2=WIDTH/2;
-    posYplay1=0;
-    posYplay2=HEIGHT-MOVE;
+	player1.prevKey='s';
+	player2.prevKey='u';
+    player1.posX=WIDTH/2;
+    player2.posX=WIDTH/2;
+    player1.posY=0;
+    player2.posY=HEIGHT-MOVE;
 }
 void midGame(){
     call_beep();
     call_moveCursorX((WIDTH/2)-(strlen("Player 1:")/2) *8 * 2);
     call_moveCursorY(HEIGHT/4);
-    print(RED,"Player 1: %d\n", points1);
+    print(RED,"Player 1: %d\n", player1.points);
     call_moveCursorX((WIDTH/2)-(strlen("Player 2:")/2) *8 * 2);
-    print(GREEN,"Player 2: %d\n", points2);
+    print(GREEN,"Player 2: %d\n", player2.points);
     call_moveCursorX((WIDTH/2)-(strlen("Do you want to continue? [Y/N]")/2) *8 * 2);
     print(RED,"Do you want to continue? [Y/N]\n");
 
     return;
+}
+
+void pcDirChange(){
+    // Possible moves and corresponding keys
+    int possibleMoves[4][2] = {{0, -MOVE},  {MOVE, 0}, {0, MOVE}, {-MOVE, 0}};
+    char possibleKeys[4] = {'u','k','j', 'h'};
+
+    // Array to store valid moves
+    int validMoves[4] = {0, 0, 0, 0};
+    int validMoveCount = 0;
+
+    // Check each possible move for validity
+    for (int i = 0; i < 4; i++) {
+        if (possibleKeys[i] == 'u' && player2.prevKey != 'j' ||
+                possibleKeys[i] == 'j' && player2.prevKey != 'u' ||
+                possibleKeys[i] == 'k' && player2.prevKey != 'h' ||
+                possibleKeys[i] == 'h' && player2.prevKey != 'k'
+                ) {
+            int newX = player2.posX + possibleMoves[i][0];
+            int newY = player2.posY + possibleMoves[i][1];
+
+            // Check if the new position is within bounds and not colliding with Player 1
+            if (newX >= MOVE && newX < WIDTH - MOVE && newY >= MOVE && newY < HEIGHT - MOVE &&
+                PositionMatrix[newY / MOVE][newX / MOVE] == 0 &&
+                !(newX == player1.posX && newY == player1.posY)) {
+                validMoves[i] = 1;
+                validMoveCount++;
+            }
+        }
+    }
+
+    int i=0;
+    // If there are valid moves, randomly select one
+    if (validMoveCount > 0) {
+        int selectedMove;
+        do {
+            selectedMove = i++;
+        } while (validMoves[selectedMove] == 0 && i<4);
+
+        player2.prevKey = possibleKeys[selectedMove];
+    }
 }

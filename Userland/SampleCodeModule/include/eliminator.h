@@ -16,7 +16,7 @@ void startEliminator();
 void buffRead();
 void title();
 void configuration();
-void game();
+void game(int players);
 void gameSpeed();
 void clearBufferEliminator();
 
