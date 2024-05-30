@@ -65,38 +65,39 @@ const char *commands[] = {
 };
 
 void lineRead(char *buffer) {
-    if (strcmp(buffer, "help") == 0) {
+    strToUpper(buffer);
+    if (strcmp(buffer, "HELP") == 0) {
         putString("The following commands may be used: \n",WHITE);
         for (int i = 0; i < sizeof(commands) / sizeof(commands[0]); i++) {
             putString(commands[i],WHITE);
             putString("\n",WHITE);
         }
-    }else if (strcmp(buffer, "eliminator") == 0) {
+    }else if (strcmp(buffer, "ELIMINATOR") == 0) {
       startEliminator();
 
-    }else if (strcmp(buffer, "time") == 0) {
+    }else if (strcmp(buffer, "TIME") == 0) {
         char time[9];                               //Viene dada por el formato hh:mm:ss por eso son 8 mas la terminacion en cero
         call_timeClock(time);
         putString(time,WHITE);
         putString("\n",WHITE);
-    }else if (strcmpSpace(buffer, "setFont") == 0) {
+    }else if (strcmpSpace(buffer, "SETFONT") == 0) {
         call_clear();
         clearBuffer();
         reSize(buffer);
-    }else if (strcmp(buffer, "getRegisters") == 0) {
+    }else if (strcmp(buffer, "GETREGISTERS") == 0) {
         call_printRegisters(1);
-    }else if(strcmp(buffer,"clear")==0){
+    }else if(strcmp(buffer,"CLEAR")==0){
         call_clear();
         clearBuffer();
-    }else if(strcmp(buffer,"exit")==0){
+    }else if(strcmp(buffer,"EXIT")==0){
         exitFlag=1;
          call_clear();
         clearBuffer();
         return;
-    }else if(strcmp(buffer,"Div0")==0){
+    }else if(strcmp(buffer,"DIV0")==0){
         call_div0();
         return;
-    }else if(strcmp(buffer,"InvalidOp")==0){
+    }else if(strcmp(buffer,"INVALIDOP")==0){
         call_InvalidOp();
         return;
     }else{

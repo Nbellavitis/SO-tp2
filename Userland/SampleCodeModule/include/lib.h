@@ -14,4 +14,5 @@ int strlen(const char *str);
 void putString(char * s,uint32_t hexColor);
 int strToInt(char * s);
 int getBuffer(char * buf);
+void strToUpper(char *str);
 #endif //TPE_LIB_H

@@ -1,6 +1,8 @@
 #include "include/lib.h"
 #include "include/usrSysCall.h"
 #include <stdarg.h>
+#define TO_UPPER(c) (((c) >= 'a' && (c) <= 'z') ? ((c) - ('a' - 'A')) : (c))
+
 
 int getC(char * c){
     return call_sys_read(STDIN,c, 1);
@@ -112,4 +114,13 @@ int strToInt(char * str){
        rta += (str[i] - '0') * pow(10,n-i-1);
     }
     return rta;
+}
+
+
+// Function to convert a string to uppercase
+void strToUpper(char *str) {
+    while (*str) {
+        *str = TO_UPPER(*str);
+        str++;
+    }
 }
