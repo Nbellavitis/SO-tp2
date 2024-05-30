@@ -19,7 +19,8 @@ void movePlayer2(int x,int y);
 void checkPrevKey1();
 void checkPrevKey2();
 int state,flag;
-char speed;
+int flagConfig;
+char speed, players;
 static char buffer[BUFFER] = {0};
 static uint16_t PositionMatrix[HEIGHT/MOVE][WIDTH/MOVE];
 
@@ -52,7 +53,7 @@ void buffReadMidGame(){
         getC(&c);
         if(c == 'y'){
             state=GAME;
-            game(1);
+            game(players);
             return;
         }else if(c == 'n'){
             call_clear();
@@ -149,14 +150,23 @@ void configuration(){
 	print(RED,"PLAYER 2 (GREEN) MOVES WITH H-U-J-K\n");
     call_moveCursorX((WIDTH/2)-(strlen("PRESS [ENTER] TO START")/2) *8 * 2);
     print(RED,"PRESS [ENTER] TO START\n");
+	flagConfig = 0;
     while(state == CONFIGURATION){
-        print(RED,"GAME SPEED (1-4): ");
-        gameSpeed();
-        if(state == CONFIGURATION){
-            print(RED,"INVALID SPEED\n");
-        }
+		if(flagConfig == 0){
+        	print(RED,"GAME SPEED (1-4): ");
+        	gameSpeed();
+        	if(state == CONFIGURATION && flagConfig == 0){
+            	print(RED,"INVALID SPEED\n");
+        	}
+		}else{
+			print(RED,"PLAYERS (1-2): ");
+        	gameSpeed();
+        	if(state == CONFIGURATION){
+            	print(RED,"INVALID PLAYERS\n");
+        	}
+		}
     }
-    game(1);
+    game(players);
     return;
 }
 
@@ -172,11 +182,14 @@ void gameSpeed(){
                     clearBufferEliminator();
                     return;
                 }
-                if((buffer[0] == '1' || buffer[0] == '2' || buffer[0] == '3' || buffer[0] == '4') && i == 1){
+                if((buffer[0] == '1' || buffer[0] == '2' || buffer[0] == '3' || buffer[0] == '4') && i == 1 && flagConfig == 0){
                     speed = strToInt(buffer);
-                    state++;
-                }
-                buffer[i]=0;
+					flagConfig++;
+                }else if((buffer[0] == '1' || buffer[0] == '2') && i == 1 && flagConfig == 1){
+					players = strToInt(buffer);
+					state++;
+				}
+				buffer[i]=0;
                 clearBufferEliminator();
                 return;
             }else if (c == '\b'){
@@ -220,8 +233,9 @@ void game(int players){
    initGame();
     while(state == GAME){
         buffRead(120/(3+speed), players);
-        if(players == 1)
+        if(players == 1){
             pcDirChange();
+		}
         checkPrevKey1();
         checkPrevKey2();
         if(checkMat(&player1, &player2)){
