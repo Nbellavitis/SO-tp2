@@ -26,4 +26,5 @@ uint16_t call_getWidth();
 uint16_t call_getHeight();
 void call_moveCursorY(uint16_t posY);
 void call_moveCursorX(uint16_t posX);
+int call_getTicks();
 #endif /* USERSYSCALLS_H */

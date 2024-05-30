@@ -110,7 +110,7 @@ void lineRead(char *buffer) {
 }
 
 void reSize(char * buffer){
-    char * init = buffer + strlen("setFont ");
+    char * init = buffer + strlen("SETFONT ");
     call_setFontSize(strToInt(init));
 }
 

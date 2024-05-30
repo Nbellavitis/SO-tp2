@@ -178,7 +178,7 @@ void drawBuffer(uint32_t hexColor){
 }
 
 void setFontSize(uint32_t size){
-    if(size > 10 || size <=0){
+    if(size >5 || size <=0){
         return;
     }
     sizeX = size ;

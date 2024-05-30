@@ -3,6 +3,14 @@
 #include "include/Buffer.h"
 #include "include/eliminator.h"
 #define MOVE 8
+#define RAND_SEED_DEFAULT 42 // Default seed value
+static unsigned int g_seed = RAND_SEED_DEFAULT;
+
+// Function to initialize the random seed based on timer tick
+void srand(unsigned int seed) {
+    g_seed = seed + RAND_SEED_DEFAULT;
+}
+
 void movePlayer1(int x,int y);
 void initializePositions();
 void midGame();
@@ -310,10 +318,9 @@ void pcDirChange(){
     // Check each possible move for validity
     for (int i = 0; i < 4; i++) {
         if (possibleKeys[i] == 'u' && player2.prevKey != 'j' ||
-                possibleKeys[i] == 'j' && player2.prevKey != 'u' ||
-                possibleKeys[i] == 'k' && player2.prevKey != 'h' ||
-                possibleKeys[i] == 'h' && player2.prevKey != 'k'
-                ) {
+            possibleKeys[i] == 'j' && player2.prevKey != 'u' ||
+            possibleKeys[i] == 'k' && player2.prevKey != 'h' ||
+            possibleKeys[i] == 'h' && player2.prevKey != 'k') {
             int newX = player2.posX + possibleMoves[i][0];
             int newY = player2.posY + possibleMoves[i][1];
 
@@ -324,17 +331,36 @@ void pcDirChange(){
                 validMoves[i] = 1;
                 validMoveCount++;
             }
+        
         }
     }
-
-    int i=0;
+    int i =0;
     // If there are valid moves, randomly select one
     if (validMoveCount > 0) {
+        //srand(call_getTicks());
         int selectedMove;
+        if(validMoveCount == 4 ){
+            return;
+        }
+
         do {
+            //selectedMove = rand() % 4; // Randomly select a move
             selectedMove = i++;
-        } while (validMoves[selectedMove] == 0 && i<4);
+        } while (validMoves[selectedMove] == 0 && i <4); // Repeat until a valid move is found
 
         player2.prevKey = possibleKeys[selectedMove];
+    } else {
+        // If no valid moves are available, continue with the same movement direction
+        // This can be implemented by doing nothing in this case, as player2.prevKey is already set correctly
     }
 }
+
+
+int rand() {
+    const unsigned int a = 1664525;
+    const unsigned int c = 1013904223;
+    const unsigned int m = 4294967296; 
+    g_seed = (a * g_seed + c) % m;
+    return (int)g_seed;
+}
+
