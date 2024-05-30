@@ -5,6 +5,9 @@
 int getC(char * c){
     return call_sys_read(STDIN,c, 1);
 }
+int getBuffer(char * buf){
+    return call_sys_read(STDIN,buf, 100);
+}
 void putC(char c,uint32_t hexColor){
     call_sys_write( STDOUT,&c, 1,hexColor);
 }

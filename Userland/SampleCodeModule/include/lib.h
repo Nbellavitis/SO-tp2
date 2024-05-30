@@ -13,4 +13,5 @@ int strcmp(char * str1, char * str2);
 int strlen(const char *str);
 void putString(char * s,uint32_t hexColor);
 int strToInt(char * s);
+int getBuffer(char * buf);
 #endif //TPE_LIB_H

@@ -78,35 +78,40 @@ void clearBufferEliminator(){
 
 void buffRead(){
     char c;
-    while (getC(&c)) {
-
+    int i=90000;
+    while (i > 0) {
             if (state == GAME) {
                 if (c == 'w' && prevKey1 != 's') {
                     prevKey1 = c;
+                 
                 }
                 else if (c == 's' && prevKey1 != 'w') {
                     prevKey1 = c;
+                  
 
                 } else if (c == 'd' && prevKey1 != 'a') {
                     prevKey1 = c;
+                   
 
                 } else if (c == 'a' && prevKey1 != 'd') {
                     prevKey1 = c;
-
+                    
                 }
                 if (c == 'u' && prevKey2 != 'j') {
                     prevKey2 = c;
-
+                    
                 } else if (c == 'j' && prevKey2 != 'u') {
                     prevKey2 = c;
-
+                    
                 } else if (c == 'k' && prevKey2 != 'h') {
                     prevKey2 = c;
-
                 } else if (c == 'h' && prevKey2 != 'k') {
                     prevKey2 = c;
+                  
                 }
             }
+            i--;
+            getC(&c);
 }
 }
 
@@ -181,15 +186,12 @@ void game(){
     call_drawRectangle(BLACK, MOVE, MOVE, HEIGHT - (MOVE*2), WIDTH - (MOVE*2));
     fillWithZeros();
     initializePositions();
-    print(0xFFFFFFFF,"%d",speed);
     state = GAME;
-    char c;
-    while(getC(&c));
     while(state == GAME){
         buffRead();
         checkPrevKey1();
         checkPrevKey2();
-        call_sleepms(30/speed); //a mas velocidad mas rapido
+       // call_sleepms(30/speed); //a mas velocidad mas rapido
         if(PositionMatrix[posYplay1/MOVE][posXplay1/MOVE]==1){
             points2++;
             state++;
