@@ -76,11 +76,12 @@ void clearBufferEliminator(){
 }
 
 
-void buffRead(){
+void buffRead(int len){
     char c;
-    int i=90000;
+    int i=len * 4000;
     while (i > 0) {
-            if (state == GAME) {
+        getC(&c);
+        if (state == GAME) {
                 if (c == 'w' && prevKey1 != 's') {
                     prevKey1 = c;
                  
@@ -111,7 +112,6 @@ void buffRead(){
                 }
             }
             i--;
-            getC(&c);
 }
 }
 
@@ -188,7 +188,7 @@ void game(){
     initializePositions();
     state = GAME;
     while(state == GAME){
-        buffRead();
+        buffRead(120/(3+speed));
         checkPrevKey1();
         checkPrevKey2();
        // call_sleepms(30/speed); //a mas velocidad mas rapido
