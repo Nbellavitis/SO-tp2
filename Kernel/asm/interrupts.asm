@@ -19,6 +19,7 @@ GLOBAL _exception6Handler
 GLOBAL getRegisters
 GLOBAL printRegistersAsm
 GLOBAL getFlag
+GLOBAL saveRegisters
 
 EXTERN irqDispatcher
 EXTERN exceptionDispatcher
@@ -31,7 +32,7 @@ SECTION .text
 
 %macro saveRegistersState 0
 	push rax
-	mov rax,[rsp + 128]
+	mov rax,[rsp + 8]
 	mov [registers],rax
 	pop rax
 	mov [registers+8],rax
@@ -50,7 +51,7 @@ SECTION .text
 	mov [registers+112],r13
 	mov [registers+120],r14
 	mov [registers+128],r15
-	
+
 %endmacro
 
 %macro pushState 0
@@ -103,41 +104,36 @@ SECTION .text
 	iretq
 %endmacro
 
-getRegisters:
+saveRegisters:
 	mov byte[flag],1
 	saveRegistersState
 	ret
 
-printRegistersAsm:
-	mov rsi,rdi
-	mov rdi,registers
-	call printRegisters
-	mov byte[flag],0
-	ret
+
+getRegisters:
+    mov rax, registers
+    ret
 
 getFlag:
 	movzx rax, byte[flag]
 	ret
 
 %macro exceptionHandler 1
-	pushState
+	;pushState
 	;Guardo el estado del registros
 	saveRegistersState
-	mov rdi,registers
-	mov rsi,0x00FF0000
-	call printRegisters
+
 	;llamo a funcion en c que imprime los registros
 	mov rdi, %1 ; pasaje de parametro
 	call exceptionDispatcher
-	call clear
-	popState
+	;popState
 
 	call getStackBase
-	sub rax, 20h
-	mov qword [rsp+8*3], rax
-	call retUserland
-	mov qword [rsp], rax
-	iretq
+	mov [rsp+24], rax
+    mov rax, userland
+    mov [rsp], rax
+
+   	iretq
 %endmacro
 
 
@@ -198,15 +194,17 @@ _irq05Handler:
 
 
 _irq80Handler:
+
  	push rbx
 	push r12
 	push r13
 	push r14
 	push r15
-	push rbp
+    push rbp
+    mov rbp,rsp
 
-	mov rbp, rsp
 	push r9
+
     mov r9, r8
     mov r8, rcx
     mov rcx, rdx
@@ -218,33 +216,30 @@ _irq80Handler:
 
     pop r9
     mov rsp, rbp
-	pop rbp
+    pop rbp
 	pop r15
 	pop r14
 	pop r13
 	pop r12
 	pop rbx
+
     iretq
 
 
 ;Zero Division Exception
 _exception0Handler:
 	exceptionHandler 0
-    jmp _halt
 
 _exception6Handler:
 	exceptionHandler 6
-    jmp _halt
-
-_halt:
-    cli
-    halt
-    ret
 
 
 
-	SECTION .bss
-    	aux resq 1
-		registers resq 17
-		flag resq 1
+SECTION .data
+userland equ 0x400000
+
+SECTION .bss
+   	aux resq 1
+	registers resq 20
+	flag resq 1
 

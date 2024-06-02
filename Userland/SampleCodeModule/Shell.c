@@ -61,43 +61,42 @@ const char *commands[] = {
     "clear: empty the terminal",
     "exit: kills the terminal",
     "Div0: test the exception of the cero division",
-    "InvalidOp: test the exception of an invalid operand"
+    "invalidOp: test the exception of an invalid operand"
 };
 
 void lineRead(char *buffer) {
-    strToUpper(buffer);
-    if (strcmp(buffer, "HELP") == 0) {
+    if (strcmp(buffer, "help") == 0) {
         putString("The following commands may be used: \n",WHITE);
         for (int i = 0; i < sizeof(commands) / sizeof(commands[0]); i++) {
             putString(commands[i],WHITE);
             putString("\n",WHITE);
         }
-    }else if (strcmp(buffer, "ELIMINATOR") == 0) {
+    }else if (strcmp(buffer, "eliminator") == 0) {
       startEliminator();
 
-    }else if (strcmp(buffer, "TIME") == 0) {
+    }else if (strcmp(buffer, "time") == 0) {
         char time[9];                               //Viene dada por el formato hh:mm:ss por eso son 8 mas la terminacion en cero
         call_timeClock(time);
         putString(time,WHITE);
         putString("\n",WHITE);
-    }else if (strcmpSpace(buffer, "SETFONT") == 0) {
+    }else if (strcmpSpace(buffer, "setFont") == 0) {
         call_clear();
         clearBuffer();
         reSize(buffer);
-    }else if (strcmp(buffer, "GETREGISTERS") == 0) {
+    }else if (strcmp(buffer, "getRegisters") == 0) {
         call_printRegisters(1);
-    }else if(strcmp(buffer,"CLEAR")==0){
+    }else if(strcmp(buffer,"clear")==0){
         call_clear();
         clearBuffer();
-    }else if(strcmp(buffer,"EXIT")==0){
+    }else if(strcmp(buffer,"exit")==0){
         exitFlag=1;
          call_clear();
         clearBuffer();
         return;
-    }else if(strcmp(buffer,"DIV0")==0){
+    }else if(strcmp(buffer,"Div0")==0){
         call_div0();
         return;
-    }else if(strcmp(buffer,"INVALIDOP")==0){
+    }else if(strcmp(buffer,"invalidOp")==0){
         call_InvalidOp();
         return;
     }else{
@@ -110,7 +109,7 @@ void lineRead(char *buffer) {
 }
 
 void reSize(char * buffer){
-    char * init = buffer + strlen("SETFONT ");
+    char * init = buffer + strlen("setFont ");
     call_setFontSize(strToInt(init));
 }
 

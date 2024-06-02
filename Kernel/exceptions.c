@@ -14,15 +14,18 @@ void exceptionDispatcher(int exception) {
 	}else{
 		invalid_opcode();
 		}
+    printRegisters(getRegisters(), 0x00ff0000);
     drawWord(0x00ff0000,"Press any key to continue");
     while(1) {
         char c;
         _hlt();
         sys_read(STDIN, &c, 1); // no se si esta bien usarlo asi
         if (c != 0) {
+            clear();
             return;
         }
     }
+
 }
 
 static void zero_division() {

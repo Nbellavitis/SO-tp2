@@ -10,6 +10,8 @@
 
 #include <idtLoader.h>
 
+#include <stdint.h>
+
 void _irq00Handler(void);
 void _irq01Handler(void);
 void _irq02Handler(void);
@@ -21,7 +23,8 @@ void _irq80Handler(void);
 void _exception0Handler(void);
 void _exception6Handler(void);
 void _cli(void);
-void getRegisters();
+void saveRegisters();
+ uint64_t * getRegisters();
 short getFlag();
 void printRegistersAsm(uint32_t colour);
 
