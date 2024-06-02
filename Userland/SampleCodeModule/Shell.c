@@ -13,7 +13,7 @@ int registerFlag = 0;
 void startingLine(){
     char * startingLine = "$>";
     putString(startingLine,WHITE);
-    clearBuffer();
+    clearBuffer(buffer);
 }
 
 void bufferControl(){
@@ -26,12 +26,12 @@ void bufferControl(){
         if (c == '\n'){
             putC(c,WHITE);
             if (i == 0){
-                clearBuffer();
+                clearBuffer(buffer);
                 return;
             }
             buffer[i]=0;
             lineRead(buffer,WHITE);
-            clearBuffer();         //para limpiarlo ahora q lineRead no lo uso
+            clearBuffer(buffer);         //para limpiarlo ahora q lineRead no lo uso
             return;
 
         }else if (c == '\b'){
@@ -81,17 +81,17 @@ void lineRead(char *buffer) {
         putString("\n",WHITE);
     }else if (strcmpSpace(buffer, "setFont") == 0) {
         call_clear();
-        clearBuffer();
+        clearBuffer(buffer);
         reSize(buffer);
     }else if (strcmp(buffer, "getRegisters") == 0) {
         call_printRegisters(1);
     }else if(strcmp(buffer,"clear")==0){
         call_clear();
-        clearBuffer();
+        clearBuffer(buffer);
     }else if(strcmp(buffer,"exit")==0){
         exitFlag=1;
          call_clear();
-        clearBuffer();
+        clearBuffer(buffer);
         return;
     }else if(strcmp(buffer,"Div0")==0){
         call_div0();
@@ -117,7 +117,7 @@ void reSize(char * buffer){
 int shellInit() {
     char * start = "Welcome to shell.\n";
     putString(start,WHITE);
-    clearBuffer();
+    clearBuffer(buffer);
     while(!exitFlag){
         startingLine();
         bufferControl();
