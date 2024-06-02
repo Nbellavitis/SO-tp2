@@ -112,6 +112,8 @@ saveRegisters:
 
 getRegisters:
     mov rax, registers
+    mov byte[flag],0
+
     ret
 
 getFlag:

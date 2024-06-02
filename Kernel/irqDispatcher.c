@@ -47,7 +47,7 @@ static void int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint6
             return;
         case 4:
             if(getFlag() || rsi == 1){
-                printRegisters(getRegisters(), 0x00ff0000);
+                printRegisters(getRegisters(), 0x00ffffff);
             }
             //la idea faltaria que se prenda al pedir registros
             return;
