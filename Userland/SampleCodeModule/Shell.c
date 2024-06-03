@@ -60,7 +60,7 @@ void bufferControl(){
 const char *commands[] = {
     "eliminator: Game similar to tron(the movie)",
     "time: shows the actual time",
-    "setFont: change the font size, receive an int from 1 to 5",
+    "setFont: change the font size, receive an int from 1 to 3",
     "getRegisters: show the actual state of the registers",
     "clear: empty the terminal",
     "exit: kills the terminal",
@@ -85,8 +85,8 @@ void lineRead(char *buffer) {
         putString("\n",WHITE);
     }else if (strcmpSpace(buffer, "setFont") == 0) {
         call_clear();
-        clearBuffer(buffer);
         reSize(buffer);
+        clearBuffer(buffer);
     }else if (strcmp(buffer, "getRegisters") == 0) {
         call_printRegisters(1);
     }else if(strcmp(buffer,"clear")==0){
@@ -114,6 +114,7 @@ void lineRead(char *buffer) {
 
 void reSize(char * buffer){
     char * init = buffer + strlen("setFont ");
+    print(WHITE, "%s", init);
     call_setFontSize(strToInt(init));
 }
 
