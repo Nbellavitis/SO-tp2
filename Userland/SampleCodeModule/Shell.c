@@ -8,7 +8,11 @@
 static char buffer[BUFFER_SIZE] = {0};
 int exitFlag =0;
 int registerFlag = 0;
-//void lineRead(char * buffer);
+
+void lineRead(char * buffer);
+void call_InvalidOp();
+void reSize(char * buffer);
+void call_div0();
 
 void startingLine(){
     char * startingLine = "$>";
@@ -30,7 +34,7 @@ void bufferControl(){
                 return;
             }
             buffer[i]=0;
-            lineRead(buffer,WHITE);
+            lineRead(buffer);
             clearBuffer(buffer);         //para limpiarlo ahora q lineRead no lo uso
             return;
 

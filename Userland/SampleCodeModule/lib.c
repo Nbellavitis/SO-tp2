@@ -32,7 +32,7 @@ void putInt(int num,uint32_t hexColor){
             divisor /= 10;
         }
 }
-void putString(char * s,uint32_t hexColor){
+void putString(const char * s,uint32_t hexColor){
     call_sys_write( STDOUT,s, strlen(s),hexColor);
 }
 

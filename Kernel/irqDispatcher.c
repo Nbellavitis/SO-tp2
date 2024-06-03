@@ -12,7 +12,7 @@
 #include "include/registerHandling.h"
 static void int_20();
 static void int_21();
-static void int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
+static int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
 void irqDispatcher(uint64_t irq,uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
 	switch (irq) {
 		case 0:
@@ -34,54 +34,55 @@ void int_20() {
 void int_21() {
 	keyboard_handler();
 }
-static void int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
+static int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
     switch(rdi) {
         case 1:
             sys_write(rsi, (char *)rdx, rcx,r8);
-            return;
+            return 0;
         case 2:
-            sys_read(rsi,(char *) rdx, rcx);
-            return;
+            return sys_read(rsi,(char *) rdx, rcx);
         case 3:
             clock((char *) rsi);
-            return;
+            return 0;
         case 4:
             if(getFlag() || rsi == 1){
                 printRegisters(getRegisters(), 0x00ffffff);
             }
             //la idea faltaria que se prenda al pedir registros
-            return;
+            return 0;
         case 5:
             clear();
-            return;
+            return 0;
         case 6:
             printTitle();
-            return;
+            return 0;
         case 7:
            return (getHeight());
         case 8:
            return (getWidth());
         case 9:
             moveCursorX((uint16_t)rsi);
-            return; 
+            return 0;
         case 10:
             moveCursorY((uint16_t)rsi);
-            return;
+            return 0;
         case 11:
             drawRectangle(rsi, rdx, rcx, r8, r9);
-            return;
+            return 0;
         case 12:
             sleepms(rsi);
-            return;
+            return 0;
         case 13:
             setFontSize(rsi);
-            return;
+            return 0;
         case 14:
             beep();
+            return 0;
         case 15:
-            ticks_elapsed();
+            return ticks_elapsed();
+
         default:
-            return;
+            return 0;
     }
 }
 

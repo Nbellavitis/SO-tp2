@@ -12,7 +12,7 @@ void print(uint32_t hexColor,const char * format, ...);
 int strcmp(char * str1, char * str2);
 int strcmpSpace(char * str1, char * str2);
 int strlen(const char *str);
-void putString(char * s,uint32_t hexColor);
+void putString(const char * s,uint32_t hexColor);
 int strToInt(char * s);
 int getBuffer(char * buf);
 void strToUpper(char *str);

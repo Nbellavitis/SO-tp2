@@ -9,7 +9,7 @@
 #include <stdio.h>
 #define MIN(x,y) x < y ? x : y
 
-void sys_write(int descriptor, char * str, int len,uint32_t hexColor){
+void sys_write(int descriptor, const char * str, int len,uint32_t hexColor){
     switch(descriptor){
         case STDOUT:
             drawWordLen(hexColor, str, len);

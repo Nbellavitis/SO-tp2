@@ -8,7 +8,7 @@
 #define STDERR 2
 
 int call_sys_read(int fd,char *buf, int size);
-void call_sys_write(int fd,char *buf, int size,uint32_t hexColor);
+void call_sys_write(int fd,const char *buf, int size,uint32_t hexColor);
 void call_timeClock(char *buf);
 void call_printRegisters(int flag);
 void call_drawRectangle(uint64_t color, uint32_t x, uint32_t y, uint32_t height, uint32_t width);

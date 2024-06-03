@@ -5,6 +5,7 @@
 #define MOVE 8
 #define RAND_SEED_DEFAULT 42 // Default seed value
 static unsigned int g_seed = RAND_SEED_DEFAULT;
+void pcDirChange();
 
 // Function to initialize the random seed based on timer tick
 void srand(unsigned int seed) {
@@ -331,10 +332,10 @@ void pcDirChange(){
 
     // Check each possible move for validity
     for (int i = 0; i < 4; i++) {
-        if (possibleKeys[i] == 'u' && player2.prevKey != 'j' ||
-            possibleKeys[i] == 'j' && player2.prevKey != 'u' ||
-            possibleKeys[i] == 'k' && player2.prevKey != 'h' ||
-            possibleKeys[i] == 'h' && player2.prevKey != 'k') {
+        if ((possibleKeys[i] == 'u' && player2.prevKey != 'j') ||
+                (possibleKeys[i] == 'j' && player2.prevKey != 'u') ||
+                (possibleKeys[i] == 'k' && player2.prevKey != 'h') ||
+                (possibleKeys[i] == 'h' && player2.prevKey != 'k')) {
             int newX = player2.posX + possibleMoves[i][0];
             int newY = player2.posY + possibleMoves[i][1];
 
@@ -373,7 +374,7 @@ void pcDirChange(){
 int rand() {
     const unsigned int a = 1664525;
     const unsigned int c = 1013904223;
-    const unsigned int m = 4294967296; 
+    const unsigned long long  int m = 4294967296;
     g_seed = (a * g_seed + c) % m;
     return (int)g_seed;
 }

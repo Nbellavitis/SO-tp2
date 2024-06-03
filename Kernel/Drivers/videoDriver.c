@@ -5,6 +5,7 @@
 #include <lib.h>
 #include "../include/keyboardBuffer.h"
 #include "include/scanCode.h"
+#include "../include/lib.h"
 struct vbe_mode_info_structure {
 	uint16_t attributes;		// deprecated, only bit 7 should be of interest to you, and it indicates the mode supports a linear frame buffer.
 	uint8_t window_a;			// deprecated
@@ -158,12 +159,12 @@ void drawChar(uint32_t hexColor, char character){
 	}
     cursorX += sizeX*8;
 }
-void drawWord(uint32_t hexColor,char * str){
+void drawWord(uint32_t hexColor,const char * str){
 	for(int i=0;str[i]!='\0';i++){
 		drawChar(hexColor,str[i]);
 	}
 }
-void drawWordLen(uint32_t hexColor,char * str, int len){
+void drawWordLen(uint32_t hexColor,const char * str, int len){
     for(int i=0;i<len;i++){
         drawChar(hexColor,str[i]);
     }
@@ -213,7 +214,7 @@ void moveCursorX(uint16_t posX){
 void moveCursorY(uint16_t posY){
 	cursorY=posY;
 }
-void drawWordAt(uint32_t hexColor,char * str,uint32_t posX,uint32_t posY){
+void drawWordAt(uint32_t hexColor,const char * str,uint32_t posX,uint32_t posY){
 	cursorX=posX;
 	cursorY=posY;
 	drawWord(hexColor,str);
