@@ -114,7 +114,6 @@ void lineRead(char *buffer) {
 
 void reSize(char * buffer){
     char * init = buffer + strlen("setFont ");
-    print(WHITE, "%s", init);
     call_setFontSize(strToInt(init));
 }
 
