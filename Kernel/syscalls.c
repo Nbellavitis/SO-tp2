@@ -1,6 +1,3 @@
-//
-// Created by nicol on 5/22/2024.
-//
 #include "Drivers/include/videoDriver.h"
 #include "include/syscalls.h"
 #include "include/keyboardBuffer.h"
