@@ -135,7 +135,7 @@ void drawChar(uint32_t hexColor, char character){
 				return;
 			}else{
 				cursorY-=sizeY*8;
-				cursorX=sizeX*64*8;
+				cursorX=(uint16_t) VBE_mode_info->width;
 			}
 		}
 		cursorX-=sizeX*8;
