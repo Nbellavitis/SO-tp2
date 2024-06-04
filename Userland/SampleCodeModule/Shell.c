@@ -16,7 +16,7 @@ void call_div0();
 
 void startingLine(){
     char * startingLine = "$>";
-    putString(startingLine,WHITE);
+    putString(startingLine,GREEN);
     clearBuffer(buffer);
 }
 
@@ -58,14 +58,14 @@ void bufferControl(){
 
 // Define an array to store command strings
 const char *commands[] = {
-    "eliminator: Game similar to tron(the movie)",
-    "time: shows the actual time",
-    "setFont: change the font size, receive an int from 1 to 3",
-    "getRegisters: show the actual state of the registers",
-    "clear: empty the terminal",
-    "exit: kills the terminal",
-    "Div0: test the exception of the cero division",
-    "invalidOp: test the exception of an invalid operand"
+    "eliminator:   Game similar to tron(the movie).",
+    "time:         Shows the actual time.",
+    "setFont:      Change the font size, receive an int from 1 to 2.",
+    "getRegisters: Show the actual state of the registers.",
+    "clear:        Empty the terminal.",
+    "exit:         Kills the terminal.",
+    "Div0:         Test the exception of the cero division.",
+    "invalidOp:    Test the exception of an invalid operand."
 };
 
 void lineRead(char *buffer) {
@@ -119,8 +119,8 @@ void reSize(char * buffer){
 
 
 int shellInit() {
-    char * start = "Welcome to shell.\n";
-    putString(start,WHITE);
+    char * start = "Welcome to Jungle OS, type help to get a list of commands.\n";
+    putString(start,GREEN);
     clearBuffer(buffer);
     while(!exitFlag){
         startingLine();

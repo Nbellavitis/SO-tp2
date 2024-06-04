@@ -46,6 +46,10 @@ static int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64
             return 0;
         case 4:
             if(getFlag() || rsi == 1){
+                if(getFlag()==0){
+                    drawWord(0x00FF0000,"You must take a screenshot first, press : and try again.\n");
+                    return 0;
+                }
                 printRegisters(getRegisters(), 0x00ffffff);
             }
             //la idea faltaria que se prenda al pedir registros
