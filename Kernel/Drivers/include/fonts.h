@@ -104,4 +104,4 @@ const char font[] = {
 };
 
 
-#endif /* FONT_H_ */
+#endif /* FONT_H */

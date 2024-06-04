@@ -11,7 +11,7 @@ int registerFlag = 0;
 
 void lineRead(char * buffer);
 void call_InvalidOp();
-void reSize(char * buffer);
+char reSize(char * buffer);
 void call_div0();
 
 void startingLine(){
@@ -83,8 +83,11 @@ void lineRead(char *buffer) {
         putString(time,WHITE);
         putString("\n",WHITE);
     }else if (strcmpSpace(buffer, "setFont") == 0) {
-        call_clear();
-        reSize(buffer);
+        if(reSize(buffer)){
+            call_clear();
+        } else{
+            putString("Enter a valid size (1 or 2) \n",RED);
+        }
         clearBuffer(buffer);
     }else if (strcmp(buffer, "getRegisters") == 0) {
         call_printRegisters(1);
@@ -93,7 +96,7 @@ void lineRead(char *buffer) {
         clearBuffer(buffer);
     }else if(strcmp(buffer,"exit")==0){
         exitFlag=1;
-         call_clear();
+        call_clear();
         clearBuffer(buffer);
         return;
     }else if(strcmp(buffer,"div0")==0){
@@ -111,9 +114,13 @@ void lineRead(char *buffer) {
  
 }
 
-void reSize(char * buffer){
+char reSize(char * buffer){
+    if(! strcmp(buffer, "setFont"))
+        return 0;
     char * init = buffer + strlen("setFont ");
-    call_setFontSize(strToInt(init));
+    if(! strlen(init))
+        return 0;
+    return (char) call_setFontSize(strToInt(init));
 }
 
 

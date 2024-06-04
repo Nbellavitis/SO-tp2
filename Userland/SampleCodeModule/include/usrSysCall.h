@@ -16,7 +16,7 @@ int call_getBufferPosition();
 int call_getCharAt(int pos);
 void call_put_square(uint32_t x, uint32_t y, uint32_t size, uint64_t hexColor);
 void call_sleepms(int mseconds);
-void call_setFontSize(uint32_t size);
+int call_setFontSize(uint32_t size);
 void call_drawWordColorAt(uint64_t hexColor, char* word, uint32_t x, uint32_t y);
 void call_characterAt(uint64_t hexColor, char c, uint32_t x, uint32_t y);
 void call_beep();

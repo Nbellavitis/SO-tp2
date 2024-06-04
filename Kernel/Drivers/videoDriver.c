@@ -182,12 +182,13 @@ void drawBuffer(uint32_t hexColor){
 	}
 }
 
-void setFontSize(uint32_t size){
+char setFontSize(uint32_t size){
     if(size > 2 || size <=0){
-        return;
+        return 0;
     }
     sizeX = size ;
     sizeY = size * 2 ;
+    return 1;
 }
 void clear_bg(uint64_t hexColor){
     for (int x = 0; x < VBE_mode_info->width; x++){

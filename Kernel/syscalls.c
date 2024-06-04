@@ -16,7 +16,8 @@ void sys_write(int descriptor, const char * str, int len,uint32_t hexColor){
             return;
         case ERROUT:
             drawWordLen(0x00ff0000, str, len);
-        default: // poner error aca
+        default:
+            drawWord(0x00ff0000, "no such descriptor");
         return;
     }
 
@@ -25,7 +26,7 @@ void sys_write(int descriptor, const char * str, int len,uint32_t hexColor){
 int sys_read(int descriptor, char * save, int len){
     
     if(descriptor != STDIN){
-        // ERROR
+        drawWord(0x00ff0000, "no such descriptor");
     }
    
     int n=getBufferPosition();
