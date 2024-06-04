@@ -15,13 +15,10 @@ void keyboard_handler()
       keyMapRow=1;
     }
     else if(keyMap[keyMapRow][code]!=0){
-        if(keyMap[keyMapRow][code] == ':'){
-          saveRegisters();
-        }else{
           buff[buff_pos]=keyMap[keyMapRow][code];
           incBufferLen(1);
           setPos(buff_pos);
-        } 
+
     }
 	} else {               // Key released
     code-=0x80;

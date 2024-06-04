@@ -176,6 +176,15 @@ _irq00Handler:
 
 ;Keyboard
 _irq01Handler:
+    mov rax, 0
+    in al, 60h
+    cmp al,27h
+    jne handle
+    call saveRegisters
+    mov al, 20h
+    out 20h, al
+    iretq
+handle:
 	irqHandlerMaster 1
 
 ;Cascade pic never called
