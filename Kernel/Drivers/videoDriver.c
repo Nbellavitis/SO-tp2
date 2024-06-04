@@ -106,6 +106,9 @@ void drawSquare(uint32_t hexColor, uint32_t side_length, uint32_t x, uint32_t y)
 	drawRectangle(hexColor, x, y, side_length, side_length);
 }
 void drawChar(uint32_t hexColor, char character){
+    if(character == '\t')
+        return;
+
 	if(cursorX >=  (uint16_t) VBE_mode_info->width){
 		cursorY+=sizeY*8;
 		cursorX=0;
@@ -139,6 +142,7 @@ void drawChar(uint32_t hexColor, char character){
 		drawRectangle(0x00000000,cursorX,cursorY,sizeY*8,sizeX*8);
 		return;
 	}
+
 	
 	for(int i=0; i< 32;i++){
 		if (i % 2 == 0 && i != 0) {

@@ -26,7 +26,7 @@ void bufferControl(){
         char c;
          getC(&c);
           
-        if(c!=0){
+        if(c!=0 && c != '\t'){
         if (c == '\n'){
             putC(c,WHITE);
             if (i == 0){
@@ -53,7 +53,6 @@ void bufferControl(){
     }
 
     }
-    return;
 }
 
 // Define an array to store command strings
