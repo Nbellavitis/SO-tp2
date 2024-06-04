@@ -7,7 +7,6 @@
     static char keyMapRow = 0;
 void keyboard_handler()
 {
-
 	uint16_t code = getKey();
 	if(code < 0x80){    // Key pressed
     char * buff = getBufferAddress();  

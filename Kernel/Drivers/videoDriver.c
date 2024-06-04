@@ -174,13 +174,6 @@ void drawWordLen(uint32_t hexColor,const char * str, int len){
     }
 }
 
-void drawBuffer(uint32_t hexColor){
-	int aux = getBufferLen();
-	char * buff = getBufferAddress();
-	for(int i=0;i<aux;i++){
-		drawChar(hexColor,buff[i]);
-	}
-}
 
 char setFontSize(uint32_t size){
     if(size > 2 || size <=0){
