@@ -10,5 +10,4 @@
 
 //Starts the game
 void startEliminator();
-
 #endif

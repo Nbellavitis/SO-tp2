@@ -9,6 +9,7 @@
 #define CONFIGURATION 1
 #define GAME 2
 #define MIDGAME 3
+
 void initializePositions();
 void title();
 void configuration();
@@ -22,20 +23,22 @@ void checkPrevKey2();
 void buffReadTitle();
 void buffReadMidGame();
 void clearBufferEliminator();
-void movePlayer(int x,int y, player * playerA);
 void pcDirChange();
 void buffRead(int len, int players);
+
 int state,flag;
 int flagConfig;
 char speed, players;
 static char buffer[BUFFER] = {0};
 static uint16_t PositionMatrix[HEIGHT/MOVE][WIDTH/MOVE];
-static unsigned int g_seed = RAND_SEED_DEFAULT;
 
 typedef struct {
     int posX, posY, points;
     char prevKey;
 }player;
+
+void movePlayer(int x,int y, player * playerA);
+
 player player1, player2;
 
 
@@ -91,8 +94,6 @@ void startEliminator(){
             buffReadTitle();
         if(state == MIDGAME)
             buffReadMidGame();
-        if(state == GAME)
-            buffRead();
     }
 }
 
