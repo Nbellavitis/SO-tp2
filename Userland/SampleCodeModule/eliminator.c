@@ -4,26 +4,33 @@
 #include "include/eliminator.h"
 #define MOVE 8
 #define RAND_SEED_DEFAULT 42 // Default seed value
-static unsigned int g_seed = RAND_SEED_DEFAULT;
-void pcDirChange();
-
-// Function to initialize the random seed based on timer tick
-void srand(unsigned int seed) {
-    g_seed = seed + RAND_SEED_DEFAULT;
-}
-
-void movePlayer1(int x,int y);
+#define BUFFER 10
+#define TITLE 0  //Flags to know in which state the game is
+#define CONFIGURATION 1
+#define GAME 2
+#define MIDGAME 3
 void initializePositions();
+void title();
+void configuration();
+void game(int players);
 void midGame();
+void gameSpeed();
 void fillWithZeros();
-void movePlayer2(int x,int y);
 void checkPrevKey1();
+void initGame();
 void checkPrevKey2();
+void buffReadTitle();
+void buffReadMidGame();
+void clearBufferEliminator();
+void movePlayer(int x,int y, player * playerA);
+void pcDirChange();
+void buffRead(int len, int players);
 int state,flag;
 int flagConfig;
 char speed, players;
 static char buffer[BUFFER] = {0};
 static uint16_t PositionMatrix[HEIGHT/MOVE][WIDTH/MOVE];
+static unsigned int g_seed = RAND_SEED_DEFAULT;
 
 typedef struct {
     int posX, posY, points;
@@ -31,6 +38,8 @@ typedef struct {
 }player;
 player player1, player2;
 
+
+//Reads the buffer int the state TITLE
 void buffReadTitle(){
     while(1) {
         char c;
@@ -48,6 +57,8 @@ void buffReadTitle(){
         }
     }
 }
+
+//Reads the buffer int the state MIDGAME
 void buffReadMidGame(){
     while(1) {
         char c;
@@ -64,9 +75,9 @@ void buffReadMidGame(){
             return;
         }
     }
-
-
 }
+
+//Starts the game in the TITLE state
 void startEliminator(){
     state=TITLE;
     player1.prevKey = 's';
@@ -85,13 +96,14 @@ void startEliminator(){
     }
 }
 
+//Clears the buffer
 void clearBufferEliminator(){
     for(int i=0;i<BUFFER;i++){
         buffer[i]=0;
     }
 }
 
-
+//Reads the buffer
 void buffRead(int len, int players){
     char c;
     int i=len * 4000;
@@ -127,11 +139,12 @@ void buffRead(int len, int players){
 
                 }
             }
-            }
-            i--;
-}
+        }
+        i--;
+    }
 }
 
+//Prints the title
 void title(){
     call_setFontSize(2);
     call_moveCursorX((WIDTH/2)-(strlen("ELIMINATOR")/2) *8 * 2);
@@ -142,35 +155,38 @@ void title(){
     call_moveCursorX((WIDTH/2)-(strlen("PRESS [X] TO EXIT")/2) *8 * 2);
     print(RED,"PRESS [X] TO EXIT\n");
 }
+
+//Prints the configuration and starts the game
 void configuration(){
     call_moveCursorX((WIDTH/2)-(strlen("CONFIGURATION")/2) *8 * 2);
     print(RED,"CONFIGURATION\n");
-	call_moveCursorX((WIDTH/2)-(strlen("PLAYER 1 (RED) MOVES WITH A-W-S-D")/2) *8 * 2);
-	print(RED,"PLAYER 1 (RED) MOVES WITH A-W-S-D\n");
-	call_moveCursorX((WIDTH/2)-(strlen("PLAYER 2 (GREEN) MOVES WITH H-U-J-K")/2) *8 * 2);
-	print(RED,"PLAYER 2 (GREEN) MOVES WITH H-U-J-K\n");
+    call_moveCursorX((WIDTH/2)-(strlen("PLAYER 1 (RED) MOVES WITH A-W-S-D")/2) *8 * 2);
+    print(RED,"PLAYER 1 (RED) MOVES WITH A-W-S-D\n");
+    call_moveCursorX((WIDTH/2)-(strlen("PLAYER 2 (GREEN) MOVES WITH H-U-J-K")/2) *8 * 2);
+    print(RED,"PLAYER 2 (GREEN) MOVES WITH H-U-J-K\n");
     call_moveCursorX((WIDTH/2)-(strlen("PRESS [ENTER] TO START")/2) *8 * 2);
     print(RED,"PRESS [ENTER] TO START\n");
-	flagConfig = 0;
+    flagConfig = 0;
     while(state == CONFIGURATION){
-		if(flagConfig == 0){
-        	print(RED,"GAME SPEED (1-4): ");
-        	gameSpeed();
-        	if(state == CONFIGURATION && flagConfig == 0){
-            	print(RED,"INVALID SPEED\n");
-        	}
-		}else{
-			print(RED,"PLAYERS (1-2): ");
-        	gameSpeed();
-        	if(state == CONFIGURATION){
-            	print(RED,"INVALID PLAYERS\n");
-        	}
-		}
+        if(flagConfig == 0){
+            print(RED,"GAME SPEED (1-4): ");
+            gameSpeed();
+            if(state == CONFIGURATION && flagConfig == 0){
+                print(RED,"INVALID SPEED\n");
+            }
+        }else{
+            print(RED,"PLAYERS (1-2): ");
+            gameSpeed();
+            if(state == CONFIGURATION){
+                print(RED,"INVALID PLAYERS\n");
+            }
+        }
     }
     game(players);
     return;
 }
 
+//Reads the buffer to check the game speed
 void gameSpeed(){
     int i = 0;
     char c;
@@ -185,12 +201,12 @@ void gameSpeed(){
                 }
                 if((buffer[0] == '1' || buffer[0] == '2' || buffer[0] == '3' || buffer[0] == '4') && i == 1 && flagConfig == 0){
                     speed = strToInt(buffer);
-					flagConfig++;
+                    flagConfig++;
                 }else if((buffer[0] == '1' || buffer[0] == '2') && i == 1 && flagConfig == 1){
-					players = strToInt(buffer);
-					state++;
-				}
-				buffer[i]=0;
+                    players = strToInt(buffer);
+                    state++;
+                }
+                buffer[i]=0;
                 clearBufferEliminator();
                 return;
             }else if (c == '\b'){
@@ -209,6 +225,7 @@ void gameSpeed(){
     }
 }
 
+//Checks if the player has won
 int checkMat( player* playerA, player* playerB){
     if(PositionMatrix[playerA->posY /MOVE][playerA->posX/MOVE]==1){
         playerB->points++;
@@ -218,9 +235,13 @@ int checkMat( player* playerA, player* playerB){
     }
     return 0;
 }
+
+//Sets the matrix with the player position
 void setMat(player playerA){
     PositionMatrix[playerA.posY/MOVE][playerA.posX/MOVE]=1;
 }
+
+//Initializes the game
 void initGame(){
     call_clear();
     call_drawRectangle(RED,0,0,HEIGHT,WIDTH);
@@ -230,13 +251,14 @@ void initGame(){
     state = GAME;
 }
 
+//Starts the game
 void game(int players){
-   initGame();
+    initGame();
     while(state == GAME){
         buffRead(120/(3+speed), players);
         if(players == 1){
             pcDirChange();
-		}
+        }
         checkPrevKey1();
         checkPrevKey2();
         if(checkMat(&player1, &player2)){
@@ -251,10 +273,13 @@ void game(int players){
     }
 }
 
+//Moves the player
 void movePlayer(int x,int y, player * playerA){
     playerA->posY+=y;
     playerA->posX+=x;
 }
+
+//Checks the previous key of the player
 void checkPrevKey1(){
     switch (player1.prevKey) {
         case 'w':
@@ -269,10 +294,10 @@ void checkPrevKey1(){
         case 'a':
             movePlayer(-MOVE,0, &player1);
             return;
-
     }
-
 }
+
+//Checks the previous key of the player
 void checkPrevKey2(){
     switch (player2.prevKey) {
         case 'u':
@@ -290,6 +315,8 @@ void checkPrevKey2(){
     }
 
 }
+
+//Fills the matrix with zeros
 void fillWithZeros(){
     for(int i=0;i<HEIGHT/MOVE;i++){
         for(int j=0;j<WIDTH/MOVE;j++){
@@ -300,14 +327,19 @@ void fillWithZeros(){
         }
     }
 }
+
+//Initializes the positions of the players
 void initializePositions(){
-	player1.prevKey='s';
-	player2.prevKey='u';
+    player1.prevKey='s';
+    player2.prevKey='u';
     player1.posX=WIDTH/2;
     player2.posX=WIDTH/2;
     player1.posY=0;
     player2.posY=HEIGHT-MOVE;
 }
+
+
+//Prints the midgame
 void midGame(){
     call_beep();
     call_moveCursorX((WIDTH/2)-(strlen("Player 1:")/2) *8 * 2);
@@ -321,6 +353,8 @@ void midGame(){
     return;
 }
 
+
+//Changes the direction of the PC (BOT)
 void pcDirChange(){
     // Possible moves and corresponding keys
     int possibleMoves[4][2] = {{0, -MOVE},  {MOVE, 0}, {0, MOVE}, {-MOVE, 0}};
@@ -333,9 +367,9 @@ void pcDirChange(){
     // Check each possible move for validity
     for (int i = 0; i < 4; i++) {
         if ((possibleKeys[i] == 'u' && player2.prevKey != 'j') ||
-                (possibleKeys[i] == 'j' && player2.prevKey != 'u') ||
-                (possibleKeys[i] == 'k' && player2.prevKey != 'h') ||
-                (possibleKeys[i] == 'h' && player2.prevKey != 'k')) {
+            (possibleKeys[i] == 'j' && player2.prevKey != 'u') ||
+            (possibleKeys[i] == 'k' && player2.prevKey != 'h') ||
+            (possibleKeys[i] == 'h' && player2.prevKey != 'k')) {
             int newX = player2.posX + possibleMoves[i][0];
             int newY = player2.posY + possibleMoves[i][1];
 
@@ -346,11 +380,10 @@ void pcDirChange(){
                 validMoves[i] = 1;
                 validMoveCount++;
             }
-        
+
         }
     }
     int i =0;
-    // If there are valid moves, randomly select one
     if (validMoveCount > 0) {
         int selectedMove;
         if(validMoveCount == 4 ){
@@ -358,23 +391,8 @@ void pcDirChange(){
         }
 
         do {
-            //selectedMove = rand() % 4; // Randomly select a move
             selectedMove = i++;
-        } while (validMoves[selectedMove] == 0 && i <4); // Repeat until a valid move is found
-
+        } while (validMoves[selectedMove] == 0 && i <4);
         player2.prevKey = possibleKeys[selectedMove];
-    } else {
-        // If no valid moves are available, continue with the same movement direction
-        // This can be implemented by doing nothing in this case, as player2.prevKey is already set correctly
     }
 }
-
-
-int rand() {
-    const unsigned int a = 1664525;
-    const unsigned int c = 1013904223;
-    const unsigned long long  int m = 4294967296;
-    g_seed = (a * g_seed + c) % m;
-    return (int)g_seed;
-}
-
