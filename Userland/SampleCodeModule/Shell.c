@@ -63,7 +63,7 @@ const char *commands[] = {
     "getRegisters: Show the actual state of the registers.",
     "clear:        Empty the terminal.",
     "exit:         Kills the terminal.",
-    "Div0:         Test the exception of the cero division.",
+    "div0:         Test the exception of the cero division.",
     "invalidOp:    Test the exception of an invalid operand."
 };
 
@@ -96,7 +96,7 @@ void lineRead(char *buffer) {
          call_clear();
         clearBuffer(buffer);
         return;
-    }else if(strcmp(buffer,"Div0")==0){
+    }else if(strcmp(buffer,"div0")==0){
         call_div0();
         return;
     }else if(strcmp(buffer,"invalidOp")==0){
