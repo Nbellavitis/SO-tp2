@@ -48,21 +48,3 @@ void twoChars(char * first,int j, char * app){
         first[j+i] = app[i];
     }
 }
-
-void sys_readTime(char * time){
-    char hours[3];
-    char minutes[3];
-    char seconds[3];
-    twoChars(time,0,hours);
-    time[2] = ':';
-    twoChars(time,3,minutes);
-    time[5] = ':';
-    twoChars(time,6,seconds);
-    
-}
-
-
-
-void printTitle(){
-    drawWordAt(0X00FF0000,"ELIMINATOR",getWidth()/2-5*8,getHeight()/2);
-}

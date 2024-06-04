@@ -44,7 +44,7 @@ void moveCursorX(uint16_t posX);
 // sets cursorY at the position received
 void moveCursorY(uint16_t posY);
 
-//draws Registers starting at the current cursor position
+//draws a register with its format and jumps to a newline
 void drawRegister(int reg,uint32_t colour);
 
 #endif
