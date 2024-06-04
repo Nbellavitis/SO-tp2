@@ -20,9 +20,8 @@ void print(uint32_t hexColor, const char * format, ...);
 // Returns 0 if the strings are equal, a positive integer if the first string is greater, or a negative integer if the second string is greater.
 int strcmp(char * str1, char * str2);
 
-// Compares two strings until a space is found.
-// Returns 0 if the strings are equal, a positive integer if the first string is greater, or a negative integer if the second string is greater.
-int strcmpSpace(char * str1, char * str2);
+//copy str on an auxiliar char * until first space 
+char * cutString(char * str);
 
 // Returns the length of the string passed as the argument.
 int strlen(const char *str);

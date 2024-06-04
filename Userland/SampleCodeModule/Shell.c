@@ -82,7 +82,7 @@ void lineRead(char *buffer) {
         call_timeClock(time);
         putString(time,WHITE);
         putString("\n",WHITE);
-    }else if (strcmpSpace(buffer, "setFont") == 0) {
+    }else if (strcmp(cutString(buffer),"setFont") == 0) {
         if(reSize(buffer)){
             call_clear();
         } else{
@@ -115,8 +115,6 @@ void lineRead(char *buffer) {
 }
 
 char reSize(char * buffer){
-    if(! strcmp(buffer, "setFont"))
-        return 0;
     char * init = buffer + strlen("setFont ");
     if(! strlen(init))
         return 0;
