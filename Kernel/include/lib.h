@@ -9,6 +9,7 @@ void * memcpy(void * destination, const void * source, uint64_t length);
 
 char *cpuVendor(char *result);
 
+//freezes for the amount of ms indicated
 void sleepms(int ms);
 
 #endif
