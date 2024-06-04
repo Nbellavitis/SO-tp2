@@ -387,7 +387,7 @@ void pcDirChange(){
     int i =0;
     if (validMoveCount > 0) {
         int selectedMove;
-        if(validMoveCount == 4 ){
+        if(validMoveCount == 3 ){
             return;
         }
 
