@@ -5,7 +5,6 @@ GLOBAL call_setFontSize
 GLOBAL call_printRegisters
 GLOBAL call_clear
 GLOBAL InvalidOpasm
-GLOBAL call_printTitle
 GLOBAL call_getHeight
 GLOBAL call_getWidth
 GLOBAL call_moveCursorX
@@ -43,7 +42,7 @@ call_printRegisters:
     call_to_handler 4
 call_clear:
     call_to_handler 5
-call_printTitle:
+call_getTicks:
     call_to_handler 6
 call_getHeight:
     call_to_handler 7
@@ -61,8 +60,7 @@ call_setFontSize:
     call_to_handler 13
 call_beep:
     call_to_handler 14
-call_getTicks:
-    call_to_handler 15
+
 
 InvalidOpasm:
     mov rax, 0x12345678

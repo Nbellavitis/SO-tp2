@@ -29,9 +29,9 @@ uint16_t getHeight();
 
 void drawWordAt(uint32_t hexColor,const char * str,uint32_t posX,uint32_t posY);
 
-void moveCursorY(uint16_t posY);
-
 void moveCursorX(uint16_t posX);
+
+void moveCursorY(uint16_t posY);
 
 void drawRegister(int reg,uint32_t colour);
 

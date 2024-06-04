@@ -4,7 +4,6 @@
 #include "Drivers/include/videoDriver.h"
 #include "Drivers/include/SoundDriver.h"
 #include "include/libasm.h"
-#include "include/lib.h"
 #include <syscalls.h>
 #include <naiveConsole.h>
 #include "include/interrupts.h"
@@ -58,8 +57,7 @@ static int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64
             clear();
             return 0;
         case 6:
-            printTitle();
-            return 0;
+            return ticks_elapsed();
         case 7:
            return (getHeight());
         case 8:
@@ -82,8 +80,6 @@ static int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64
         case 14:
             beep();
             return 0;
-        case 15:
-            return ticks_elapsed();
 
         default:
             return 0;
