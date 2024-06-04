@@ -352,7 +352,6 @@ void pcDirChange(){
     int i =0;
     // If there are valid moves, randomly select one
     if (validMoveCount > 0) {
-        //srand(call_getTicks());
         int selectedMove;
         if(validMoveCount == 4 ){
             return;
