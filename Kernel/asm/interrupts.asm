@@ -31,35 +31,53 @@ SECTION .text
 
 
 %macro saveRegistersState 0
-	push rax
-	mov rax,[rsp + 8]
-	mov [registers],rax
-	pop rax
-	mov [registers+8],rax
-	mov [registers+16],rbx
-	mov [registers+24],rcx
-	mov [registers+32],rdx
-	mov [registers+40],rsi
-	mov [registers+48],rdi
-	mov [registers+56],rbp
-	mov [registers+64],rsp
-	mov [registers+72],r8
-	mov [registers+80],r9
-	mov [registers+88],r10
-	mov [registers+96],r11
-	mov [registers+104],r12
-	mov [registers+112],r13
-	mov [registers+120],r14
-	mov [registers+128],r15
+    mov rax, [rsp]
+	mov [registers],rax ;r15
+	mov rax , [rsp + 8]
+	mov [registers+8], rax ;r14
+	mov rax, [rsp+16]
+	mov [registers+16],rax ;r13
+	mov rax, [rsp+24]
+	mov [registers+24],rax ;r12
+	mov rax, [rsp+32]
+	mov [registers+32],rax ;r11
+	mov rax, [rsp + 40]
+	mov [registers+40],rax ;r10
+	mov rax, [rsp + 48]
+	mov [registers+48],rax ;r9
+	mov rax, [rsp + 56]
+	mov [registers+56],rax ;r8
+	mov rax, [rsp + 64]
+	mov [registers+64],rax ; rsi
+	mov rax, [rsp + 72]
+	mov [registers+72],rax ;rdi
+	mov rax, [rsp + 80]
+	mov [registers+80],rax ;rdx
+	mov rax, [rsp + 88]
+	mov [registers+88],rax ;rcx
+	mov rax, [rsp + 96]
+	mov [registers+ 96],rax;rbx
+	mov rax, [rsp + 104]
+	mov [registers+ 104],rax ;rax
+	mov rax, [rsp + 112]
+	mov [registers+112],rax ;rbp
+
+	mov rax, [rsp + 120]
+	mov [registers+120],rax ;rip
+	mov rax, [rsp + 128]
+	mov [registers+128],rax ;rsp
+
+	mov rax, [rsp + 152]
+	mov [registers + 136], rax ; rflags
 
 %endmacro
 
 %macro pushState 0
+    push rbp
 	push rax
 	push rbx
 	push rcx
 	push rdx
-	push rbp
 	push rdi
 	push rsi
 	push r8
@@ -83,11 +101,11 @@ SECTION .text
 	pop r8
 	pop rsi
 	pop rdi
-	pop rbp
 	pop rdx
 	pop rcx
 	pop rbx
 	pop rax
+	pop rbp
 %endmacro
 
 %macro irqHandlerMaster 1
@@ -104,11 +122,6 @@ SECTION .text
 	iretq
 %endmacro
 
-saveRegisters:
-	mov byte[flag],1
-	saveRegistersState
-	ret
-
 
 getRegisters:
     mov rax, registers
@@ -121,14 +134,18 @@ getFlag:
 	ret
 
 %macro exceptionHandler 1
-	;pushState
+    push rsp
+    push qword[rsp + 8]
+	pushState
 	;Guardo el estado del registros
-	saveRegistersState
+    saveRegistersState
+    mov byte[flag],0
 
 	;llamo a funcion en c que imprime los registros
 	mov rdi, %1 ; pasaje de parametro
 	call exceptionDispatcher
-	;popState
+	popState
+	add rsp, 16
 
 	call getStackBase
 	mov [rsp+24], rax
@@ -176,15 +193,23 @@ _irq00Handler:
 
 ;Keyboard
 _irq01Handler:
+    push rsp
+    push qword[rsp + 8]
+    pushState
     mov rax, 0
     in al, 60h
     cmp al,27h
     jne handle
-    call saveRegisters
+    saveRegistersState
+    mov byte[flag],1
     mov al, 20h
     out 20h, al
+    popState
+    add rsp, 16
     iretq
 handle:
+    popState
+    add rsp, 16
 	irqHandlerMaster 1
 
 ;Cascade pic never called
