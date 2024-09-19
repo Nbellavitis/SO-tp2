@@ -92,6 +92,8 @@ int main()
 	load_idt();
     ((EntryPoint)sampleCodeModuleAddress)();
 
-    while(1);
+    while(1){
+		// Busy-wait loop
+	}
 	return 0;
 }

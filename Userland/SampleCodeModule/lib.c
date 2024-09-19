@@ -48,12 +48,12 @@ void print(uint32_t hexColor,const char * str, ...){
 
             switch(*str){
                 case 'c': {
-                    char c = va_arg(args, char*);
+                    char c = va_arg(args, int);
                     putC(c,hexColor);
                     break;
                 }
                 case 'd': {
-                    int d = va_arg(args, int*);
+                    int d = va_arg(args, int);
                     putInt(d,hexColor);
                     break;
                 }
@@ -88,16 +88,14 @@ int strcmp( char *str1,  char *str2) {
     }
     return *(unsigned char *)str1 - *(unsigned char *)str2;
 }
-char * cutString(char * str) {
-    char  aux[strlen(str)];
-    for(int i=0;str[i]!='\0';i++){
-        if(str[i]==' '){
-            aux[i]='\0';
-            return aux;
+char * cutString(char *str) {
+    for (int i = 0; str[i] != '\0'; i++) {
+        if (str[i] == ' ') {
+            str[i] = '\0';  // Reemplazar el espacio con el terminador nulo
+            return str;
         }
-        aux[i]=str[i];
     }
-    return aux;
+    return str;
 }
 
 int pow(int base, int pow){

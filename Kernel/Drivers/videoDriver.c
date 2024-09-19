@@ -82,7 +82,8 @@ void moveUpwards(){
 
 
 void putPixel(uint32_t hexColor, uint32_t x, uint32_t y) {
-    uint8_t * framebuffer = (uint8_t *) VBE_mode_info->framebuffer;
+   uintptr_t framebuffer_address = VBE_mode_info->framebuffer;
+	uint8_t *framebuffer = (uint8_t *)framebuffer_address;
     uint64_t offset = (x * ((VBE_mode_info->bpp)/8)) + (y * VBE_mode_info->pitch);
     framebuffer[offset]     =  (hexColor) & 0xFF;
     framebuffer[offset+1]   =  (hexColor >> 8) & 0xFF; 
@@ -106,8 +107,9 @@ void drawSquare(uint32_t hexColor, uint32_t side_length, uint32_t x, uint32_t y)
 	drawRectangle(hexColor, x, y, side_length, side_length);
 }
 void drawChar(uint32_t hexColor, char character){
-    if(character == '\t')
+    if ( character == '\t'){
         return;
+	}
 
 	if(cursorX >=  (uint16_t) VBE_mode_info->width){
 		cursorY+=sizeY*8;
