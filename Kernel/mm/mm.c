@@ -8,16 +8,16 @@
 
 enum {FREE,USED, START_BOUNDARY,END_BOUNDARY};
 
-typedef struct MemoryManagerCDT {
+typedef struct MemoryManager {
    void * start;
    uint32_t blockQty;
    uint32_t blocksUsed;
    uint8_t *bitmap;
    uint32_t current;
-}MemoryManagerCDT;
+}MemoryManager;
 
 static void initializeBitmap();
-MemoryManagerCDT memoryManager;
+MemoryManager memoryManager;
 void mmInit ( void * baseAddress ,uint64_t memorySize)  {
     size_t totalNeeded = memorySize;
     memoryManager.start = baseAddress;
