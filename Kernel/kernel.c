@@ -7,6 +7,7 @@
 #include "Drivers/include/keyboardDriver.h"
 #include "Drivers/include/videoDriver.h"
 #include "mm/mm.h"
+#include "tests/test_util.h"
 extern uint8_t text;
 extern uint8_t rodata;
 extern uint8_t data;
@@ -20,7 +21,6 @@ static void * const sampleCodeModuleAddress = (void*)0x400000;
 static void * const sampleDataModuleAddress = (void*)0x500000;
 static void *const heapAddress  = (void *)0x600000;
 typedef int (*EntryPoint)();
-
 
 void clearBSS(void * bssAddress, uint64_t bssSize)
 {
@@ -93,8 +93,11 @@ int main()
 {
 	load_idt();
     ((EntryPoint)sampleCodeModuleAddress)();
-	mmInit(heapAddress, 0x2700000);
-    while(1){
+	mmInit(heapAddress, 0x2700000); 
+	char *argv[]={"40794064"}; 
+	test_mm(1,argv);
+	
+	 while(1){
 		// Busy-wait loop
 	}
 	return 0;

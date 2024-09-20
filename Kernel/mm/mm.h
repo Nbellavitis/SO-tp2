@@ -7,4 +7,6 @@
 
 typedef struct MemoryManagerCDT * MemoryManagerADT;
 void mmInit ( void * baseAddress ,uint64_t memorySize) ;
+void freeMemory(void * memory);
+void * allocMemory(size_t size);
 #endif

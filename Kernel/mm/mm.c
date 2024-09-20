@@ -1,5 +1,6 @@
 #include "mm.h"
 #include <stdint.h>
+#include "../Drivers/include/videoDriver.h"
 #define START_HEAP 0x600000
 
 
@@ -62,7 +63,7 @@ static uintptr_t findFreeBlocks( size_t blocksNeeded, int start, int end){
         if(memoryManager.bitmap[i] == FREE){
             freeBlocks++;
             if(freeBlocks == blocksNeeded){
-                return (uintptr_t)(memoryManager.start + (i-blocksNeeded) * BLOCK_SIZE);
+                return (uintptr_t)(memoryManager.start + (i-blocksNeeded+1) * BLOCK_SIZE);
             }
         }else{
             freeBlocks = 0;
@@ -90,16 +91,23 @@ void * allocMemory(size_t size){
         return markGroupAsUsed(memoryManager.lastFreed.blocks, memoryManager.lastFreed.index);
     }
     uintptr_t initialBlockAddress = findFreeBlocks( blocksNeeded, memoryManager.current, memoryManager.blockQty);
+    
     if(initialBlockAddress == -1){
+     
         initialBlockAddress = findFreeBlocks( blocksNeeded, 0, memoryManager.current + blocksNeeded);
+        
     }
     if(initialBlockAddress == -1){
+        
         return NULL;
     }
     memoryManager.current = (initialBlockAddress) / BLOCK_SIZE + blocksNeeded;
     if(blocksNeeded == 1){
+    
         memoryManager.blocksUsed++;
+       
         memoryManager.bitmap[(initialBlockAddress - (uintptr_t) memoryManager.start) / BLOCK_SIZE] = SINGLE_BLOCK;
+       
         return (void *) initialBlockAddress;
     }
     return markGroupAsUsed(blocksNeeded, (initialBlockAddress - (uintptr_t) memoryManager.start) / BLOCK_SIZE);
