@@ -106,7 +106,7 @@ void * allocMemory(size_t size){
 }
 
 void freeMemory(void * memory){
-    if(memory == NULL || memory % BLOCK_SIZE != 0){
+    if(memory == NULL || (uintptr_t) memory % BLOCK_SIZE != 0){
         return;
     }
     uintptr_t blockAddress = (uintptr_t) memory;
