@@ -6,7 +6,7 @@
 #include <idtLoader.h>
 #include "Drivers/include/keyboardDriver.h"
 #include "Drivers/include/videoDriver.h"
-
+#include "mm/mm.h"
 extern uint8_t text;
 extern uint8_t rodata;
 extern uint8_t data;
@@ -18,7 +18,7 @@ static const uint64_t PageSize = 0x1000;
 
 static void * const sampleCodeModuleAddress = (void*)0x400000;
 static void * const sampleDataModuleAddress = (void*)0x500000;
-
+static void *const heapAddress  = (void *)0x600000;
 typedef int (*EntryPoint)();
 
 
@@ -84,6 +84,8 @@ void * initializeKernelBinary()
 	ncPrint("[Done]");
 	ncNewline();
 	ncNewline();
+
+	
 	return getStackBase();
 }
 
@@ -91,7 +93,7 @@ int main()
 {
 	load_idt();
     ((EntryPoint)sampleCodeModuleAddress)();
-
+	mmInit(heapAddress, 0x2700000);
     while(1){
 		// Busy-wait loop
 	}
