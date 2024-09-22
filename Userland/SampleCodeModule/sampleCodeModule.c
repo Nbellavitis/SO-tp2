@@ -5,6 +5,6 @@
 int main() {
 	  
 	//All the following code may be removed 
-   // shellInit();
+    shellInit();
     return  0;
 }

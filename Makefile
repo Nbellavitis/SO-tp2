@@ -1,5 +1,4 @@
-
-all:  bootloader kernel userland image
+all: bootloader kernel userland image
 
 bootloader:
 	cd Bootloader; make all
@@ -10,14 +9,28 @@ kernel:
 userland:
 	cd Userland; make all
 
-
 image: kernel bootloader userland
 	cd Image; make all
+
+# Compilar los archivos .c de Kernel/tests, Kernel/mm y externApp solamente cuando se llame a externAppBuild
+externAppBuild: externAppExecutable cleanObjects
+
+externAppExecutable:
+	
+	rm -f $(wildcard Kernel/tests/*.o) $(wildcard Kernel/mm/*.o) $(wildcard externApp/*.o)
+
+	$(CC) -o externAppExecutable $(wildcard Kernel/mm/*.c) $(wildcard externApp/*.c) $(CFLAGS) $(LDFLAGS)
+
+
+# Limpiar solo los archivos objeto relacionados con externApp
+cleanObjects:
+	rm -f $(wildcard Kernel/tests/*.o) $(wildcard Kernel/mm/*.o) $(wildcard externApp/*.o)
 
 clean:
 	cd Bootloader; make clean
 	cd Image; make clean
 	cd Kernel; make clean
 	cd Userland; make clean
+	rm -f externAppExecutable
 
-.PHONY: bootloader image collections kernel userland all clean
+.PHONY: bootloader image collections kernel userland externAppBuild all clean

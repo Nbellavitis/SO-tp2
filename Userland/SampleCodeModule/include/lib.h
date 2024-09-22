@@ -1,7 +1,7 @@
 #ifndef TPE_LIB_H
 #define TPE_LIB_H
 #include <stdint.h>
-
+#include <stddef.h>
 // Reads a character from input and saves it in the pointer c. 
 // Returns the number of characters saved.
 int getC(char * c);

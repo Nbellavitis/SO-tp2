@@ -24,7 +24,7 @@ static void initializeBitmap();
 static size_t sizeToBlockQty(size_t size);
 
 mm memoryManager;
-void mmInit ( void * baseAddress ,uint64_t memorySize)  {
+int mmInit ( void * baseAddress ,uint64_t memorySize)  {
     size_t totalNeeded = memorySize;
     memoryManager.start = baseAddress;
     memoryManager.blockQty = totalNeeded / BLOCK_SIZE;
@@ -38,7 +38,7 @@ void mmInit ( void * baseAddress ,uint64_t memorySize)  {
     }
     totalNeeded += bitMapSize * BLOCK_SIZE;
     if(totalNeeded > HEAP_SIZE){
-        return;
+        return -1;
     }
 
     memoryManager.bitmap = baseAddress;
@@ -47,6 +47,7 @@ void mmInit ( void * baseAddress ,uint64_t memorySize)  {
     memoryManager.current = 0;
 
     initializeBitmap();
+    return 0;
 }
 static size_t sizeToBlockQty(size_t size){
     return (size % BLOCK_SIZE)? (size / BLOCK_SIZE) + 1 : size / BLOCK_SIZE;

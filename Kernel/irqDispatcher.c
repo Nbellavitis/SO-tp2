@@ -9,6 +9,8 @@
 #include "include/interrupts.h"
 #include "include/lib.h"
 #include "include/registerHandling.h"
+#include "mm/mm.h"
+#include "tests/test_util.h"
 static void int_20();
 static void int_21();
 static int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
@@ -79,7 +81,10 @@ static int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64
         case 14:
             beep();
             return 0;
-
+        case 15:
+            char * test[]={"232323"};
+		    test_mm(1,test);
+           return 0;
         default:
             return 0;
     }

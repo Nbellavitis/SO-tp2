@@ -13,7 +13,7 @@ GLOBAL call_drawRectangle
 GLOBAL call_sleepms
 GLOBAL call_beep
 GLOBAL call_getTicks
-
+GLOBAL testmm
 
 section .text
 
@@ -60,6 +60,8 @@ call_setFontSize:
     call_to_handler 13
 call_beep:
     call_to_handler 14
+testmm:
+    call_to_handler 15
 
 
 InvalidOpasm:

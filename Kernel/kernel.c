@@ -7,7 +7,6 @@
 #include "Drivers/include/keyboardDriver.h"
 #include "Drivers/include/videoDriver.h"
 #include "mm/mm.h"
-#include "tests/test_util.h"
 extern uint8_t text;
 extern uint8_t rodata;
 extern uint8_t data;
@@ -92,10 +91,9 @@ void * initializeKernelBinary()
 int main()
 {
 	load_idt();
-    ((EntryPoint)sampleCodeModuleAddress)();
 	mmInit(heapAddress, 0x2700000); 
-	char *argv[]={"40794064"}; 
-	test_mm(1,argv);
+    ((EntryPoint)sampleCodeModuleAddress)();
+	
 	
 	 while(1){
 		// Busy-wait loop

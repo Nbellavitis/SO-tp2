@@ -6,7 +6,7 @@
 #define BLOCK_SIZE 64
 
 typedef struct MemoryManagerCDT * MemoryManagerADT;
-void mmInit ( void * baseAddress ,uint64_t memorySize) ;
+int mmInit ( void * baseAddress ,uint64_t memorySize) ;
 void freeMemory(void * memory);
 void * allocMemory(size_t size);
 #endif

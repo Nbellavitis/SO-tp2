@@ -5,6 +5,10 @@
         "usrsyscall.h": "c",
         "libasm.h": "c",
         "keyboarddriver.h": "c",
-        "scancode.h": "c"
+        "scancode.h": "c",
+        "test_util.h": "c",
+        "eliminator.h": "c",
+        "buffer.h": "c",
+        "mm.h": "c"
     }
 }

@@ -67,4 +67,6 @@ void call_moveCursorX(uint16_t posX);
 // Gets the elapsed time since some reference point in milliseconds
 int call_getTicks();
 
+
+void testmm();
 #endif /* USERSYSCALLS_H */

@@ -97,6 +97,11 @@ char * cutString(char *str) {
     }
     return str;
 }
+#include <stddef.h>
+
+#include <stddef.h>
+
+
 
 int pow(int base, int pow){
     int toR= 1;
