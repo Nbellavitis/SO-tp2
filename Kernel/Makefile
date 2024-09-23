@@ -1,6 +1,7 @@
 include Makefile.inc
 
 KERNEL=kernel.bin
+KERNEL_ELF=kernel.elf
 SOURCES=$(wildcard *.c)
 SOURCES_ASM=$(wildcard asm/*.asm)
 OBJECTS=$(SOURCES:.c=.o)
@@ -16,10 +17,16 @@ OBJECTS_DRIVERS=$(SOURCES_DRIVERS:.c=.o)
 LOADEROBJECT=$(LOADERSRC:.asm=.o)
 STATICLIBS=
 
-all: $(KERNEL)
+# La regla "all" ahora generará tanto el ELF como el archivo binario.
+all: $(KERNEL) $(KERNEL_ELF)
 
+# Regla para generar el archivo binario (igual que antes)
 $(KERNEL): $(LOADEROBJECT) $(OBJECTS) $(STATICLIBS) $(OBJECTS_ASM) $(OBJECTS_DRIVERS) $(OBJECTS_BITMAP_MM) $(OBJECTS_TESTS)
 	$(LD) $(LDFLAGS) -T kernel.ld -o $(KERNEL) $(LOADEROBJECT) $(OBJECTS) $(OBJECTS_DRIVERS) $(OBJECTS_ASM) $(STATICLIBS) $(OBJECTS_BITMAP_MM) $(OBJECTS_TESTS)
+
+# Nueva regla para generar el archivo ELF
+$(KERNEL_ELF): $(LOADEROBJECT) $(OBJECTS) $(STATICLIBS) $(OBJECTS_ASM) $(OBJECTS_DRIVERS) $(OBJECTS_BITMAP_MM) $(OBJECTS_TESTS)
+	$(LD) $(LDFLAGS) -T kernel.ld -o $(KERNEL_ELF) $(LOADEROBJECT) $(OBJECTS) $(OBJECTS_DRIVERS) $(OBJECTS_ASM) $(STATICLIBS) $(OBJECTS_BITMAP_MM) $(OBJECTS_TESTS)
 
 %.o: %.c
 	$(GCC) $(GCCFLAGS) -I./include -c $< -o $@
@@ -31,8 +38,8 @@ $(LOADEROBJECT):
 	$(ASM) $(ASMFLAGS) $(LOADERSRC) -o $(LOADEROBJECT)
 
 clean:
-	rm -rf asm/*.o *.o *.bin
-	rm -rf drivers/*.o *.o *.bin
-	rm -rf /*.o *.o *.bin
+	rm -rf asm/*.o *.o *.bin *.elf
+	rm -rf drivers/*.o *.o *.bin *.elf
+	rm -rf /*.o *.o *.bin *.elf
 
 .PHONY: all clean

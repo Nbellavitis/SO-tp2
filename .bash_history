@@ -73,3 +73,97 @@ cd root
 ./externAppExecutable
 ./externAppExecutable
 exit
+cd root
+make exterAppBuild
+make externAppBuild
+valgrind ./externAppExecutable 
+make externAppBuild
+valgrind ./externAppExecutable 
+valgrind ./externAppExecutable 
+valgrind ./externAppExecutable 
+valgrind ./externAppExecutable 
+valgrind ./externAppExecutable 
+valgrind ./externAppExecutable 
+valgrind ./externAppExecutable 
+valgrind ./externAppExecutable 
+./externAppExecutable 
+./externAppExecutable 
+./externAppExecutable 
+valgrind ./externAppExecutable 
+valgrind ./externAppExecutable 
+valgrind ./externAppExecutable 
+valgrind ./externAppExecutable 
+valgrind ./externAppExecutable 
+valgrind ./externAppExecutable 
+valgrind ./externAppExecutable 
+./externAppExecutable 
+./externAppExecutable 
+./externAppExecutable 
+make externAppBuild
+./externAppExecutable 
+./externAppExecutable 
+make externAppBuild
+./externAppExecutable 
+./externAppExecutable 
+./externAppExecutable 
+./externAppExecutable 
+make externAppBuild
+./externAppExecutable 
+./externAppExecutable 
+./externAppExecutable 
+make externAppBuild
+./externAppExecutable 
+./externAppExecutable 
+./externAppExecutable 
+./externAppExecutable 
+./externAppExecutable 
+./externAppExecutable 
+./externAppExecutable 
+./externAppExecutable 
+./externAppExecutable 
+make externAppBuild
+make externAppBuild
+./externAppExecutable 
+./externAppExecutable 
+./externAppExecutable 
+./externAppExecutable 
+./externAppExecutable 
+./externAppExecutable 
+make externAppBuild
+./externAppExecutable 
+./externAppExecutable 
+make externAppBuild
+./externAppExecutable 
+./externAppExecutable 
+./externAppExecutable 
+make externAppBuild
+make externAppBuild
+./externAppExecutable 
+./externAppExecutable 
+./externAppExecutable 
+./externAppExecutable 
+./externAppExecutable 
+./externAppExecutable 
+make externAppBuild
+./externAppExecutable 
+./externAppExecutable 
+make externAppBuild
+./externAppExecutable 
+./externAppExecutable 
+make externAppBuild
+./externAppExecutable 
+./externAppExecutable 
+make externAppBuild
+./externAppExecutable 
+./externAppExecutable 
+./externAppExecutable 
+./externAppExecutable 
+./externAppExecutable 
+./externAppExecutable 
+gdb ./externAppExecutable 
+make
+make
+make
+make
+make
+exit

@@ -2,9 +2,10 @@
 #include "test_util.h"
 #include <stdio.h>
 #define ARENA_SIZE 40894464
+extern  uint64_t test_mm(uint64_t argc, char *argv[]) ;
 int main(){
 
-    static uint64_t mem[ARENA_SIZE];
+    static uint32_t mem[ARENA_SIZE];
     if  ( mmInit((void *)mem, ARENA_SIZE) == -1){
         printf("ERROR:mem size has to be lower \n");
         return -1;

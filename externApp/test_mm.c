@@ -32,13 +32,13 @@ uint64_t test_mm(uint64_t argc, char *argv[]) {
       mm_rqs[rq].address = allocMemory(mm_rqs[rq].size);
       
       if (mm_rqs[rq].address) {
-        total += mm_rqs[rq].size;
-        rq++;
-      }
-    }
+       total += mm_rqs[rq].size;
+         rq++;
+     }
+     }
   
     // Set
-    uint32_t i;
+     uint32_t i;
     for (i = 0; i < rq; i++)
       if (mm_rqs[i].address)
         memset(mm_rqs[i].address, i, mm_rqs[i].size);
@@ -55,7 +55,7 @@ uint64_t test_mm(uint64_t argc, char *argv[]) {
     for (i = 0; i < rq; i++)
       if (mm_rqs[i].address)
         freeMemory(mm_rqs[i].address);
-    printf("VERY GOOD\n");
+
   }
   
 }

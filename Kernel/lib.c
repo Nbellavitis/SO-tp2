@@ -1,7 +1,9 @@
 #include <stdint.h>
 #include <time.h>
 #include "include/interrupts.h"
-
+#include "Drivers/include/videoDriver.h"
+#include "mm/mm.h"
+#include "tests/test_util.h"
 void * memset(void * destination, int32_t c, uint64_t length)
 {
 	uint8_t chr = (uint8_t)c;
@@ -69,7 +71,7 @@ void reverseStr(char* str, int length) {
     }
 }
 
-// Function to convert an integer to a string
+
 void intToStr(int num, char* str) {
     int i = 0;
     int isNegative = 0;
@@ -95,5 +97,25 @@ void intToStr(int num, char* str) {
 
  
     reverseStr(str, i);
+}
+void runTestMm(){
+	char *argv[] = {"266240"};
+    test_mm(1, argv);
+}
+void printMm(){
+	         char status[50];
+            MemoryStatus mmStatus = getMemoryStatus();
+            drawWord(0x00ffffff,"Memoria Total:");
+            intToStr(mmStatus.totalMemory,status);
+            drawWord(0x00ffffff,status);
+            drawChar(0x00ffffff,'\n');
+            drawWord(0x00ffffff,"Memoria usada:");
+             intToStr(mmStatus.usedMemory,status);
+            drawWord(0x00ffffff,status);
+            drawChar(0x00ffffff,'\n');
+            drawWord(0x00ffffff,"Memoria libre:");
+            intToStr(mmStatus.freeMemory,status);
+            drawWord(0x00ffffff,status);
+            drawChar(0x00ffffff,'\n');
 }
 

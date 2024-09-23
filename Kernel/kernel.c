@@ -7,6 +7,8 @@
 #include "Drivers/include/keyboardDriver.h"
 #include "Drivers/include/videoDriver.h"
 #include "mm/mm.h"
+#include "tests/test_util.h"
+#include "include/lib.h"
 extern uint8_t text;
 extern uint8_t rodata;
 extern uint8_t data;
@@ -93,8 +95,6 @@ int main()
 	load_idt();
 	mmInit(heapAddress, 0x2700000); 
     ((EntryPoint)sampleCodeModuleAddress)();
-	
-	
 	 while(1){
 		// Busy-wait loop
 	}

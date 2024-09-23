@@ -13,4 +13,6 @@ char *cpuVendor(char *result);
 void sleepms(int ms);
 void reverseStr(char* str, int length);
 void intToStr(int num, char* str);
+void printMm();
+void runTestMm();
 #endif
