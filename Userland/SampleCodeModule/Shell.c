@@ -65,7 +65,8 @@ const char *commands[] = {
     "exit:         Kills the terminal.",
     "div0:         Test the exception of the cero division.",
     "invalidOp:    Test the exception of an invalid operand.",
-    "testMem:          allocs memory and run the test"
+    "testmm:       allocs memory and run the test",
+    "mmStatus      Shows the mem status"
 };
 
 void lineRead(char *buffer) {
@@ -108,6 +109,9 @@ void lineRead(char *buffer) {
         return;
     } else if(strcmp(buffer,"testmm") == 0){
       testmm();
+    }
+    else if(strcmp(buffer,"mmStatus") == 0){
+      mmStatus();
     }else{
         putString(buffer,WHITE);
         putString(":command not found",WHITE);

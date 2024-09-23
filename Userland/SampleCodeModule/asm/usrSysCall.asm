@@ -14,7 +14,7 @@ GLOBAL call_sleepms
 GLOBAL call_beep
 GLOBAL call_getTicks
 GLOBAL testmm
-
+GLOBAL mmStatus
 section .text
 
 %macro call_to_handler 1
@@ -62,7 +62,8 @@ call_beep:
     call_to_handler 14
 testmm:
     call_to_handler 15
-
+mmStatus:
+    call_to_handler 16
 
 InvalidOpasm:
     mov rax, 0x12345678

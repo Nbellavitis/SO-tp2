@@ -9,6 +9,7 @@
         "test_util.h": "c",
         "eliminator.h": "c",
         "buffer.h": "c",
-        "mm.h": "c"
+        "mm.h": "c",
+        "interrupts.h": "c"
     }
 }

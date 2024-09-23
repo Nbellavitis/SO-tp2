@@ -85,6 +85,22 @@ static int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64
             char * test[]={"232323"};
 		    test_mm(1,test);
            return 0;
+        case 16:
+            char status[50];
+            MemoryStatus mmStatus = getMemoryStatus();
+            drawWord(0x00ffffff,"Memoria Total:");
+            intToStr(mmStatus.totalMemory,status);
+            drawWord(0x00ffffff,status);
+            drawChar(0x00ffffff,'\n');
+            drawWord(0x00ffffff,"Memoria usada:");
+             intToStr(mmStatus.usedMemory,status);
+            drawWord(0x00ffffff,status);
+            drawChar(0x00ffffff,'\n');
+            drawWord(0x00ffffff,"Memoria libre:");
+            intToStr(mmStatus.freeMemory,status);
+            drawWord(0x00ffffff,status);
+            drawChar(0x00ffffff,'\n');
+           return 0;
         default:
             return 0;
     }

@@ -69,4 +69,5 @@ int call_getTicks();
 
 
 void testmm();
+void mmStatus();
 #endif /* USERSYSCALLS_H */
