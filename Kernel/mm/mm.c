@@ -139,3 +139,10 @@ void freeMemory(void * memory){
     memoryManager.blocksUsed -= blocksToFree + 1;
     memoryManager.lastFreed.blocks = blocksToFree + 1;
 }
+MemoryStatus getMemoryStatus(){
+    MemoryStatus status;
+    status.totalMemory = memoryManager.blockQty * BLOCK_SIZE;
+    status.usedMemory = memoryManager.blocksUsed * BLOCK_SIZE;
+    status.freeMemory = status.totalMemory - status.usedMemory;
+    return status;
+}
