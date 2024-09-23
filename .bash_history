@@ -167,3 +167,9 @@ make
 make
 make
 exit
+cd root
+pvs-studio-analyzer trace -- make
+pvs-studio-analyzer analyze -o PVS-Studio.log
+plog-converter -a GA:1,2 -t html -o report.html PVS-Studio.log
+plog-converter -a GA:1,2,3,4,5,6 -t html -o report.html PVS-Studio.log
+exit

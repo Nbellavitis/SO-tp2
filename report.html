@@ -1,0 +1,93 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+  <title>Messages</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <style type="text/css">
+    td {
+      padding: 0;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    legend {
+      color: blue;
+      font: 1.2em bold Comic Sans MS Verdana;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <table style="width: 100%; font: 12pt normal Century Gothic;">
+    <caption style="font-weight: bold;background: #fff;color: #000;border: none !important;">MESSAGES</caption>
+    <tr style="background: black; color: white;">
+      <th style="width: 30%;">Location</th>
+      <th style="width: 5%;">Code</th>
+      <th style="width: 65%;">Message</th>
+    </tr>
+    <tr style='background: lightcyan;'>
+      <td colspan='5' style='color: red; text-align: center; font-size: 1.2em;'>General Analysis (GA)</td>
+    </tr>
+    <tr>
+      <td style='width: 30%;'><div title="/root/Bootloader/BMFS/bmfs.c">bmfs.c (552)</div></td>
+      <td style='width: 5%;'><a target="_blank" href='https://pvs-studio.com/en/docs/warnings/v595/'>V595</a></td>
+      <td style='width: 65%;'>The 'disk' pointer was utilized before it was verified against nullptr. Check lines: 552, 575.</td>
+    </tr>
+    <tr>
+      <td style='width: 30%;'><div title="/root/Bootloader/BMFS/bmfs.c">bmfs.c (638)</div></td>
+      <td style='width: 5%;'><a target="_blank" href='https://pvs-studio.com/en/docs/warnings/v1032/'>V1032</a></td>
+      <td style='width: 65%;'>The pointer 'dir_copy' is cast to a more strictly aligned pointer type.</td>
+    </tr>
+    <tr>
+      <td style='width: 30%;'><div title="/root/Bootloader/BMFS/bmfs.c">bmfs.c (694)</div></td>
+      <td style='width: 5%;'><a target="_blank" href='https://pvs-studio.com/en/docs/warnings/v1032/'>V1032</a></td>
+      <td style='width: 65%;'>The pointer 'Directory' is cast to a more strictly aligned pointer type.</td>
+    </tr>
+    <tr>
+      <td style='width: 30%;'><div title="/root/Bootloader/BMFS/bmfs.c">bmfs.c (452)</div></td>
+      <td style='width: 5%;'><a target="_blank" href='https://pvs-studio.com/en/docs/warnings/v575/'>V575</a></td>
+      <td style='width: 65%;'>The potential null pointer is passed into 'memset' function. Inspect the first argument.</td>
+    </tr>
+    <tr>
+      <td style='width: 30%;'><div title="/root/Bootloader/BMFS/bmfs.c">bmfs.c (482)</div></td>
+      <td style='width: 5%;'><a target="_blank" href='https://pvs-studio.com/en/docs/warnings/v575/'>V575</a></td>
+      <td style='width: 65%;'>The potential null pointer is passed into 'rewind' function. Inspect the first argument.</td>
+    </tr>
+    <tr>
+      <td style='width: 30%;'><div title="/root/Bootloader/BMFS/bmfs.c">bmfs.c (238)</div></td>
+      <td style='width: 5%;'><a target="_blank" href='https://pvs-studio.com/en/docs/warnings/v576/'>V576</a></td>
+      <td style='width: 65%;'>Incorrect format. Consider checking the third actual argument of the 'printf' function. The SIGNED integer type argument is expected.</td>
+    </tr>
+    <tr>
+      <td style='width: 30%;'><div title="/root/Bootloader/BMFS/bmfs.c">bmfs.c (254)</div></td>
+      <td style='width: 5%;'><a target="_blank" href='https://pvs-studio.com/en/docs/warnings/v576/'>V576</a></td>
+      <td style='width: 65%;'>Incorrect format. Consider checking the fourth actual argument of the 'printf' function. The SIGNED integer type argument is expected.</td>
+    </tr>
+    <tr>
+      <td style='width: 30%;'><div title="/root/Bootloader/BMFS/bmfs.c">bmfs.c (254)</div></td>
+      <td style='width: 5%;'><a target="_blank" href='https://pvs-studio.com/en/docs/warnings/v576/'>V576</a></td>
+      <td style='width: 65%;'>Incorrect format. Consider checking the third actual argument of the 'printf' function. The SIGNED integer type argument is expected.</td>
+    </tr>
+    <tr>
+      <td style='width: 30%;'><div title="/root/Bootloader/BMFS/bmfs.c">bmfs.c (408)</div></td>
+      <td style='width: 5%;'><a target="_blank" href='https://pvs-studio.com/en/docs/warnings/v576/'>V576</a></td>
+      <td style='width: 65%;'>Incorrect format. Consider checking the second actual argument of the 'printf' function. Under certain conditions the pointer can be null.</td>
+    </tr>
+    <tr>
+      <td style='width: 30%;'><div title="/root/Bootloader/BMFS/bmfs.c">bmfs.c (689)</div></td>
+      <td style='width: 5%;'><a target="_blank" href='https://pvs-studio.com/en/docs/warnings/v576/'>V576</a></td>
+      <td style='width: 65%;'>Incorrect format. Consider checking the second actual argument of the 'printf' function. The SIGNED integer type argument is expected.</td>
+    </tr>
+    <tr>
+      <td style='width: 30%;'><div title="/root/Bootloader/BMFS/bmfs.c">bmfs.c (369)</div></td>
+      <td style='width: 5%;'><a target="_blank" href='https://pvs-studio.com/en/docs/warnings/v584/'>V584</a></td>
+      <td style='width: 65%;'>The 'diskSize' value is present on both sides of the '&gt;' operator. The expression is incorrect or it can be simplified.</td>
+    </tr>
+    <tr>
+      <td style='width: 30%;'><div title="/root/Bootloader/BMFS/bmfs.c">bmfs.c (501)</div></td>
+      <td style='width: 5%;'><a target="_blank" href='https://pvs-studio.com/en/docs/warnings/v1004/'>V1004</a></td>
+      <td style='width: 65%;'>The 'mbr' pointer was used unsafely after it was verified against nullptr. Check lines: 392, 501.</td>
+    </tr>
+  </table>
+</body>
+</html>

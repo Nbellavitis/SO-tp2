@@ -1,7 +1,9 @@
-#include "test_util.h"
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
 #include "../Drivers/include/videoDriver.h"
 #include "../mm/mm.h"
 #include <string.h>
+#include "test_util.h"
 #define MAX_BLOCKS 128
 typedef struct MM_rq {
   void *address;
