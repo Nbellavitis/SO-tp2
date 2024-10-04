@@ -18,7 +18,7 @@ typedef struct queueCDT{
 }queueCDT;
 
 queueADT createQueue(compareFunc cmpFunc){
-    queueADT newQueue = allocMemory(queueCDT);
+    queueADT newQueue = (queueCDT *) allocMemory(sizeof(queueCDT));
     if(newQueue == NULL){
         return NULL;
     }
@@ -30,7 +30,7 @@ queueADT createQueue(compareFunc cmpFunc){
 }
 
 tList createNode(void * element){
-    tList newNode = allocMemory(tNode);
+    tList newNode = (tList) allocMemory(sizeof(tNode));
     if(newNode == NULL){
         return NULL;
     }
