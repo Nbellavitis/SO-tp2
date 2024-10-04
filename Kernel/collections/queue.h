@@ -8,27 +8,27 @@
 
 
 typedef int64_t (*compareFunc)(void * e1, void * e2);
-typedef queueCDT * queueADT;
+typedef struct queueCDT * queueADT;
 
 queueADT newQueue();
 
-int8_t queue(queueADT q, void * in);
+int8_t queue(queueADT queue, void * in);
 
-void * dequeue(queueADT q);
+void * dequeue(queueADT queue);
 
-int8_t remove(queueADT q, void * elem);
+int8_t remove(queueADT queue, void * elem);
 
-int8_t isEmpty(queueADT q);
+int8_t isEmpty(queueADT queue);
 
-void freeQueue(queueADT q);
+void freeQueue(queueADT queue);
 
-//void toBegin(queueADT q);
+void toBegin(queueADT queue);
 
-//int8_t hasNext(queueADT q);
+int8_t hasNext(queueADT queue);
 
-//int8_t next(queueADT q, void * out);
+void * next(queueADT queue);
 
-uint64_t size(queueADT q);
+uint64_t size(queueADT queue);
 
 
 #endif //SO_TP2_QUEUE_H

@@ -11,6 +11,9 @@
 #include "mm/mm.h"
 #include "tests/test_util.h"
 #include "include/lib.h"
+#include "include/process.h"
+#include "include/scheduler.h"
+#include "collections/queue.h"
 extern uint8_t text;
 extern uint8_t rodata;
 extern uint8_t data;
@@ -92,11 +95,21 @@ void * initializeKernelBinary()
 	return getStackBase();
 }
 
+int init_shell() {
+	char * argv[]= {"Shell", (void *) 0};
+    newProcess((uint64_t)sampleCodeModuleAddress, 0 , 1, 1, argv);
+	return 1;
+}
+
 int main()
 {
 	load_idt();
 	mmInit(heapAddress, 0x2700000); 
     ((EntryPoint)sampleCodeModuleAddress)();
+
+	startScheduler();
+	init_shell();
+
 	 while(1){
 		// Busy-wait loop
 	}

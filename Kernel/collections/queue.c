@@ -1,11 +1,8 @@
-//
-// Created by Ivo Vilamowski on 04/10/2024.
-//
 #include "queue.h"
 
 typedef struct tNode{
     void * element;
-    tNode * next;
+    struct tNode * next;
 }tNode;
 
 typedef tNode * tList;
@@ -15,6 +12,7 @@ typedef struct queueCDT{
     tList first;
     tList current;
     size_t amount;
+    tList iter;
 }queueCDT;
 
 queueADT createQueue(compareFunc cmpFunc){
@@ -26,6 +24,7 @@ queueADT createQueue(compareFunc cmpFunc){
     newQueue->amount = 0;
     newQueue->first = NULL;
     newQueue->current = NULL;
+    newQueue->iter = NULL;
     return newQueue;
 }
 
@@ -45,7 +44,7 @@ int8_t queue(queueADT queue, void * in){
         return 0;
     }
     if(queue->first == NULL){
-        queue->first == newNode;
+        queue->first = newNode;
     }
     queue->current->next = newNode;
     queue->current = newNode;
@@ -66,15 +65,6 @@ void * dequeue(queueADT queue){
     return auxNode->element;
 }
 
-int8_t remove(queueADT queue, void * elem){
-    if(queue->first == NULL){
-        return 0;
-    }
-    tList aux = queue->first;
-    size_t flag = removeFromList(aux, queue->cmpFunc, elem);
-    queue->amount -= flag;
-    return flag;
-}
 
 int8_t removeFromList(tList list, compareFunc cmp, void * elem){
     if(list == NULL){
@@ -88,6 +78,17 @@ int8_t removeFromList(tList list, compareFunc cmp, void * elem){
     return removeFromList(list->next,cmp,elem);
 }
 
+
+int8_t remove(queueADT queue, void * elem){
+    if(queue->first == NULL){
+        return 0;
+    }
+    tList aux = queue->first;
+    size_t flag = removeFromList(aux, queue->cmpFunc, elem);
+    queue->amount -= flag;
+    return flag;
+}
+
 int8_t isEmpty(queueADT queue){
     if(queue->first == NULL){
         return 1;
@@ -95,6 +96,15 @@ int8_t isEmpty(queueADT queue){
     return 0;
 }
 
+
+void freeQueueRec(tList list){
+    if(list == NULL){
+        return;
+    }
+    freeQueueRec(list->next);
+    freeMemory(list);
+    return;
+}
 
 void freeQueue(queueADT queue){
     if(queue == NULL){
@@ -104,19 +114,28 @@ void freeQueue(queueADT queue){
     freeMemory(queue);
 }
 
-void freeQueueRec(tList list){
-    if(list == NULL){
-        return;
-    }
-    freeQueueRec(list->next);
-    free(list);
-    return;
-}
+
 
 uint64_t size(queueADT queue){
     return queue->amount;
 }
 
+void toBegin(queueADT queue){
+    queue->iter=queue->first;
+}
+
+int8_t hasNext(queueADT queue){
+    return (queue->iter == NULL);
+}
+
+void * next(queueADT queue){
+    if(hasNext(queue)){
+        tList aux = queue->iter;
+        queue->iter = queue->iter->next;
+        return aux;
+    }
+    return NULL;
+}
 
 
 

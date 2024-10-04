@@ -27,6 +27,7 @@ EXTERN retUserland
 EXTERN getStackBase
 EXTERN clear
 EXTERN printRegisters
+EXTERN contextSwitch
 SECTION .text
 
 
@@ -197,11 +198,12 @@ _irq00Handler:
 	call irqDispatcher
 
     ; levantar procesos que esta esperando el timer
-    call wakeUpProcesses
+
+    ;call wakeUpProcesses
 
 	; llamar al scheduler para que me devuelva un rsp
 	mov rdi, rsp
-	call switchContext
+	call contextSwitch
 	mov rsp, rax
 
 	mov al, 20h
