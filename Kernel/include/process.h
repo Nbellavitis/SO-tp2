@@ -14,17 +14,15 @@
 typedef struct processData{
     pid_t pid, ppid;
     uint64_t rsp, stack_base, rip;
-    int argc;
     int ground;
     int priority;
     int status;
-    char ** argv;
     char * name;
 
     int fd[3];
 
     // Waiting Processes
-    queueADT waiting_processes;
+    queueADT childProcessesWaiting;
 }PCBType;
 
 
