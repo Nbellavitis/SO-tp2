@@ -101,4 +101,6 @@ PCBType * findProcessByPid(pid_t pid){
 }
 
 
-
+void yield(){
+    _int_20();
+}

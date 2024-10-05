@@ -62,7 +62,7 @@ int8_t blockProcess(PCBType * process) {
     }
 
     process->status = BLOCKED;
-    //ACA DEBERIAMOS LLAMAR PARA QUE CORRA OTRO PROCESS
+    yield();
     return 1;
 }
 

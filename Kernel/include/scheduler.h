@@ -9,4 +9,5 @@ pid_t getActivePid();
 uint64_t contextSwitch(uint64_t rsp);
 void startScheduler();
 void addToReadyQueue(PCB pcb);
+void yield();
 #endif //SO_TP2_SCHEDULER_H
