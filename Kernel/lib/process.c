@@ -63,7 +63,7 @@ int8_t blockProcess(PCBType * process) {
 
     process->status = BLOCKED;
     //ACA DEBERIAMOS LLAMAR PARA QUE CORRA OTRO PROCESS
-    return 0;
+    return 1;
 }
 
 int8_t killProcess(PCBType * process) {
@@ -81,7 +81,16 @@ int8_t killProcess(PCBType * process) {
 //        }
 //    }
 
-    return 0;
+    return 1;
+}
+
+int8_t unblockProcess(PCBType * process){
+    if(process == NULL || process->status == BLOCKED || process->status == KILLED) {
+        return -1;
+    }
+
+    process->status = READY;
+    return 1;
 }
 
 

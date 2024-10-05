@@ -30,6 +30,10 @@ typedef struct PCBType{
 
 typedef struct PCBType * PCB;
 
+int64_t comparePid(void * pid1, void * pid2);
 pid_t newProcess(uint64_t rip, int ground, int priority, int argc, char * argv[]);
 void freeProcess(PCB process);
+int8_t unblockProcess(PC  process);
+int8_t killProcess(PCB process);
+int8_t blockProcess(PCB process);
 #endif
