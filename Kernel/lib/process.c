@@ -1,19 +1,7 @@
 #include "../include/process.h"
 #include "../include/lib.h"
 #include "../include/scheduler.h"
-typedef struct PCBType{
-    pid_t pid, ppid;
-    uint64_t rsp, stackBase, rip;
-    int ground;
-    int priority;
-    int status;
-    char * name;
 
-    int fd[3];
-
-    // Waiting Processes
-    //queueADT childProcessesWaiting;
-}PCBType;
 
 static int  nextProcessId = 0;
 int64_t comparePid(void* pid1, void* pid2);

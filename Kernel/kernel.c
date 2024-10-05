@@ -105,7 +105,7 @@ int main()
 {
 	load_idt();
 	mmInit(heapAddress, 0x2700000); 
-    ((EntryPoint)sampleCodeModuleAddress)();
+    //((EntryPoint)sampleCodeModuleAddress)();  whot
 
 	startScheduler();
 	init_shell();

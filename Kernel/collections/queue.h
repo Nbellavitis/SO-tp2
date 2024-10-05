@@ -9,8 +9,7 @@
 
 typedef int64_t (*compareFunc)(void * e1, void * e2);
 typedef struct queueCDT * queueADT;
-
-queueADT newQueue();
+queueADT createQueue(compareFunc cmpFunc);
 
 int8_t queue(queueADT queue, void * in);
 

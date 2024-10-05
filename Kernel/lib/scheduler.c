@@ -22,7 +22,7 @@ int64_t comparePCB(void * pcb1, void * pcb2) {
 
 void startScheduler() {
     status = ACTIVE;
-    processQueue = newQueue(comparePCB);
+    processQueue = createQueue(comparePCB);
     newProcess((uint64_t)idle, 1, 1, 0, NULL);
 }
 

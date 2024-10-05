@@ -12,6 +12,20 @@
 #define STACK_SIZE 4096
 #define KERNEL_PID -1
 
+typedef struct PCBType{
+    pid_t pid, ppid;
+    uint64_t rsp, stackBase, rip;
+    int ground;
+    int priority;
+    int status;
+    char * name;
+
+    int fd[3];
+
+    // Waiting Processes
+    //queueADT childProcessesWaiting;
+}PCBType;
+
 typedef struct PCBType * PCB;
 
 pid_t newProcess(uint64_t rip, int ground, int priority, int argc, char * argv[]);
