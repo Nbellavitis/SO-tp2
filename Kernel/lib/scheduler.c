@@ -86,5 +86,17 @@ void addToReadyQueue(PCBType * pcb){
     queue(processQueue,pcb);
 }
 
-//int block_process(int pid){}
-//int kill_process(int pid){}
+PCBType * findProcessByPid(pid_t pid){
+    if(processQueue == NULL || isEmpty(processQueue)){
+        return NULL;
+    }
+    toBegin(processQueue);
+    while(hasNext(processQueue)){
+        PCBType * currentProcess = (PCBType *) next(processQueue));
+        if(currentProcess->pid == pid){
+             return currentProcess;
+        }
+    }
+    return NULL;
+}
+

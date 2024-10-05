@@ -24,8 +24,9 @@ pid_t newProcess(uint64_t rip, int ground, int priority, int argc, char * argv[]
     pcb->priority = priority;
     pcb->pid = nextProcessId;
 
-    //pcb->childProcessesWaiting= newQueue(comparePid);
+    //pcb->childProcessesWaiting = newQueue(comparePid);
 
+    //ACA DEBERIAMOS AGREGARLO AL CHILDPROCESSES
     pcb->ppid = getActivePid(); //te dice el scheduler quien esta corriendo
 
     pcb->rsp = createProcess(pcb->stackBase, pcb->rip, argc, argv);
@@ -52,3 +53,35 @@ void freeProcess(PCB process){
     freeMemory((void *)process->stackBase);
     freeMemory(process);
 }
+
+
+
+int8_t blockProcess(PCBType * process) {
+    if(process == NULL || process->status == BLOCKED || process->status == KILLED) {
+        return -1;
+    }
+
+    process->status = BLOCKED;
+    //ACA DEBERIAMOS LLAMAR PARA QUE CORRA OTRO PROCESS
+    return 0;
+}
+
+int8_t killProcess(PCBType * process) {
+    if(process == NULL) {
+        return -1;
+    }
+    process->status = KILLED;
+
+    //Tengo que dejarle los hijos al init que los adopte
+//    if(process->childProcessesWaiting != NULL && isEmpty(process->childProcessesWaiting)){
+//        toBegin(process->childProcessesWaiting);
+//        while(hasNext(process->childProcessesWaiting)){
+//            PCBType * currentProcess = (PCBType * ) next(process->childProcessesWaiting);
+//            currentProcess->ppid = IDLE_PID;
+//        }
+//    }
+
+    return 0;
+}
+
+

@@ -12,6 +12,7 @@
 #define RUNNING 4
 #define STACK_SIZE 4096
 #define KERNEL_PID -1
+#define IDLE_PID 1
 
 typedef struct PCBType{
     pid_t pid, ppid;
