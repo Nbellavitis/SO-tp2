@@ -37,10 +37,14 @@ uint64_t contextSwitch(uint64_t rsp){
             activeProcess = dequeue(processQueue);
         }
         activePid = activeProcess->pid;
+        activeProcess->status = RUNNING;
         return activeProcess->rsp;
     }
     activeProcess->rsp = rsp;
     if (activeProcess->status != KILLED){
+        if(activeProcess->status != BLOCKED){
+            activeProcess->status = READY;
+        }
         queue(processQueue,activeProcess);
     }else{
         freeProcess(activeProcess);
@@ -52,6 +56,7 @@ uint64_t contextSwitch(uint64_t rsp){
             queue(processQueue,activeProcess);
         }
         activePid = activeProcess->pid;
+        activeProcess->status = RUNNING;
         return activeProcess->rsp;
     }else if (activeProcess->status == BLOCKED){
         queue(processQueue,activeProcess);
@@ -80,3 +85,6 @@ pid_t getActivePid(){
 void addToReadyQueue(PCBType * pcb){
     queue(processQueue,pcb);
 }
+
+//int block_process(int pid){}
+//int kill_process(int pid){}

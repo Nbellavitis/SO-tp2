@@ -9,6 +9,7 @@
 #define BLOCKED 1
 #define KILLED 2
 #define SLEEPING 3
+#define RUNNING 4
 #define STACK_SIZE 4096
 #define KERNEL_PID -1
 
