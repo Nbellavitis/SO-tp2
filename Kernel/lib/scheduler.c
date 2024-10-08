@@ -83,7 +83,11 @@ pid_t getActivePid(){
     return activeProcess->pid;
 }
 void addToReadyQueue(PCBType * pcb){
-    queue(processQueue,pcb);
+    int counter = pcb->priority;
+    while(counter > 0) {
+        queue(processQueue, pcb);
+        counter--;
+    }
 }
 
 PCBType * findProcessByPid(pid_t pid){

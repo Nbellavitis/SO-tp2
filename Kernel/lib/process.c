@@ -15,7 +15,7 @@ pid_t newProcess(uint64_t rip, int ground, int priority, int argc, char * argv[]
         return -1;
     }
     pcb->rip = rip;
-    pcb->ground = ground; //backGround foreGround
+    pcb->ground = ground;
       if(getActivePid() == KERNEL_PID)
         pcb->status = READY;
     else{

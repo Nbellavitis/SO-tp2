@@ -6,3 +6,7 @@ make externAppBuild
 ./externAppExecutable
 ./externAppExecutable
 exit
+cd root
+make all
+exit
+exit
