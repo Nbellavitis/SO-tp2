@@ -120,4 +120,6 @@ void printMm(){
             drawWord(0x00ffffff,status);
             drawChar(0x00ffffff,'\n');
 }
-
+void testeando(){
+    drawWord(0xFFFFFFFF,"hola");
+}

@@ -2,6 +2,8 @@
 #define TPE_LIB_H
 #include <stdint.h>
 #include <stddef.h>
+typedef int64_t pid_t;
+
 // Reads a character from input and saves it in the pointer c. 
 // Returns the number of characters saved.
 int getC(char * c);

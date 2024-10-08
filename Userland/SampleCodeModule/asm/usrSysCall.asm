@@ -15,6 +15,16 @@ GLOBAL call_beep
 GLOBAL call_getTicks
 GLOBAL testmm
 GLOBAL mmStatus
+GLOBAL createProcess
+GLOBAL killProcess
+GLOBAL blockProcess
+GLOBAL unblockProcess
+GLOBAL allocMemory
+GLOBAL freeMemory
+GLOBAL changePrio
+GLOBAL getMyPid
+
+GLOBAL testeando
 section .text
 
 %macro call_to_handler 1
@@ -64,7 +74,24 @@ testmm:
     call_to_handler 15
 mmStatus:
     call_to_handler 16
-
+createProcess:
+    call_to_handler 18
+killProcess:
+    call_to_handler 19
+blockProcess:
+     call_to_handler 20
+unblockProcess:
+    call_to_handler 21
+allocMemory:
+    call_to_handler 22
+freeMemory:
+    call_to_handler 23
+changePrio:
+    call_to_handler 24
+getMyPid:
+    call_to_handler 25
+testeando:
+    call_to_handler 26
 InvalidOpasm:
     mov rax, 0x12345678
     rdpmc

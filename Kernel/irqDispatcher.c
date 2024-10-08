@@ -9,6 +9,8 @@
 #include <syscalls.h>
 #include <naiveConsole.h>
 #include "include/interrupts.h"
+#include "include/scheduler.h"
+#include "include/process.h"
 #include "include/lib.h"
 #include "include/registerHandling.h"
 #include "mm/mm.h"
@@ -86,7 +88,35 @@ static int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64
         case 16:
             printMm();
             return 0;
+        case 17:
+            char aux[10];
+            intToStr(getActivePid(),aux);
+           // drawWord(0xFFFFFFFF,aux);
+            killProcess(getActivePid());
+            yield();
+            return 0;
+        case 18:
+           return newProcess(rsi,(int)rdx,(int)rcx,(int)r8,(char **)r9);
+        case 19:
+            return  killProcess((pid_t) rsi);
+        case 20:
+            return  blockProcess((pid_t) rsi);
+        case 21:
+            return  unblockProcess((pid_t) rsi);
+        case 22:
+            return (uint64_t) allocMemory((size_t)rsi);
+        case 23:
+             freeMemory((void *)rsi);
+             return 0;
+        case 24:
+            return changePrio((pid_t) rsi,(int) rdx);
+        case 25:
+            return getActivePid();
+        case 26:
+            newProcess((uint64_t)testeando,0,1,0,NULL);
+            return 0;
         default:
+
             return 0;
     }
 }

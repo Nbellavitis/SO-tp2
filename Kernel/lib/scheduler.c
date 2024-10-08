@@ -2,11 +2,12 @@
 #include "../include/process.h"
 #include "../include/libasm.h"
 #include "../collections/queue.h"
+#include "../Drivers/include/videoDriver.h"
 #define KERNEL_PID -1
 #define ACTIVE 1
 #define INACTIVE 0
 static queueADT processQueue = NULL;
-static size_t activePid = KERNEL_PID;
+static pid_t activePid = KERNEL_PID;
 static size_t status = INACTIVE;
 static PCB activeProcess = NULL;
 static void idle();
@@ -29,6 +30,9 @@ void startScheduler() {
 uint64_t contextSwitch(uint64_t rsp){
     if ( status == INACTIVE)
         return rsp;
+    char  aux[10];
+    intToStr(getActivePid(),aux);
+   //drawWord(0xFFFFFFFF,aux);
     if ( activePid == KERNEL_PID){
         activeProcess = dequeue(processQueue);
         activePid = 0;
@@ -47,32 +51,27 @@ uint64_t contextSwitch(uint64_t rsp){
         }
         queue(processQueue,activeProcess);
     }else{
-        freeProcess(activeProcess);
+        //freeProcess(activeProcess);
     }
     while (1){
     activeProcess = dequeue(processQueue);
     if (activeProcess->status == READY) {
-        if(activeProcess->rip == (uint64_t)idle){
-            queue(processQueue,activeProcess);
-        }
+        // if(activeProcess->rip == (uint64_t)idle){
+        //     queue(processQueue,activeProcess);
+        //     activeProcess = dequeue(processQueue);
+        // }
         activePid = activeProcess->pid;
         activeProcess->status = RUNNING;
         return activeProcess->rsp;
     }else if (activeProcess->status == BLOCKED){
         queue(processQueue,activeProcess);
     } else if (activeProcess->status == KILLED) {
-        freeProcess(activeProcess);
+        char aux[10];
+        intToStr(activeProcess->pid,aux);
+        drawWord(0xFFFFFFFF,aux);
+        //freeProcess(activeProcess);
     }
 }}
-// size_t searchForReadyProcess(){
-//     toBegin(processQueue);
-//     while(hasNext(processQueue)){
-//         if(((PCBType *) next(processQueue))->status == READY){
-//             return 1;
-//         }
-//     }
-//     return 0;
-// }
 
 static void idle() {
     while (1) {
@@ -109,24 +108,35 @@ void yield(){
     _irq00Handler();
 }
 
-PCB findPcb(queueADT queue,pid_t pid){
-    toBegin(queue);
-    while(hasNext(queue)){
-        PCB aux = next(queue);
-        if(aux->pid == pid){
-            return aux;
-        }
-    }
-    return NULL;
-}
-int8_t unblockProcess(pid_t pid){
-    if(isEmpty(processQueue))
-        return -1;
-    PCB aux = findPcb(processQueue,pid);
-    if(aux == NULL){
-        return -1;
-    }
-    aux->status=BLOCKED;
-    return 0;
-}
+// PCB findPcb(queueADT queue,pid_t pid){
+//     if(isEmpty(queue))
+//         return NULL;
+//     toBegin(queue);
+//     while(hasNext(queue)){
+//         PCB aux = next(queue);
+//         if(aux->pid == pid){
+//             return aux;
+//         }
+//     }
+//     return NULL;
+// }
 
+
+// size_t searchForReadyProcess(){
+//     toBegin(processQueue);
+//     while(hasNext(processQueue)){
+//         if(((PCBType *) next(processQueue))->status == READY){
+//             return 1;
+//         }
+//     }
+//     return 0;
+// }
+void printQueue(){
+    toBegin(processQueue);
+    char aux[10];
+    while(hasNext(processQueue)){
+        intToStr(((PCB) next(processQueue))->status,aux);
+        drawWord(0xFFFFFFFF,aux);
+        drawChar(0xFFFFFFFF,'\n');
+    }
+}

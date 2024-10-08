@@ -1,8 +1,8 @@
 #include "../include/process.h"
 #include "../include/lib.h"
 #include "../include/scheduler.h"
-
-
+#include "../collections/hashMap.h"
+static HashMapADT PCBMap;
 static int  nextProcessId = 0;
 int64_t comparePid(void* pid1, void* pid2);
 pid_t newProcess(uint64_t rip, int ground, int priority, int argc, char * argv[]){
@@ -16,11 +16,12 @@ pid_t newProcess(uint64_t rip, int ground, int priority, int argc, char * argv[]
     }
     pcb->rip = rip;
     pcb->ground = ground;
-      if(getActivePid() == KERNEL_PID)
-        pcb->status = READY;
-    else{
-        pcb->status = BLOCKED;
-    }
+    // if(getActivePid() == KERNEL_PID){
+    //     pcb->status = READY;
+    // }else{
+    //     pcb->status = BLOCKED;
+    // }
+     pcb->status = READY;
     pcb->priority = priority;
     pcb->pid = nextProcessId;
 
@@ -35,9 +36,8 @@ pid_t newProcess(uint64_t rip, int ground, int priority, int argc, char * argv[]
     pcb->fd[STDOUT] = STDOUT;
     pcb->fd[STDERR] = STDERR;
 
-
+    insert(PCBMap,&(pcb->pid),pcb);
     addToReadyQueue(pcb);
-
     return nextProcessId++;
 }
 
@@ -53,25 +53,25 @@ void freeProcess(PCB process){
     freeMemory((void *)process->stackBase);
     freeMemory(process);
 }
-
-
-
-int8_t blockProcess(PCBType * process) {
-    if(process == NULL || process->status == BLOCKED || process->status == KILLED) {
+void initMap(){
+    PCBMap = create_hash_map(comparePid);
+}
+int8_t unblockProcess(pid_t pid){
+   PCB aux = lookup(PCBMap,&pid);
+    if(aux == NULL){
         return -1;
     }
-
-    process->status = BLOCKED;
-    yield();
-    return 1;
+    aux->status=READY;
+    return 0;
 }
 
-int8_t killProcess(PCBType * process) {
-    if(process == NULL) {
+int8_t killProcess(pid_t pid) {
+PCB aux = lookup(PCBMap,&pid);
+    if(aux == NULL){
         return -1;
     }
-    process->status = KILLED;
-
+    aux->status=KILLED;
+    printQueue();
     //Tengo que dejarle los hijos al init que los adopte
 //    if(process->childProcessesWaiting != NULL && isEmpty(process->childProcessesWaiting)){
 //        toBegin(process->childProcessesWaiting);
@@ -80,8 +80,27 @@ int8_t killProcess(PCBType * process) {
 //            currentProcess->ppid = IDLE_PID;
 //        }
 //    }
-
-    return 1;
+   return 0;
 }
+
+int8_t blockProcess(pid_t pid) {
+    PCB aux = lookup(PCBMap,&pid);
+    if(aux == NULL){
+        return -1;
+    }
+    aux->status = BLOCKED;
+    yield();
+    return 0;
+}
+
+int8_t changePrio(pid_t pid,int priority){
+    PCB aux = lookup(PCBMap,&pid);
+    if(aux == NULL){
+        return -1;
+    }
+    aux->priority = priority;
+    return 0;
+}
+
 
 

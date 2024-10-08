@@ -1,5 +1,5 @@
 #include "stdint.h"
-
+#include "lib.h"
 #ifndef USERSYSCALLS_H
 #define USERSYSCALLS_H
 
@@ -66,8 +66,15 @@ void call_moveCursorX(uint16_t posX);
 
 // Gets the elapsed time since some reference point in milliseconds
 int call_getTicks();
-
-
+int killProcess(pid_t pid );
+int blockProcess(pid_t pid );
+int unblockProcess(pid_t pid );
+void changePrio(pid_t pid, int prio);
+pid_t getMyPid();
+void * allocMemory(size_t size);
+void  freeMemory(void * mem);
+pid_t createProcess(uint64_t rip, int ground, int priority, int argc, char * argv[]);
 void testmm();
 void mmStatus();
+void testeando();
 #endif /* USERSYSCALLS_H */

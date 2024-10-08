@@ -11,5 +11,5 @@ uint64_t contextSwitch(uint64_t rsp);
 void startScheduler();
 void addToReadyQueue(PCB pcb);
 void yield();
-int8_t unblockProcess(pid_t pid);
+void printQueue();
 #endif //SO_TP2_SCHEDULER_H
