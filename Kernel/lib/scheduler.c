@@ -102,5 +102,5 @@ PCBType * findProcessByPid(pid_t pid){
 
 
 void yield(){
-    int_20();
+    _irq00Handler();
 }
