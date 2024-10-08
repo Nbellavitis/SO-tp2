@@ -13,7 +13,7 @@
 #include "include/registerHandling.h"
 #include "mm/mm.h"
 #include "tests/test_util.h"
-static void int_20();
+#include "include/irqDispatcher.h"
 static void int_21();
 static int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
 void irqDispatcher(uint64_t irq,uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {

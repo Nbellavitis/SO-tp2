@@ -92,7 +92,7 @@ PCBType * findProcessByPid(pid_t pid){
     }
     toBegin(processQueue);
     while(hasNext(processQueue)){
-        PCBType * currentProcess = (PCBType *) next(processQueue));
+        PCBType * currentProcess = (PCBType *) next(processQueue);
         if(currentProcess->pid == pid){
              return currentProcess;
         }
@@ -102,5 +102,5 @@ PCBType * findProcessByPid(pid_t pid){
 
 
 void yield(){
-    _int_20();
+    int_20();
 }

@@ -5,6 +5,7 @@
 #include "process.h"
 #include "../collections/queue.h"
 #include "interrupts.h"
+#include "irqDispatcher.h"
 pid_t getActivePid();
 uint64_t contextSwitch(uint64_t rsp);
 void startScheduler();

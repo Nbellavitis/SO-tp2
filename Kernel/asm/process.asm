@@ -3,7 +3,7 @@ global createProcess
 
 callWrapper:
     call rsi
-    mov rax,0x11
+    mov rax,0x11 ;exit
     int 0x80
 createProcess:
     push rbp
