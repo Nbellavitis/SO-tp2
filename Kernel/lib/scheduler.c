@@ -108,3 +108,25 @@ PCBType * findProcessByPid(pid_t pid){
 void yield(){
     _irq00Handler();
 }
+
+PCB findPcb(queueADT queue,pid_t pid){
+    toBegin(queue);
+    while(hasNext(queue)){
+        PCB aux = next(queue);
+        if(aux->pid == pid){
+            return aux;
+        }
+    }
+    return NULL;
+}
+int8_t unblockProcess(pid_t pid){
+    if(isEmpty(processQueue))
+        return -1;
+    PCB aux = findPcb(processQueue,pid);
+    if(aux == NULL){
+        return -1;
+    }
+    aux->status=BLOCKED;
+    return 0;
+}
+
