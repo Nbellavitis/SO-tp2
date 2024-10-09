@@ -89,14 +89,12 @@ static int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64
             printMm();
             return 0;
         case 17:
-            char aux[10];
-            intToStr(getActivePid(),aux);
-           // drawWord(0xFFFFFFFF,aux);
             killProcess(getActivePid());
             yield();
             return 0;
         case 18:
-           return newProcess(rsi,(int)rdx,(int)rcx,(int)r8,(char **)r9);
+            printNumber(rsi,0x00ffffff);
+           return newProcess(rsi,0,1,0,NULL);
         case 19:
             return  killProcess((pid_t) rsi);
         case 20:

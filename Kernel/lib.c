@@ -74,7 +74,7 @@ void reverseStr(char* str, int length) {
 }
 
 
-void intToStr(int num, char* str) {
+void intToStr(uint64_t num, char* str) {
     int i = 0;
     int isNegative = 0;
 
@@ -122,4 +122,23 @@ void printMm(){
 }
 void testeando(){
     drawWord(0xFFFFFFFF,"hola");
+}
+
+void printNumber(uint64_t num,uint32_t hexColor){
+    if (num < 0) {
+       drawChar(hexColor,'-');
+        num = -num;
+    }
+
+    uint64_t divisor = 1;
+    while (num / divisor >= 10) {
+        divisor *= 10;
+    }
+
+    while (divisor > 0) {
+        int digit = num / divisor;
+        drawChar(hexColor,'0' + digit);
+        num %= divisor;
+        divisor /= 10;
+    }
 }

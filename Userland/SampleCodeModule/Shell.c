@@ -5,7 +5,7 @@
 #include "include/lib.h"
 #include "include/usrSysCall.h"
 #include "include/eliminator.h"
-#include "include/test_util.h"
+#include "include/program.h"
 #include <stdio.h>
 #define WHITE 0xFFFFFFFF
 static char buffer[BUFFER_SIZE] = {0};
@@ -71,6 +71,9 @@ const char *commands[] = {
     "testmm:       allocs memory and run the test",
     "mmStatus      Shows the mem status"
 };
+void nada(){
+    while (1);
+}
 
 void lineRead(char *buffer) {
     if (strcmp(buffer, "help") == 0) {
@@ -116,11 +119,13 @@ void lineRead(char *buffer) {
     else if(strcmp(buffer,"mmStatus") == 0){
       mmStatus();
     }else if(strcmp(buffer,"testPrio") == 0){
-    char * argv[]= {"testprio", (void *) 0};
-    createProcess((uint64_t)test_prio,0,1,0, NULL);
+        uint64_t rip = (uint64_t) priotest;
+        putInt(rip,GREEN);
+    pid_t pid=createProcess(rip,0,1,0, NULL);
+        putInt(pid,GREEN);
     }else if(strcmp(buffer,"testProcess") == 0){
-    char * argv[]= {"test_processes", "4"};
-    createProcess((uint64_t)test_processes,0,1,2,argv);
+    //char * argv[]= {"test_processes", "4"};
+    //createProcess((uint64_t)test_processes,0,1,2,argv);
     }else if(strcmp(buffer,"testeando") == 0){
     testeando();
     }else{

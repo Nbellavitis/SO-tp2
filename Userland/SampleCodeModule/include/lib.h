@@ -12,7 +12,7 @@ int getC(char * c);
 void putC(char c, uint32_t hexColor);
 
 // Prints the integer number passed as the first argument in the color specified by the second argument.
-void putInt(int num, uint32_t hexColor);
+void putInt(uint64_t num, uint32_t hexColor);
 
 // Prints the formatted string passed as the second argument in the color specified by the hexadecimal color code passed as the first argument. 
 // Similar to c standarlibrary functino printf.
@@ -41,4 +41,5 @@ int getBuffer(char * buf);
 // Converts all lowercase characters in the string passed as the argument to uppercase.
 void strToUpper(char *str);
 
+void intToStr(uint64_t num, char* str);
 #endif // TPE_LIB_H

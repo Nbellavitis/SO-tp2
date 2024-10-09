@@ -16,18 +16,19 @@ void putC(char c,uint32_t hexColor){
     call_sys_write( STDOUT,&c, 1,hexColor);
 }
 
-void putInt(int num,uint32_t hexColor){ 
+void putInt(uint64_t num,uint32_t hexColor){
         if (num < 0) {
             putC('-',hexColor);
             num = -num;
         }
 
-        int divisor = 1;
+        uint64_t divisor = 1;
         while (num / divisor >= 10) {
             divisor *= 10;
         }
 
         while (divisor > 0) {
+
             int digit = num / divisor;
             putC('0' + digit,hexColor);
             num %= divisor;
@@ -102,6 +103,43 @@ char * cutString(char *str) {
 #include <stddef.h>
 
 #include <stddef.h>
+void reverseStr(char* str, int length) {
+    int start = 0;
+    int end = length - 1;
+    while (start < end) {
+        char temp = str[start];
+        str[start] = str[end];
+        str[end] = temp;
+        start++;
+        end--;
+    }
+}
+void intToStr(uint64_t num, char* str) {
+    int i = 0;
+    int isNegative = 0;
+
+
+    if (num < 0) {
+        isNegative = 1;
+        num = -num;
+    }
+
+    do {
+        str[i++] = (num % 10) + '0';
+        num /= 10;
+    } while (num != 0);
+
+
+    if (isNegative) {
+        str[i++] = '-';
+    }
+
+
+    str[i] = '\0';
+
+
+    reverseStr(str, i);
+}
 
 
 

@@ -32,7 +32,7 @@ uint64_t contextSwitch(uint64_t rsp){
         return rsp;
     char  aux[10];
     intToStr(getActivePid(),aux);
-   //drawWord(0xFFFFFFFF,aux);
+    drawWord(0xFFFFFFFF,aux);
     if ( activePid == KERNEL_PID){
         activeProcess = dequeue(processQueue);
         activePid = 0;
