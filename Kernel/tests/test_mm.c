@@ -54,11 +54,7 @@ uint64_t test_mm(uint64_t argc, char *argv[]) {
     // Free
     for (i = 0; i < rq; i++)
       if (mm_rqs[i].address)
-        freeMemory(mm_rqs[i].address);
-
-
-
-      
+        freeMemory(mm_rqs[i].address); 
   }
 
   return 0;

@@ -14,12 +14,12 @@ typedef struct {
     uint32_t blocks;
 } lastFreed;
 
-typedef struct MM{
+typedef struct mm{
    void * start;
    uint32_t blockQty;
    uint32_t blocksUsed;
    uint32_t *bitmap;
-   uint32_t current;
+   size_t current;
    lastFreed lastFreed;
 } mm;
 
@@ -33,7 +33,7 @@ int mmInit ( void * baseAddress ,uint64_t memorySize)  {
     memoryManager.blockQty = totalNeeded / BLOCK_SIZE;
     if(memorySize % BLOCK_SIZE != 0){
         memoryManager.blockQty++;
-        totalNeeded += BLOCK_SIZE * memoryManager.blockQty;
+        totalNeeded = BLOCK_SIZE * memoryManager.blockQty;
     }
     size_t bitMapSize = memoryManager.blockQty / BLOCK_SIZE;
     if(memoryManager.blockQty % BLOCK_SIZE != 0){
@@ -75,10 +75,8 @@ static uintptr_t findFreeBlocks( size_t blocksNeeded, size_t start, size_t end){
         }
     }
     if(freeBlocks == blocksNeeded){
-        drawWord(0x00ffffff, "ultimo");
         return (uintptr_t)(memoryManager.start + (i-blocksNeeded+1) * BLOCK_SIZE);
     }
-    drawWord(0x00ffffff, "No hay memoria disponible");
     return -1;
 }
 static void * markGroupAsUsed(uint32_t blocksNeeded, uint32_t index){
@@ -99,19 +97,18 @@ void * allocMemory(size_t size){
     }
     if(blocksNeeded < memoryManager.lastFreed.blocks){
         return markGroupAsUsed(memoryManager.lastFreed.blocks, memoryManager.lastFreed.index);
-
     }
-    //uintptr_t initialBlockAddress = findFreeBlocks( blocksNeeded, memoryManager.current, memoryManager.blockQty);
-    uintptr_t initialBlockAddress = findFreeBlocks( blocksNeeded, 0, memoryManager.blockQty);
+    uintptr_t initialBlockAddress = findFreeBlocks( blocksNeeded, memoryManager.current, memoryManager.blockQty);
+   
 
     if(initialBlockAddress == -1){
-
+     initialBlockAddress = findFreeBlocks( blocksNeeded, 0, memoryManager.blockQty);
     }
      if(initialBlockAddress == -1){
-         printNumber(33,0x00ffffff);
          return NULL;
  }
-    memoryManager.current = (initialBlockAddress) / BLOCK_SIZE + blocksNeeded;
+    memoryManager.current = sizeToBlockQty(initialBlockAddress - (uintptr_t) memoryManager.start) +blocksNeeded;
+
     if(blocksNeeded == 1){
     
          memoryManager.blocksUsed++;
@@ -178,4 +175,62 @@ void printMemory() {
     for (int i = 0; i < BLOCK_SIZE * 50; i++) {
         drawChar(0x00ffffff, *(aux + i));
     }
+}
+
+void memoryManager_status() {
+    uint64_t total = 0;
+    uint64_t total2 = 0;
+    uint64_t from = 0;
+    uint64_t to = 0;
+
+    uint64_t to2 = 0;
+
+    uint64_t max_continous = 0;
+    uint64_t start_continous = 0;
+
+    int flag = 0;
+
+    for (uint32_t i = 0; i < memoryManager.blockQty; i++) {
+        if (memoryManager.bitmap[i] != FREE && memoryManager.bitmap[i] != USED   && memoryManager.bitmap[i] != END_BOUNDARY && memoryManager.bitmap[i] != START_BOUNDARY && memoryManager.bitmap[i] != SINGLE_BLOCK) {
+            drawWord(0xFFFFFFFF," ACA HAY UN VALOR QUE NO ESTA BIEN: ");
+            printNumber(memoryManager.bitmap[i],0xFFFFFFFF);
+            drawWord(0xFFFFFFFF," en posicion: ");
+            printNumber(i,0xFFFFFFFF);
+            newLine();
+            total++;
+        }
+        if (memoryManager.bitmap[i] == FREE ) {
+            if (total2 == 0) {
+                from = i;
+            }
+            total2++;
+            to2 = i;
+            if (max_continous == 0 && !flag) {
+                start_continous = i;
+                flag = 1;
+
+            }
+            max_continous++;
+        } else if (max_continous != 0){
+
+            max_continous = 0;
+        }
+    }
+    drawWord(0xFFFFFFFF,"total total : ");
+    printNumber(total2,0xFFFFFFFF);
+    newLine();
+    drawWord(0xFFFFFFFF,"from: ");
+    printNumber(from,0xFFFFFFFF);
+    newLine();
+    drawWord(0xFFFFFFFF,"to: ");
+    printNumber(to2,0xFFFFFFFF);
+    newLine();
+    drawWord(0xFFFFFFFF,"total with garbage : ");
+    printNumber(total,0xFFFFFFFF);
+    newLine();
+    drawWord(0xFFFFFFFF,"en pos 0 hay: ");
+    printNumber(memoryManager.bitmap[0],0xFFFFFFFF);
+    newLine();
+
+
 }

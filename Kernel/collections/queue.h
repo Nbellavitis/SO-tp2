@@ -27,7 +27,7 @@ int8_t hasNext(queueADT queue);
 
 void * next(queueADT queue);
 
-uint64_t size(queueADT queue);
+uint64_t sizeQ(queueADT queue);
 
 
 #endif //SO_TP2_QUEUE_H

@@ -1,5 +1,5 @@
 #include "hashMap.h"
-#define TABLE_SIZE 100
+#define TABLE_SIZE 2000
 
 typedef struct Entry {
     void * key;          
@@ -87,7 +87,6 @@ void delete(HashMap *hashMap,  void *key) {
         previous->next = current->next;
     }
     
-    freeMemory(current->key); 
     freeMemory(current);      
 }
 
@@ -97,7 +96,6 @@ void freeHashMap(HashMap * hashMap) {
         Entry * current = hashMap->buckets[i];
         while (current != NULL) {
             Entry *next = current->next;
-            freeMemory(current->key); 
             freeMemory(current);      
             current = next;
         }

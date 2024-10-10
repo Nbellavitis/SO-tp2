@@ -62,29 +62,37 @@ void * dequeue(queueADT queue){
     tList auxNode = queue->first;
     queue->first= auxNode->next;
     queue->amount--;
-    return auxNode->element;
+    void * auxElem=auxNode->element;
+    freeMemory(auxNode);
+    return auxElem;
 }
 
 
-int8_t removeFromList(tList list, compareFunc cmp, void * elem){
-    if(list == NULL){
-        return 0;
+tList removeFromList(tList list, compareFunc cmp, void * elem, int8_t *flag){
+    if (list == NULL) {
+        *flag = 0;
+        return list;
     }
-    if(cmp(elem,list->element) == 0){
-        tList aux = list->element;
+
+    if (cmp(elem, list->element) == 0) {
+        tList aux = list;
         list = aux->next;
-        return 1;
+        freeMemory(aux);
+        *flag = 1;
+        return list;
     }
-    return removeFromList(list->next,cmp,elem);
+
+    list->next = removeFromList(list->next, cmp, elem, flag);
+    return list;
 }
 
-
-int8_t remove(queueADT queue, void * elem){
-    if(queue->first == NULL){
+int8_t remove(queueADT queue, void * elem) {
+    if (queue->first == NULL) {
         return 0;
     }
-    tList aux = queue->first;
-    size_t flag = removeFromList(aux, queue->cmpFunc, elem);
+
+    int flag;
+    queue->first = removeFromList(queue->first, queue->cmpFunc, elem, &flag);
     queue->amount -= flag;
     return flag;
 }
@@ -116,7 +124,7 @@ void freeQueue(queueADT queue){
 
 
 
-uint64_t size(queueADT queue){
+uint64_t sizeQ(queueADT queue){
     return queue->amount;
 }
 

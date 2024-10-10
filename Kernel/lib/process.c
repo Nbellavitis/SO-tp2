@@ -3,21 +3,23 @@
 #include "../include/scheduler.h"
 #include "../collections/hashMap.h"
 #include "../Drivers/include/videoDriver.h"
+#define MAX_PROCESSES 1000
 static HashMapADT PCBMap;
 static int  nextProcessId = 0;
+static aliveProcesses = 0;
 int64_t comparePid(void* pid1, void* pid2);
 pid_t newProcess(uint64_t rip, int ground, int priority, int argc, char * argv[]){
     PCB pcb = (PCBType *) allocMemory(sizeof(PCBType));
     if (pcb == NULL){
-        drawWord(0x0000FF00, "Error al crear el proceso");
         return -1;
         }
-    pcb->stackBase = (uint64_t) allocMemory(STACK_SIZE) + STACK_SIZE;
-    if (pcb->stackBase - STACK_SIZE == 0){
-        drawWord(0x0000FF00, "Error al crear el stack");
-        //freeMemory(pcb);
+    pcb->stackBase = (uint64_t) allocMemory(STACK_SIZE);
+    if (pcb->stackBase == NULL){
+        drawWord(0xFFFFFF,"PORQUE ME PASA ESTOOO");
+        freeMemory(pcb);
         return -1;
     }
+    pcb->stackBase += STACK_SIZE;
     pcb->rip = rip;
     pcb->ground = ground;
     pcb->status = READY;
@@ -37,6 +39,7 @@ pid_t newProcess(uint64_t rip, int ground, int priority, int argc, char * argv[]
         addToReadyQueue(pcb);
         priority--;
     }
+    aliveProcesses++;
     return nextProcessId++;
 }
 
@@ -50,8 +53,9 @@ int64_t comparePid(void * pid1, void * pid2) {
 }
 void freeProcess(PCB process){
     delete(PCBMap, process->pid);
-    freeMemory((void *)process->stackBase);
+    freeMemory(process->stackBase-STACK_SIZE);
     freeMemory(process);
+    aliveProcesses--;
 }
 void initMap(){
     PCBMap = create_hash_map(comparePid);
@@ -70,15 +74,9 @@ PCB aux = lookup(PCBMap,&pid);
     if(aux == NULL){
         return -1;
     }
+
     aux->status=KILLED;
-    //Tengo que dejarle los hijos al init que los adopte
-//    if(process->childProcessesWaiting != NULL && isEmpty(process->childProcessesWaiting)){
-//        toBegin(process->childProcessesWaiting);
-//        while(hasNext(process->childProcessesWaiting)){
-//            PCBType * currentProcess = (PCBType * ) next(process->childProcessesWaiting);
-//            currentProcess->ppid = IDLE_PID;
-//        }
-//    }
+
    return 0;
 }
 
@@ -97,8 +95,8 @@ int8_t changePrio(pid_t pid,int priority){
         return -1;
     }
     if(aux->priority > priority){
-        while(aux->priority-priority != 0){
-            removeFromReadyQueue(aux);
+        while(aux->priority - priority != 0){
+           removeFromReadyQueue(aux);
             aux->priority--;
         }
     }else{
@@ -110,5 +108,6 @@ int8_t changePrio(pid_t pid,int priority){
     return 0;
 }
 
-
-
+PCB lookUpOnHashMap(pid_t * pid){
+    return lookup(PCBMap,pid);
+}

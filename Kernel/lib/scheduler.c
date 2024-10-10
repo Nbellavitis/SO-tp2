@@ -7,24 +7,26 @@
 #define ACTIVE 1
 #define INACTIVE 0
 static queueADT processQueue = NULL;
+static PCB idleProcess;
 static pid_t activePid = KERNEL_PID;
 static size_t status = INACTIVE;
 static PCB activeProcess = NULL;
 static void idle();
-
+static void removeAll(queueADT queue);
 int64_t comparePCB(void * pcb1, void * pcb2) {
-    if(pcb1 == NULL || pcb2 == NULL) {
+    if (pcb1 == NULL || pcb2 == NULL) {
         return (pcb1 != NULL) - (pcb2 != NULL);
     }
-    PCB a = (PCB )pcb1;
-    PCB b = (PCB )pcb2;
+    PCB a = (PCB)pcb1;
+    PCB b = (PCB)pcb2;
     return (a->pid > b->pid) - (a->pid < b->pid);
 }
+
 
 void startScheduler() {
     status = ACTIVE;
     processQueue = createQueue(comparePCB);
-    newProcess((uint64_t)idle, 1, 1, 0, NULL);
+    //idleProcess = lookUpOnHashMap(newProcess((uint64_t)idle, 1, 1, 0, NULL));
 }
 
 uint64_t contextSwitch(uint64_t rsp){
@@ -34,44 +36,51 @@ uint64_t contextSwitch(uint64_t rsp){
         activeProcess = dequeue(processQueue);
         activePid = 0;
         if (activeProcess->rip == (uint64_t) idle ){
-            queue(processQueue,activeProcess);
             activeProcess = dequeue(processQueue);
         }
         activePid = activeProcess->pid;
         activeProcess->status = RUNNING;
         return activeProcess->rsp;
     }
-    //printNumber(getActivePid(),0x00FF0000);
-    //newLine();
     activeProcess->rsp = rsp;
-    if (activeProcess->status != KILLED){
+    if (activeProcess->status != KILLED && activeProcess->pid != idleProcess->pid){
         if(activeProcess->status != BLOCKED){
             activeProcess->status = READY;
         }
         queue(processQueue,activeProcess);
     }else{
-        //freeProcess(activeProcess);
+        removeAll(processQueue);
+        freeProcess(activeProcess);
     }
-    while (1){
+    int size = sizeQ(processQueue);
+    for(int i=0;i < size; i++ ){
     activeProcess = dequeue(processQueue);
     if (activeProcess->status == READY) {
-        // if(activeProcess->rip == (uint64_t)idle){
-        //     queue(processQueue,activeProcess);
-        //     activeProcess = dequeue(processQueue);
-        // }
         activePid = activeProcess->pid;
         activeProcess->status = RUNNING;
         return activeProcess->rsp;
     }else if (activeProcess->status == BLOCKED){
         queue(processQueue,activeProcess);
     } else if (activeProcess->status == KILLED) {
-       // freeProcess(activeProcess);
+        removeAll(processQueue);
+        freeProcess(activeProcess);
     }
-}}
+}
+    // activeProcess=idleProcess;
+    // activePid=idleProcess->pid;
+    // return activeProcess->rsp;
+}
 
 static void idle() {
     while (1) {
         _hlt();
+    }
+}
+static void removeAll(queueADT queue){
+    int counter=1;
+    while(activeProcess->priority - counter != 0){
+        remove(processQueue,activeProcess);
+        counter++;
     }
 }
 pid_t getActivePid(){
@@ -100,29 +109,7 @@ void yield(){
     _irq00Handler();
 }
 
-// PCB findPcb(queueADT queue,pid_t pid){
-//     if(isEmpty(queue))
-//         return NULL;
-//     toBegin(queue);
-//     while(hasNext(queue)){
-//         PCB aux = next(queue);
-//         if(aux->pid == pid){
-//             return aux;
-//         }
-//     }
-//     return NULL;
-// }
 
-
-// size_t searchForReadyProcess(){
-//     toBegin(processQueue);
-//     while(hasNext(processQueue)){
-//         if(((PCBType *) next(processQueue))->status == READY){
-//             return 1;
-//         }
-//     }
-//     return 0;
-// }
 void printQueue(){
     toBegin(processQueue);
     char aux[10];

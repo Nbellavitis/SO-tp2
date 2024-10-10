@@ -16,4 +16,5 @@ void freeMemory(void * memory);
 void * allocMemory(size_t size);
 void printMemory();
 MemoryStatus getMemoryStatus();
+void memoryManager_status();
 #endif

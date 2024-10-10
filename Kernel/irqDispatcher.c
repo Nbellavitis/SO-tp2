@@ -87,6 +87,7 @@ static int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64
            return 0;
         case 16:
             printMm();
+            memoryManager_status();
             return 0;
         case 17:
             killProcess(getActivePid());
@@ -111,7 +112,7 @@ static int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64
         case 25:
             return getActivePid();
         case 26:
-            newProcess((uint64_t)testeando,0,50,0,NULL);
+            newProcess((uint64_t)testeando,0,2,0,NULL);
             return 0;
         default:
 

@@ -14,6 +14,7 @@
 #include "include/process.h"
 #include "include/scheduler.h"
 #include "collections/queue.h"
+#include "collections/hashMap.h"
 extern uint8_t text;
 extern uint8_t rodata;
 extern uint8_t data;
