@@ -50,7 +50,7 @@ uint64_t contextSwitch(uint64_t rsp){
         }
         queue(processQueue,activeProcess);
     }else{
-        //freeProcess(activeProcess);
+        freeProcess(activeProcess);
     }
     while (1){
     activeProcess = dequeue(processQueue);
@@ -65,8 +65,7 @@ uint64_t contextSwitch(uint64_t rsp){
     }else if (activeProcess->status == BLOCKED){
         queue(processQueue,activeProcess);
     } else if (activeProcess->status == KILLED) {
-
-        //freeProcess(activeProcess);
+        freeProcess(activeProcess);
     }
 }}
 

@@ -15,7 +15,7 @@ pid_t newProcess(uint64_t rip, int ground, int priority, int argc, char * argv[]
     pcb->stackBase = (uint64_t) allocMemory(STACK_SIZE) + STACK_SIZE;
     if (pcb->stackBase - STACK_SIZE == 0){
         drawWord(0x0000FF00, "Error al crear el stack");
-        //freeMemory(pcb);
+        freeMemory(pcb);
         return -1;
     }
     pcb->rip = rip;
@@ -49,6 +49,7 @@ int64_t comparePid(void * pid1, void * pid2) {
     return (a > b) - (a < b);
 }
 void freeProcess(PCB process){
+    delete(PCBMap, process->pid);
     freeMemory((void *)process->stackBase);
     freeMemory(process);
 }
