@@ -75,6 +75,8 @@ void nada(){
     while (1);
 }
 
+
+
 void lineRead(char *buffer) {
     if (strcmp(buffer, "help") == 0) {
         putString("The following commands may be used: \n",WHITE);
@@ -119,13 +121,13 @@ void lineRead(char *buffer) {
     else if(strcmp(buffer,"mmStatus") == 0){
       mmStatus();
     }else if(strcmp(buffer,"testPrio") == 0){
-        uint64_t rip = (uint64_t) priotest;
-        putInt(rip,GREEN);
-    pid_t pid=createProcess(rip,0,1,0, NULL);
-        putInt(pid,GREEN);
+        uint64_t rip=(uint64_t)test_prio;
+        pid_t pid=createProcess(rip,0,1,0, NULL);
     }else if(strcmp(buffer,"testProcess") == 0){
-    //char * argv[]= {"test_processes", "4"};
-    //createProcess((uint64_t)test_processes,0,1,2,argv);
+    char ** argv=allocMemory(2*sizeof(char*));
+    argv[1]="4";
+    argv[0]="processtest";
+    createProcess((uint64_t)processtest,0,1,2,argv);
     }else if(strcmp(buffer,"testeando") == 0){
     testeando();
     }else{

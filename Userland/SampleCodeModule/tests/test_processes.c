@@ -23,16 +23,15 @@ int64_t test_processes(uint64_t argc, char *argv[]) {
 
   if ((max_processes = satoi(argv[0])) <= 0)
     return -1;
-
   p_rq p_rqs[max_processes];
 
   while (1) {
-
     // Create max_processes processes
     for (rq = 0; rq < max_processes; rq++) {
-      p_rqs[rq].pid = createProcess((uint64_t)endless_loop, 0,3, 0, argvAux);
+      p_rqs[rq].pid = createProcess((uint64_t)endless_loop, 0,1, 0, argvAux);
 
       if (p_rqs[rq].pid == -1) {
+          //putInt(rq,0x0000FF00);
         print(0xFFFFFFFF,"test_processes: ERROR creating process\n");
         return -1;
       } else {
@@ -82,4 +81,6 @@ int64_t test_processes(uint64_t argc, char *argv[]) {
         }
     }
   }
+    print(0xffffffff,"test_processes: SUCCESS\n");
+  return 0;
 }

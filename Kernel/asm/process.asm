@@ -2,7 +2,7 @@ section .text
 global createProcess
 
 callWrapper:
-    call rsi
+    call rdx
     mov rdi,0x11 ;exit
     int 0x80
 createProcess:
@@ -18,10 +18,10 @@ createProcess:
     push rbp
     push rax
     push rbx
-    push rcx
-    push rdx
     push rdi
     push rsi
+    push rdx
+    push rcx
     push r8
     push r9
     push r10

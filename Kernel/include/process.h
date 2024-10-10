@@ -33,6 +33,7 @@ typedef struct PCBType * PCB;
 int64_t comparePid(void * pid1, void * pid2);
 pid_t newProcess(uint64_t rip, int ground, int priority, int argc, char * argv[]);
 void freeProcess(PCB process);
+int8_t removeFromReadyQueue(PCB pcb);
 int8_t unblockProcess(pid_t pid);
 int8_t killProcess(pid_t pid);
 int8_t blockProcess(pid_t pid);

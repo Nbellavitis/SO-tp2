@@ -28,6 +28,7 @@ EXTERN getStackBase
 EXTERN clear
 EXTERN printRegisters
 EXTERN contextSwitch
+EXTERN drawWord
 SECTION .text
 
 
@@ -107,6 +108,7 @@ SECTION .text
 	pop rbx
 	pop rax
 	pop rbp
+
 %endmacro
 
 %macro irqHandlerMaster 1

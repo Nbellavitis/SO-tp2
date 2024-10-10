@@ -30,9 +30,6 @@ void startScheduler() {
 uint64_t contextSwitch(uint64_t rsp){
     if ( status == INACTIVE)
         return rsp;
-    char  aux[10];
-    intToStr(getActivePid(),aux);
-    drawWord(0xFFFFFFFF,aux);
     if ( activePid == KERNEL_PID){
         activeProcess = dequeue(processQueue);
         activePid = 0;
@@ -44,6 +41,8 @@ uint64_t contextSwitch(uint64_t rsp){
         activeProcess->status = RUNNING;
         return activeProcess->rsp;
     }
+    //printNumber(getActivePid(),0x00FF0000);
+    //newLine();
     activeProcess->rsp = rsp;
     if (activeProcess->status != KILLED){
         if(activeProcess->status != BLOCKED){
@@ -66,9 +65,7 @@ uint64_t contextSwitch(uint64_t rsp){
     }else if (activeProcess->status == BLOCKED){
         queue(processQueue,activeProcess);
     } else if (activeProcess->status == KILLED) {
-        char aux[10];
-        intToStr(activeProcess->pid,aux);
-        drawWord(0xFFFFFFFF,aux);
+
         //freeProcess(activeProcess);
     }
 }}
@@ -82,11 +79,7 @@ pid_t getActivePid(){
     return activeProcess->pid;
 }
 void addToReadyQueue(PCBType * pcb){
-    int counter = pcb->priority;
-    while(counter > 0) {
-        queue(processQueue, pcb);
-        counter--;
-    }
+    queue(processQueue, pcb);
 }
 
 PCBType * findProcessByPid(pid_t pid){
@@ -139,4 +132,7 @@ void printQueue(){
         drawWord(0xFFFFFFFF,aux);
         drawChar(0xFFFFFFFF,'\n');
     }
+}
+int8_t removeFromReadyQueue(PCB pcb){
+    return remove(processQueue,pcb);
 }

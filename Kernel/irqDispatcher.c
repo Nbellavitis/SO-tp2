@@ -93,8 +93,8 @@ static int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64
             yield();
             return 0;
         case 18:
-            printNumber(rsi,0x00ffffff);
-           return newProcess(rsi,0,1,0,NULL);
+
+           return newProcess(rsi,rdx,rcx,r8,(char **)r9);
         case 19:
             return  killProcess((pid_t) rsi);
         case 20:

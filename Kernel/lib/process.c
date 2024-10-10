@@ -2,42 +2,41 @@
 #include "../include/lib.h"
 #include "../include/scheduler.h"
 #include "../collections/hashMap.h"
+#include "../Drivers/include/videoDriver.h"
 static HashMapADT PCBMap;
 static int  nextProcessId = 0;
 int64_t comparePid(void* pid1, void* pid2);
 pid_t newProcess(uint64_t rip, int ground, int priority, int argc, char * argv[]){
     PCB pcb = (PCBType *) allocMemory(sizeof(PCBType));
-    if (pcb == NULL)
+    if (pcb == NULL){
+        drawWord(0x0000FF00, "Error al crear el proceso");
         return -1;
+        }
     pcb->stackBase = (uint64_t) allocMemory(STACK_SIZE) + STACK_SIZE;
     if (pcb->stackBase - STACK_SIZE == 0){
-        freeMemory(pcb);
+        drawWord(0x0000FF00, "Error al crear el stack");
+        //freeMemory(pcb);
         return -1;
     }
     pcb->rip = rip;
     pcb->ground = ground;
-    // if(getActivePid() == KERNEL_PID){
-    //     pcb->status = READY;
-    // }else{
-    //     pcb->status = BLOCKED;
-    // }
-     pcb->status = READY;
+    pcb->status = READY;
     pcb->priority = priority;
     pcb->pid = nextProcessId;
-
     //pcb->childProcessesWaiting = newQueue(comparePid);
 
     //ACA DEBERIAMOS AGREGARLO AL CHILDPROCESSES
     pcb->ppid = getActivePid(); //te dice el scheduler quien esta corriendo
-
     pcb->rsp = createProcess(pcb->stackBase, pcb->rip, argc, argv);
-
     pcb->fd[STDIN] = STDIN;
     pcb->fd[STDOUT] = STDOUT;
     pcb->fd[STDERR] = STDERR;
 
     insert(PCBMap,&(pcb->pid),pcb);
-    addToReadyQueue(pcb);
+    while(priority > 0){
+        addToReadyQueue(pcb);
+        priority--;
+    }
     return nextProcessId++;
 }
 
@@ -71,7 +70,6 @@ PCB aux = lookup(PCBMap,&pid);
         return -1;
     }
     aux->status=KILLED;
-    printQueue();
     //Tengo que dejarle los hijos al init que los adopte
 //    if(process->childProcessesWaiting != NULL && isEmpty(process->childProcessesWaiting)){
 //        toBegin(process->childProcessesWaiting);
@@ -89,7 +87,6 @@ int8_t blockProcess(pid_t pid) {
         return -1;
     }
     aux->status = BLOCKED;
-    yield();
     return 0;
 }
 
@@ -98,7 +95,17 @@ int8_t changePrio(pid_t pid,int priority){
     if(aux == NULL){
         return -1;
     }
-    aux->priority = priority;
+    if(aux->priority > priority){
+        while(aux->priority-priority != 0){
+            removeFromReadyQueue(aux);
+            aux->priority--;
+        }
+    }else{
+        while(priority-aux->priority != 0){
+            addToReadyQueue(aux);
+            aux->priority++;
+        }
+    }
     return 0;
 }
 
