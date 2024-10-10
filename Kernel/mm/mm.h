@@ -14,5 +14,6 @@ typedef struct {
 int mmInit ( void * baseAddress ,uint64_t memorySize) ;
 void freeMemory(void * memory);
 void * allocMemory(size_t size);
+void printMemory();
 MemoryStatus getMemoryStatus();
 #endif

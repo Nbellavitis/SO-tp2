@@ -2,6 +2,7 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
 #include "mm.h"
 #include <stdint.h>
+#include "../include/lib.h"
 #include "../Drivers/include/videoDriver.h"
 #define START_HEAP 0x600000
 
@@ -62,7 +63,8 @@ static void initializeBitmap(){
 }
 static uintptr_t findFreeBlocks( size_t blocksNeeded, size_t start, size_t end){
     size_t freeBlocks = 0;
-    for(size_t i = start; i < end; i++){
+    size_t i;
+    for(i = start; i < end; i++){
         if(memoryManager.bitmap[i] == FREE){
             freeBlocks++;
             if(freeBlocks == blocksNeeded){
@@ -72,6 +74,11 @@ static uintptr_t findFreeBlocks( size_t blocksNeeded, size_t start, size_t end){
             freeBlocks = 0;
         }
     }
+    if(freeBlocks == blocksNeeded){
+        drawWord(0x00ffffff, "ultimo");
+        return (uintptr_t)(memoryManager.start + (i-blocksNeeded+1) * BLOCK_SIZE);
+    }
+    drawWord(0x00ffffff, "No hay memoria disponible");
     return -1;
 }
 static void * markGroupAsUsed(uint32_t blocksNeeded, uint32_t index){
@@ -92,16 +99,16 @@ void * allocMemory(size_t size){
     }
     if(blocksNeeded < memoryManager.lastFreed.blocks){
         return markGroupAsUsed(memoryManager.lastFreed.blocks, memoryManager.lastFreed.index);
-        
+
     }
-    uintptr_t initialBlockAddress = findFreeBlocks( blocksNeeded, memoryManager.current, memoryManager.blockQty);
-    
+    //uintptr_t initialBlockAddress = findFreeBlocks( blocksNeeded, memoryManager.current, memoryManager.blockQty);
+    uintptr_t initialBlockAddress = findFreeBlocks( blocksNeeded, 0, memoryManager.blockQty);
+
     if(initialBlockAddress == -1){
-        initialBlockAddress = findFreeBlocks( blocksNeeded, 0, memoryManager.current + blocksNeeded);
-       
+
     }
      if(initialBlockAddress == -1){
-        
+         printNumber(33,0x00ffffff);
          return NULL;
  }
     memoryManager.current = (initialBlockAddress) / BLOCK_SIZE + blocksNeeded;
@@ -148,4 +155,27 @@ MemoryStatus getMemoryStatus(){
     status.usedMemory = memoryManager.blocksUsed * BLOCK_SIZE;
     status.freeMemory = status.totalMemory - status.usedMemory;
     return status;
+}
+void fillWith1s(void * memory, size_t size){
+    for(int i = 0; i < size; i++){
+        ((char *) memory)[i] = '1';
+    }
+
+}
+void printMemory() {
+    char *aux = allocMemory(BLOCK_SIZE);
+    fillWith1s(aux, BLOCK_SIZE);
+
+    for (int i = 0; i < 5; i++){
+        char * aux2=allocMemory(BLOCK_SIZE);
+        printNumber(memoryManager.current,0x00ffffff);
+        newLine();
+        fillWith1s(aux2, BLOCK_SIZE);
+
+    }
+
+
+    for (int i = 0; i < BLOCK_SIZE * 50; i++) {
+        drawChar(0x00ffffff, *(aux + i));
+    }
 }

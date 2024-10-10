@@ -120,9 +120,6 @@ void printMm(){
             drawWord(0x00ffffff,status);
             drawChar(0x00ffffff,'\n');
 }
-void testeando(){
-    drawWord(0xFFFFFFFF,"hola");
-}
 
 void printNumber(uint64_t num,uint32_t hexColor){
     if (num < 0) {
@@ -141,4 +138,9 @@ void printNumber(uint64_t num,uint32_t hexColor){
         num %= divisor;
         divisor /= 10;
     }
+}
+void testeando(){
+    allocMemory(7314368);
+
+printMm();
 }

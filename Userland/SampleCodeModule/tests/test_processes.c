@@ -31,7 +31,6 @@ int64_t test_processes(uint64_t argc, char *argv[]) {
       p_rqs[rq].pid = createProcess((uint64_t)endless_loop, 0,1, 0, argvAux);
 
       if (p_rqs[rq].pid == -1) {
-          //putInt(rq,0x0000FF00);
         print(0xFFFFFFFF,"test_processes: ERROR creating process\n");
         return -1;
       } else {
