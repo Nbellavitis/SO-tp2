@@ -21,6 +21,7 @@ typedef struct mm{
    uint32_t *bitmap;
    size_t current;
    lastFreed lastFreed;
+   size_t allocs,frees;
 } mm;
 
 static void initializeBitmap();
@@ -48,6 +49,8 @@ int mmInit ( void * baseAddress ,uint64_t memorySize)  {
     memoryManager.blocksUsed = 0;
     memoryManager.start = memoryManager.bitmap + bitMapSize * BLOCK_SIZE;
     memoryManager.current = 0;
+    memoryManager.allocs=0;
+    memoryManager.frees=0;
 
     initializeBitmap();
     return 0;
@@ -108,7 +111,7 @@ void * allocMemory(size_t size){
          return NULL;
  }
     memoryManager.current = sizeToBlockQty(initialBlockAddress - (uintptr_t) memoryManager.start) +blocksNeeded;
-
+    memoryManager.allocs++;
     if(blocksNeeded == 1){
     
          memoryManager.blocksUsed++;
@@ -129,6 +132,7 @@ void freeMemory(void * memory){
     size_t blockIndex = (blockAddress - (uintptr_t) memoryManager.start) / BLOCK_SIZE;
     memoryManager.lastFreed.index = blockIndex;
     if(memoryManager.bitmap[blockIndex] == SINGLE_BLOCK){
+        memoryManager.frees++;
         memoryManager.bitmap[blockIndex] = FREE;
         memoryManager.lastFreed.blocks = 1;
         memoryManager.blocksUsed--;
@@ -142,6 +146,7 @@ void freeMemory(void * memory){
         memoryManager.bitmap[blockIndex + blocksToFree] = FREE;
         blocksToFree++;
     }
+      memoryManager.frees++;
     memoryManager.bitmap[blockIndex + blocksToFree] = FREE;
     memoryManager.blocksUsed -= blocksToFree + 1;
     memoryManager.lastFreed.blocks = blocksToFree + 1;
@@ -230,6 +235,12 @@ void memoryManager_status() {
     newLine();
     drawWord(0xFFFFFFFF,"en pos 0 hay: ");
     printNumber(memoryManager.bitmap[0],0xFFFFFFFF);
+    newLine();
+    drawWord(0xFFFFFFFF,"Allocs: ");
+    printNumber(memoryManager.allocs,0xFFFFFFFF);
+    newLine();
+     drawWord(0xFFFFFFFF,"Frees: ");
+    printNumber(memoryManager.frees,0xFFFFFFFF);
     newLine();
 
 

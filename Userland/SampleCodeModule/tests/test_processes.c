@@ -24,14 +24,16 @@ int64_t test_processes(uint64_t argc, char *argv[]) {
   if ((max_processes = satoi(argv[0])) <= 0)
     return -1;
   p_rq p_rqs[max_processes];
-
+ 
   while (1) {
     // Create max_processes processes
+     int aux=0;
     for (rq = 0; rq < max_processes; rq++) {
       p_rqs[rq].pid = createProcess((uint64_t)endless_loop, 0,1, 0, argvAux);
 
       if (p_rqs[rq].pid == -1) {
         print(0xFFFFFFFF,"test_processes: ERROR creating process\n");
+        mmStatus();
         return -1;
       } else {
         p_rqs[rq].state = RUNNING;
@@ -41,7 +43,7 @@ int64_t test_processes(uint64_t argc, char *argv[]) {
 
     // Randomly kills, blocks or unblocks processes until every one has been killed
     while (alive > 0) {
-
+      while(aux<10000){
       for (rq = 0; rq < max_processes; rq++) {
         action = GetUniform(100) % 2;
 
@@ -67,6 +69,8 @@ int64_t test_processes(uint64_t argc, char *argv[]) {
             }
             break;
         }
+        aux++;
+      }
       }
 
       // Randomly unblocks processes
@@ -79,6 +83,7 @@ int64_t test_processes(uint64_t argc, char *argv[]) {
           p_rqs[rq].state = RUNNING;
         }
     }
+    aux++;
   }
     print(0xffffffff,"test_processes: SUCCESS\n");
   return 0;

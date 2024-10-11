@@ -133,14 +133,14 @@ void toBegin(queueADT queue){
 }
 
 int8_t hasNext(queueADT queue){
-    return (queue->iter == NULL);
+    return (queue->iter != NULL);
 }
 
 void * next(queueADT queue){
     if(hasNext(queue)){
         tList aux = queue->iter;
         queue->iter = queue->iter->next;
-        return aux;
+        return aux->element;
     }
     return NULL;
 }

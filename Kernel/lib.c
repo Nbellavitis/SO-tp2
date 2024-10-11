@@ -8,6 +8,7 @@
 #include "include/lib.h"
 #include "tests/test_util.h"
 #include "include/process.h"
+#include "include/scheduler.h"
 #define WAIT 500000
 void * memset(void * destination, int32_t c, uint64_t length)
 {
@@ -160,13 +161,14 @@ void testeando(){
 
     printMm();
    pid_t p_1= newProcess((uint64_t)p1,0,1,0,NULL);
-    pid_t p_2= newProcess((uint64_t)p1,0,2,0,NULL);
-   pid_t p_3= newProcess((uint64_t)p1,0,3,0,NULL);
-    pid_t p_4= newProcess((uint64_t)p1,0,4,0,NULL);
+//     pid_t p_2= newProcess((uint64_t)p1,0,2,0,NULL);
+//    pid_t p_3= newProcess((uint64_t)p1,0,3,0,NULL);
+//     pid_t p_4= newProcess((uint64_t)p1,0,4,0,NULL);
     printMm();
     killProcess(p_1);
-     killProcess(p_2);
-      killProcess(p_3);
-       killProcess(p_4);
+    
+    //  killProcess(p_2);
+    //   killProcess(p_3);
+    //    killProcess(p_4);
  
 }

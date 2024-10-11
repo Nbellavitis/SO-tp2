@@ -12,7 +12,6 @@ static pid_t activePid = KERNEL_PID;
 static size_t status = INACTIVE;
 static PCB activeProcess = NULL;
 static void idle();
-static void removeAll(queueADT queue);
 int64_t comparePCB(void * pcb1, void * pcb2) {
     if (pcb1 == NULL || pcb2 == NULL) {
         return (pcb1 != NULL) - (pcb2 != NULL);
@@ -26,7 +25,7 @@ int64_t comparePCB(void * pcb1, void * pcb2) {
 void startScheduler() {
     status = ACTIVE;
     processQueue = createQueue(comparePCB);
-    //idleProcess = lookUpOnHashMap(newProcess((uint64_t)idle, 1, 1, 0, NULL));
+    idleProcess = lookUpOnHashMap(newProcess((uint64_t)idle, 1, 1, 0, NULL));
 }
 
 uint64_t contextSwitch(uint64_t rsp){
@@ -43,32 +42,33 @@ uint64_t contextSwitch(uint64_t rsp){
         return activeProcess->rsp;
     }
     activeProcess->rsp = rsp;
-    if (activeProcess->status != KILLED && activeProcess->pid != idleProcess->pid){
+    if(activeProcess->pid != idleProcess->pid){
+    if (activeProcess->status != KILLED ){
         if(activeProcess->status != BLOCKED){
             activeProcess->status = READY;
         }
         queue(processQueue,activeProcess);
     }else{
-        removeAll(processQueue);
+        removeAll(activeProcess);
         freeProcess(activeProcess);
     }
     int size = sizeQ(processQueue);
     for(int i=0;i < size; i++ ){
     activeProcess = dequeue(processQueue);
-    if (activeProcess->status == READY) {
+    if (activeProcess->status == READY ) {
         activePid = activeProcess->pid;
         activeProcess->status = RUNNING;
         return activeProcess->rsp;
     }else if (activeProcess->status == BLOCKED){
         queue(processQueue,activeProcess);
     } else if (activeProcess->status == KILLED) {
-        removeAll(processQueue);
+        removeAll(activeProcess);
         freeProcess(activeProcess);
     }
-}
-    // activeProcess=idleProcess;
-    // activePid=idleProcess->pid;
-    // return activeProcess->rsp;
+}}
+    activeProcess=idleProcess;
+    activePid=idleProcess->pid;
+    return activeProcess->rsp;
 }
 
 static void idle() {
@@ -76,10 +76,10 @@ static void idle() {
         _hlt();
     }
 }
-static void removeAll(queueADT queue){
+ void removeAll(PCB pcb){
     int counter=1;
-    while(activeProcess->priority - counter != 0){
-        remove(processQueue,activeProcess);
+    while(pcb->priority - counter != 0){
+        remove(processQueue,pcb);
         counter++;
     }
 }
@@ -112,11 +112,14 @@ void yield(){
 
 void printQueue(){
     toBegin(processQueue);
-    char aux[10];
+     drawWord(0xFFFFFF,"size:");
+    printNumber(sizeQ(processQueue),0xFFFFFF);
+     drawChar(0xFFFFFF,' ');
     while(hasNext(processQueue)){
-        intToStr(((PCB) next(processQueue))->status,aux);
-        drawWord(0xFFFFFFFF,aux);
-        drawChar(0xFFFFFFFF,'\n');
+       PCB aux=next(processQueue);
+       drawWord(0xFFFFFF,"WHAT");
+       printNumber(aux->pid,0xFFFFFF);
+       drawChar(0xFFFFFF,' ');
     }
 }
 int8_t removeFromReadyQueue(PCB pcb){

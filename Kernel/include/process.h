@@ -21,7 +21,7 @@ typedef struct PCBType{
     int priority;
     int status;
     char * name;
-
+    char ** argv;
     int fd[3];
 
     // Waiting Processes

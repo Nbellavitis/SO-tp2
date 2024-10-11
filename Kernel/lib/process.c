@@ -6,7 +6,7 @@
 #define MAX_PROCESSES 1000
 static HashMapADT PCBMap;
 static int  nextProcessId = 0;
-static aliveProcesses = 0;
+static int aliveProcesses = 0;
 int64_t comparePid(void* pid1, void* pid2);
 pid_t newProcess(uint64_t rip, int ground, int priority, int argc, char * argv[]){
     PCB pcb = (PCBType *) allocMemory(sizeof(PCBType));
@@ -14,7 +14,7 @@ pid_t newProcess(uint64_t rip, int ground, int priority, int argc, char * argv[]
         return -1;
         }
     pcb->stackBase = (uint64_t) allocMemory(STACK_SIZE);
-    if (pcb->stackBase == NULL){
+    if (pcb->stackBase == 0){
         drawWord(0xFFFFFF,"PORQUE ME PASA ESTOOO");
         freeMemory(pcb);
         return -1;
@@ -25,6 +25,7 @@ pid_t newProcess(uint64_t rip, int ground, int priority, int argc, char * argv[]
     pcb->status = READY;
     pcb->priority = priority;
     pcb->pid = nextProcessId;
+    pcb->argv= argv;
     //pcb->childProcessesWaiting = newQueue(comparePid);
 
     //ACA DEBERIAMOS AGREGARLO AL CHILDPROCESSES
@@ -51,10 +52,11 @@ int64_t comparePid(void * pid1, void * pid2) {
     pid_t b = *(pid_t *)pid2;
     return (a > b) - (a < b);
 }
-void freeProcess(PCB process){
-    delete(PCBMap, process->pid);
-    freeMemory(process->stackBase-STACK_SIZE);
-    freeMemory(process);
+void freeProcess(PCB pcb){
+    delete(PCBMap,&(pcb->pid));
+    freeMemory((void *)(pcb->stackBase - STACK_SIZE));
+    freeMemory(pcb->argv);
+    freeMemory(pcb);
     aliveProcesses--;
 }
 void initMap(){
@@ -74,9 +76,10 @@ PCB aux = lookup(PCBMap,&pid);
     if(aux == NULL){
         return -1;
     }
-
     aux->status=KILLED;
-
+    if(pid == getActivePid()){
+        yield();
+    }
    return 0;
 }
 
@@ -86,6 +89,9 @@ int8_t blockProcess(pid_t pid) {
         return -1;
     }
     aux->status = BLOCKED;
+    if(pid == getActivePid()){
+        yield();
+    }
     return 0;
 }
 
