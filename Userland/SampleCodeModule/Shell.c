@@ -122,12 +122,12 @@ void lineRead(char *buffer) {
       mmStatus();
     }else if(strcmp(buffer,"testPrio") == 0){
         uint64_t rip=(uint64_t)test_prio;
-        pid_t pid=createProcess(rip,0,1,0, NULL);
+        createProcess(rip,0,1,0, NULL);
     }else if(strcmp(buffer,"testProcess") == 0){
     char ** argv=allocMemory(2*sizeof(char*));
     argv[1]="1";
     argv[0]="processtest";
-    createProcess((uint64_t)processtest,0,5,2,argv);
+    createProcess((uint64_t)processtest,0,1,2,argv);
     }else if(strcmp(buffer,"testeando") == 0){
     testeando();
     }else{

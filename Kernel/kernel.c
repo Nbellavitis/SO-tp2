@@ -28,7 +28,7 @@ static void * const sampleCodeModuleAddress = (void*)0x400000;
 static void * const sampleDataModuleAddress = (void*)0x500000;
 static void *const heapAddress  = (void *)0x600000;
 typedef int (*EntryPoint)();
-
+extern void initMap();
 void clearBSS(void * bssAddress, uint64_t bssSize)
 {
 	memset(bssAddress, 0, bssSize);
@@ -105,7 +105,7 @@ int init_shell() {
 int main()
 {
 	load_idt();
-	mmInit(heapAddress, 0x0700000);
+	mmInit(heapAddress, 0x2700000);
     //((EntryPoint)sampleCodeModuleAddress)();  whot
 	initMap();
 	startScheduler();
