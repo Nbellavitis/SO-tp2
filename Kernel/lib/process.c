@@ -129,7 +129,7 @@ PCB * getAllProcessInfo(){
     PCB * toRet = (PCB *) allocMemory(sizeof(PCB) * (aliveProcesses + 1));
     int j=0;
     for(int i = 0; i < nextProcessId; i++){
-        PCB current = getProcessInfo(i,buffer);
+        PCB current = getProcessInfo(i);
         if(current != NULL){
             toRet[j++] = current;
         }
