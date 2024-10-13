@@ -1,10 +1,12 @@
 section .text
 global createProcess
 
+EXTERN exitProcess
+
 callWrapper:
     call rdx
-    mov rdi,0x11 ;exit
-    int 0x80
+    mov rsi, rax
+    call exitProcess
 createProcess:
     push rbp
     mov rbp, rsp

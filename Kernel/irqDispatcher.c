@@ -89,8 +89,7 @@ static int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64
             printMm();
             return 0;
         case 17:
-            killProcess(getActivePid());
-            yield();
+            exitProcess(rsi);
             return 0;
         case 18:
 

@@ -20,4 +20,5 @@ void printMm();
 void runTestMm();
 void testeando();
 void printNumber(uint64_t num,uint32_t hexColor);
+void exitProcess(uint64_t status);
 #endif

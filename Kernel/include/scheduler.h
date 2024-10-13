@@ -13,4 +13,5 @@ void addToReadyQueue(PCB pcb);
 void yield();
 void printQueue(); 
 void removeAll(PCB pcb);
+PCB getActiveProcess();
 #endif //SO_TP2_SCHEDULER_H

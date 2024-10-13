@@ -107,6 +107,10 @@ void yield(){
     _irq00Handler();
 }
 
+PCB getActiveProcess(){
+    return activeProcess;
+}
+
 void printQueue(){
     toBegin(processQueue);
      drawWord(0xFFFFFF,"size:");

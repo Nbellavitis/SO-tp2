@@ -233,3 +233,8 @@ void sprint(char * buffer, const char* string, ...){
     return;
 
 }
+void exitProcess(uint64_t retStatus){
+    PCB activeProcess = getActiveProcess();
+    activeProcess->ret = retStatus;
+    killProcess(activeProcess->pid);
+}
