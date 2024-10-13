@@ -11,6 +11,7 @@ static PCB idleProcess;
 static pid_t activePid = KERNEL_PID;
 static size_t status = INACTIVE;
 static PCB activeProcess = NULL;
+static int timesActiveExecuted =0;
 static void idle();
 int64_t comparePCB(void * pcb1, void * pcb2) {
     if (pcb1 == NULL || pcb2 == NULL) {
@@ -21,11 +22,10 @@ int64_t comparePCB(void * pcb1, void * pcb2) {
     return (a->pid > b->pid) - (a->pid < b->pid);
 }
 
-
 void startScheduler() {
     status = ACTIVE;
     processQueue = createQueue(comparePCB);
-    idleProcess = lookUpOnHashMap(newProcess((uint64_t)idle, 1, 1, 0, NULL));
+    idleProcess = lookUpOnHashMap((pid_t *)newProcess((uint64_t)idle, 1, 1, 0, NULL));
 }
 
 uint64_t contextSwitch(uint64_t rsp){
@@ -45,11 +45,15 @@ uint64_t contextSwitch(uint64_t rsp){
     if(activeProcess->pid != idleProcess->pid){
     if (activeProcess->status != KILLED ){
         if(activeProcess->status != BLOCKED){
+            if(activeProcess->priority - 1 > timesActiveExecuted ){
+                timesActiveExecuted++;
+            return activeProcess->rsp;
+            }
             activeProcess->status = READY;
+            timesActiveExecuted = 0;
         }
         queue(processQueue,activeProcess);
     }else{
-        removeAll(activeProcess);
         freeProcess(activeProcess);
     }
     int size = sizeQ(processQueue);
@@ -62,10 +66,10 @@ uint64_t contextSwitch(uint64_t rsp){
     }else if (activeProcess->status == BLOCKED){
         queue(processQueue,activeProcess);
     } else if (activeProcess->status == KILLED) {
-        removeAll(activeProcess);
         freeProcess(activeProcess);
     }
-}}
+}
+    }
     activeProcess=idleProcess;
     activePid=idleProcess->pid;
     return activeProcess->rsp;
@@ -76,39 +80,32 @@ static void idle() {
         _hlt();
     }
 }
- void removeAll(PCB pcb){
-    int counter=1;
-    while(pcb->priority - counter != 0){
-        remove(processQueue,pcb);
-        counter++;
-    }
-}
+
 pid_t getActivePid(){
     return activeProcess->pid;
 }
+
 void addToReadyQueue(PCBType * pcb){
     queue(processQueue, pcb);
 }
 
-PCBType * findProcessByPid(pid_t pid){
-    if(processQueue == NULL || isEmpty(processQueue)){
+PCBType * findProcessByPid(pid_t pid) {
+    if (processQueue == NULL || isEmpty(processQueue)) {
         return NULL;
     }
     toBegin(processQueue);
-    while(hasNext(processQueue)){
-        PCBType * currentProcess = (PCBType *) next(processQueue);
-        if(currentProcess->pid == pid){
-             return currentProcess;
+    while (hasNext(processQueue)) {
+        PCBType *currentProcess = (PCBType *) next(processQueue);
+        if (currentProcess->pid == pid) {
+            return currentProcess;
         }
     }
     return NULL;
 }
 
-
 void yield(){
     _irq00Handler();
 }
-
 
 void printQueue(){
     toBegin(processQueue);

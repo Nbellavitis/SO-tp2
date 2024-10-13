@@ -1,6 +1,7 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
 #include <stdint.h>
+#include <stdarg.h>
 #include <time.h>
 #include "include/interrupts.h"
 #include "Drivers/include/videoDriver.h"
@@ -161,14 +162,74 @@ void testeando(){
 
     printMm();
    pid_t p_1= newProcess((uint64_t)p1,0,1,0,NULL);
-//     pid_t p_2= newProcess((uint64_t)p1,0,2,0,NULL);
-//    pid_t p_3= newProcess((uint64_t)p1,0,3,0,NULL);
-//     pid_t p_4= newProcess((uint64_t)p1,0,4,0,NULL);
+
+    pid_t p_2= newProcess((uint64_t)p1,0,1,0,NULL);
+    pid_t p_3= newProcess((uint64_t)p1,0,1,0,NULL);
+    pid_t p_4= newProcess((uint64_t)p1,0,1,0,NULL);
     printMm();
+    int k=0;
+    while( k < 100000000){
+        k++;
+    }
     killProcess(p_1);
-    
-    //  killProcess(p_2);
-    //   killProcess(p_3);
-    //    killProcess(p_4);
- 
+    blockProcess(p_2);
+    int i=0;
+    while( i < 100000000){
+        i++;
+    }
+    unblockProcess(p_2);
+    changePrio(p_2,1);
+    drawWord(0xFFFFFFFF,"cambio prio");
+    int j=0;
+    while(j < 100000000){
+        j++;
+    }
+    changePrio(p_2,1);
+    printMm();
+    killProcess(p_3);
+    killProcess(p_2);
+    printMm();
+    killProcess(p_4);
+    printMm();
+    return;
+}
+void sprint(char * buffer, const char* string, ...){
+    va_list args;
+    va_start(args, string);
+    int i = 0;
+    while(*string != '\0'){
+        if(*string == '%'){
+            string++;
+            switch(*string){
+                case 'c': {
+                    char c = va_arg(args, int);
+                    buffer[i++] = c;
+                    break;
+                }
+                case 'd': {
+                    int d = va_arg(args, int);
+                    char str[20];
+                    intToStr(d,str);
+                    for(int j = 0; str[j] != '\0'; j++){
+                        buffer[i++] = str[j];
+                    }
+                    break;
+                }
+                case 's': {
+                    char* s = va_arg(args, char*);
+                    for(int j = 0; s[j] != '\0'; j++){
+                        buffer[i++] = s[j];
+                    }
+                    break;
+                }
+            }
+        } else {
+            buffer[i++] = *string;
+        }
+        string++;
+    }
+    buffer[i] = '\0';
+    va_end(args);
+    return;
+
 }

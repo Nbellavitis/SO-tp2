@@ -130,7 +130,15 @@ void lineRead(char *buffer) {
     createProcess((uint64_t)processtest,0,1,2,argv);
     }else if(strcmp(buffer,"testeando") == 0){
     testeando();
-    }else{
+    }
+//    else if(strcmp(buffer,"ps") == 0){
+//        PCB * processes = ps();
+//        while(processes != NULL){
+//            printProcess(processes);
+//            processes++;
+//        }
+//    }
+    else{
         putString(buffer,WHITE);
         putString(":command not found",WHITE);
         putString("\n",WHITE);

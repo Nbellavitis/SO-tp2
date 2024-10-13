@@ -20,7 +20,7 @@ typedef struct PCBType{
     int ground;
     int priority;
     int status;
-    char * name;
+    const char * name;
     char ** argv;
     int fd[3];
 
@@ -39,4 +39,5 @@ int8_t killProcess(pid_t pid);
 int8_t blockProcess(pid_t pid);
 int8_t changePrio(pid_t pid,int priority);
 PCB lookUpOnHashMap(pid_t * pid);
+void getAllProcessInfo();
 #endif

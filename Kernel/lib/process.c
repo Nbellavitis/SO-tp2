@@ -36,10 +36,8 @@ pid_t newProcess(uint64_t rip, int ground, int priority, int argc, char * argv[]
     pcb->fd[STDERR] = STDERR;
 
     insert(PCBMap,&(pcb->pid),pcb);
-    while(priority > 0){
-        addToReadyQueue(pcb);
-        priority--;
-    }
+    addToReadyQueue(pcb);
+
     aliveProcesses++;
     return nextProcessId++;
 }
@@ -100,20 +98,42 @@ int8_t changePrio(pid_t pid,int priority){
     if(aux == NULL){
         return -1;
     }
-    if(aux->priority > priority){
-        while(aux->priority - priority != 0){
-           removeFromReadyQueue(aux);
-            aux->priority--;
-        }
-    }else{
-        while(priority-aux->priority != 0){
-            addToReadyQueue(aux);
-            aux->priority++;
-        }
-    }
+    aux->priority = priority;
+
     return 0;
 }
 
 PCB lookUpOnHashMap(pid_t * pid){
     return lookup(PCBMap,pid);
+}
+
+PCB getProcessInfo(pid_t pid){
+    PCB aux = lookup(PCBMap,&pid);
+    if(aux == NULL){
+        return NULL;
+    }
+    PCB toRet = (PCB) allocMemory(sizeof(PCBType));
+    toRet->pid = aux->pid;
+    toRet->ppid = aux->ppid;
+    toRet->rsp = aux->rsp;
+    toRet->stackBase = aux->stackBase;
+    toRet->rip = aux->rip;
+    toRet->ground = aux->ground;
+    toRet->priority = aux->priority;
+    toRet->status = aux->status;
+    toRet->name = aux->name;
+    return toRet;
+}
+
+PCB * getAllProcessInfo(){
+    PCB * toRet = (PCB *) allocMemory(sizeof(PCB) * (aliveProcesses + 1));
+    int j=0;
+    for(int i = 0; i < nextProcessId; i++){
+        PCB current = getProcessInfo(i,buffer);
+        if(current != NULL){
+            toRet[j++] = current;
+        }
+    }
+    toRet[j] = NULL;
+    return toRet;
 }

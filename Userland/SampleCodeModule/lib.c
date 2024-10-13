@@ -167,3 +167,7 @@ void strToUpper(char *str) {
         str++;
     }
 }
+//
+//void printProcess(PCB process){
+//    print()
+//}
