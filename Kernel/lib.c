@@ -11,6 +11,7 @@
 #include "include/process.h"
 #include "include/scheduler.h"
 #define WAIT 500000
+
 void * memset(void * destination, int32_t c, uint64_t length)
 {
 	uint8_t chr = (uint8_t)c;
@@ -159,6 +160,20 @@ void p2(){
 }
 void testeando(){
 
+    PCB * aux = getAllProcessInfo();
+    while((*aux) != NULL){
+        drawWord(0xFFFFFFFF,"pid:");
+        printNumber((*aux)->pid,0xFFFFFFFF);
+        drawChar(0xFFFFFFFF,'\n');
+        drawWord(0xFFFFFFFF,"ppid:");
+        printNumber((*aux)->ppid,0xFFFFFFFF);
+        drawChar(0xFFFFFFFF,'\n');
+        drawWord(0xFFFFFFFF,"priority:");
+        printNumber((*aux)->priority,0xFFFFFFFF);
+        drawChar(0xFFFFFFFF,'\n');
+        drawWord(0xFFFFFFFF,"\n");
+        aux++;
+    }
 
     printMm();
    pid_t p_1= newProcess((uint64_t)p1,0,1,0,NULL);
@@ -196,6 +211,7 @@ void testeando(){
 void sprint(char * buffer, const char* string, ...){
     va_list args;
     va_start(args, string);
+
     int i = 0;
     while(*string != '\0'){
         if(*string == '%'){
@@ -236,5 +252,6 @@ void sprint(char * buffer, const char* string, ...){
 void exitProcess(uint64_t retStatus){
     PCB activeProcess = getActiveProcess();
     activeProcess->ret = retStatus;
-    killProcess(activeProcess->pid);
+    activeProcess->status = KILLED;
+    yield();
 }

@@ -23,9 +23,10 @@ typedef struct PCBType{
     const char * name;
     char ** argv;
     int fd[3];
+    uint64_t ret;
 
     // Waiting Processes
-    //queueADT childProcessesWaiting;
+    queueADT waitingProcesses;
 }PCBType;
 
 typedef struct PCBType * PCB;

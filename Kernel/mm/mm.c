@@ -21,7 +21,6 @@ typedef struct mm{
    uint32_t *bitmap;
    size_t current;
    lastFreed lastFreed;
-   size_t allocs,frees;
 } mm;
 
 static void initializeBitmap();
@@ -49,8 +48,6 @@ int mmInit ( void * baseAddress ,uint64_t memorySize)  {
     memoryManager.blocksUsed = 0;
     memoryManager.start = memoryManager.bitmap + bitMapSize * BLOCK_SIZE;
     memoryManager.current = 0;
-    memoryManager.allocs=0;
-    memoryManager.frees=0;
 
     initializeBitmap();
     return 0;
@@ -111,7 +108,6 @@ void * allocMemory(size_t size){
          return NULL;
  }
     memoryManager.current = sizeToBlockQty(initialBlockAddress - (uintptr_t) memoryManager.start) +blocksNeeded;
-    memoryManager.allocs++;
     if(blocksNeeded == 1){
     
          memoryManager.blocksUsed++;
@@ -132,7 +128,6 @@ void freeMemory(void * memory){
     size_t blockIndex = (blockAddress - (uintptr_t) memoryManager.start) / BLOCK_SIZE;
     memoryManager.lastFreed.index = blockIndex;
     if(memoryManager.bitmap[blockIndex] == SINGLE_BLOCK){
-        memoryManager.frees++;
         memoryManager.bitmap[blockIndex] = FREE;
         memoryManager.lastFreed.blocks = 1;
         memoryManager.blocksUsed--;
@@ -146,7 +141,6 @@ void freeMemory(void * memory){
         memoryManager.bitmap[blockIndex + blocksToFree] = FREE;
         blocksToFree++;
     }
-      memoryManager.frees++;
     memoryManager.bitmap[blockIndex + blocksToFree] = FREE;
     memoryManager.blocksUsed -= blocksToFree + 1;
     memoryManager.lastFreed.blocks = blocksToFree + 1;
@@ -157,10 +151,4 @@ MemoryStatus getMemoryStatus(){
     status.usedMemory = memoryManager.blocksUsed * BLOCK_SIZE;
     status.freeMemory = status.totalMemory - status.usedMemory;
     return status;
-}
-void fillWith1s(void * memory, size_t size){
-    for(int i = 0; i < size; i++){
-        ((char *) memory)[i] = '1';
-    }
-
 }
