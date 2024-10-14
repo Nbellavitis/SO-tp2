@@ -195,37 +195,60 @@ void p1(){
 }
 uint64_t p2(int argc, char * argv[]){
     uint64_t i=0;
- while(i < 10000000){
+ while(i < 1000000){
         i++;
 //        drawWord(0xFFFFFFFF,"soy p4");
        // newLine();
     }
-    drawWord(0xFFFFFFF,"p4 termino (dentro de p4)");
     return 2;
 }
 void testeando(){
 
-
-    pid_t p_4= newProcess((uint64_t)p2,0,1,0,NULL);
+    pid_t p[10];
     uint64_t i=0;
-    while (i<1000000){
+    while (i<10){
+        drawWord(0xFFFFFFFF,"Creando proceso");
+        p[i] = newProcess((uint64_t)p2,0,1,0,NULL);
+        if(p[i] == -1){
+            drawWord(0xFFFFFFFF,"Error al crear proceso");
+        }
         i++;
     }
-    uint64_t num = waitpid(p_4);
-    printNumber(num,0xFFFFFFFF);
-    drawWord(0xFFFFFFFF,"p3 termino");
-    return;
-}
-
-
-void exitProcess(uint64_t retStatus){
-    PCB activeProcess = getActiveProcess();
-    activeProcess->ret = retStatus;
-    toBegin(activeProcess->waitingProcesses);
-    while(hasNext(activeProcess->waitingProcesses)){
-        PCB toUnblock = next(activeProcess->waitingProcesses);
-        unblockProcess(toUnblock->pid);
+    for(uint64_t j=0;j<100000000;j++);
+//    PCB * aux = getAllProcessInfo();
+//    while((*aux) != NULL){
+//        drawWord(0xFFFFFFFF,"Proceso:");
+//        printNumber((*aux)->pid,0xFFFFFFFF);
+//        drawWord(0xFFFFFFFF,"Prioridad:");
+//        printNumber((*aux)->priority,0xFFFFFFFF);
+//        drawWord(0xFFFFFFFF,"PPID:");
+//        printNumber((*aux)->ppid,0xFFFFFFFF);
+//        drawWord(0xFFFFFFFF,"Ret:");
+//        printNumber((*aux)->ret,0xFFFFFFFF);
+//        drawWord(0xFFFFFFFF,"WaitingProcesses:");
+//        printNumber(sizeQ((*aux)->waitingProcesses),0xFFFFFFFF);
+//        newLine();
+//        aux++;
+//    }
+    for(int j=0;j<10;j++){
+        drawWord(0xFFFFFFFF,"\nKilling process");
+        printNumber(p[j],0xFFFFFFFF);
+        waitpid(p[j]);
     }
-    activeProcess->status = KILLED;
-    nice();
+//    PCB * aux2 = getAllProcessInfo();
+//    while((*aux2) != NULL){
+//        drawWord(0xFFFFFFFF,"Proceso:");
+//        printNumber((*aux2)->pid,0xFFFFFFFF);
+//        drawWord(0xFFFFFFFF,"Prioridad:");
+//        printNumber((*aux2)->priority,0xFFFFFFFF);
+//        drawWord(0xFFFFFFFF,"PPID:");
+//        printNumber((*aux2)->ppid,0xFFFFFFFF);
+//        drawWord(0xFFFFFFFF,"Ret:");
+//        printNumber((*aux2)->ret,0xFFFFFFFF);
+//        drawWord(0xFFFFFFFF,"WaitingProcesses:");
+//        printNumber(sizeQ((*aux2)->waitingProcesses),0xFFFFFFFF);
+//        newLine();
+//        aux2++;
+//    }
+    return;
 }

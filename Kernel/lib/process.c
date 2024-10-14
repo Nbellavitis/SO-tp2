@@ -55,7 +55,7 @@ void freeProcess(PCB pcb){
     delete(PCBMap,&(pcb->pid));
     freeMemory((void *)(pcb->stackBase - STACK_SIZE));
     freeMemory(pcb->argv);
-    freeQueue(pcb->waitingProcesses);
+    freeMemory(pcb->waitingProcesses);
     freeMemory(pcb);
     aliveProcesses--;
 }
@@ -65,6 +65,9 @@ void initMap(){
 int8_t unblockProcess(pid_t pid){
    PCB aux = lookup(PCBMap,&pid);
     if(aux == NULL){
+        return -1;
+    }
+    if(aux->status != BLOCKED){
         return -1;
     }
     aux->status=READY;
@@ -141,14 +144,41 @@ PCB * getAllProcessInfo(){
 }
 uint64_t waitpid(pid_t pid){
     PCB aux = lookup(PCBMap,&pid);
+    uint64_t ret;
     if(aux == NULL){
+        drawWord(0xFFFFFF,"El proceso no existe");
+        printNumber(pid,0xFFFFFF);
         return -1;
     }
     PCB activeProcess = getActiveProcess();
     if(activeProcess == NULL){
+        drawWord(0xFFFFFF,"No hay proceso activo");
         return -1;
+    }
+    if(aux->status == EXITED){
+        drawWord(0xFFFFFF,"El proceso ya termino");
+        ret = aux->ret;
+        removeFromReadyQueue(aux);
+        freeProcess(aux);
+        return ret;
     }
     queue(aux->waitingProcesses,activeProcess);
     blockProcess(activeProcess->pid);
-    return aux->ret;
+    ret = aux->ret;
+    freeProcess(aux);
+    return ret;
+}
+
+
+void exitProcess(uint64_t retStatus){
+    PCB activeProcess = getActiveProcess();
+    activeProcess->ret = retStatus;
+    toBegin(activeProcess->waitingProcesses);
+    while(hasNext(activeProcess->waitingProcesses)){
+        PCB toUnblock = next(activeProcess->waitingProcesses);
+        unblockProcess(toUnblock->pid);
+        printNumber(toUnblock->pid,0xFFFFFF);
+    }
+    activeProcess->status = EXITED;
+    nice();
 }

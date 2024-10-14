@@ -26,6 +26,8 @@ GLOBAL getMyPid
 
 GLOBAL testeando
 GLOBAL ps
+GLOBAL waitpid
+
 section .text
 
 %macro call_to_handler 1
@@ -95,6 +97,8 @@ testeando:
     call_to_handler 26
 ps:
     call_to_handler 27
+waitpid:
+    call_to_handler 28
 InvalidOpasm:
     mov rax, 0x12345678
     rdpmc

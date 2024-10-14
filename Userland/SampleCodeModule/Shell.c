@@ -125,6 +125,11 @@ void lineRead(char *buffer) {
     }else if(strcmp(buffer,"testPrio") == 0){
         uint64_t rip=(uint64_t)test_prio;
         createProcess(rip,0,1,0, NULL);
+        PCB * processes = ps();
+        while((*processes)!= NULL){
+            print(0x00ffffff,"PID: %d\n",(*processes)->pid);
+            processes++;
+        }
     }else if(strcmp(buffer,"testProcess") == 0){
     char ** argv=allocMemory(2*sizeof(char*));
     argv[1]="1";

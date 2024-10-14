@@ -42,17 +42,24 @@ uint64_t contextSwitch(uint64_t rsp){
         return activeProcess->rsp;
     }
     activeProcess->rsp = rsp;
+    if(activeProcess == NULL){
+        drawWord(0xFFFFFF,"NULL");
+    }
+    printNumber(activeProcess->pid,0xFFFFFF);
+    drawWord(0xFFFFFF," ");
     if (activeProcess->status != KILLED ){
-        if(activeProcess->status != BLOCKED){
-            if(activeProcess->priority - 1 > timesActiveExecuted ){
-                timesActiveExecuted++;
-            return activeProcess->rsp;
+        if(activeProcess->status!= EXITED) {
+            if (activeProcess->status != BLOCKED) {
+                if (activeProcess->priority - 1 > timesActiveExecuted) {
+                    timesActiveExecuted++;
+                    return activeProcess->rsp;
+                }
+                activeProcess->status = READY;
             }
-            activeProcess->status = READY;
-        }
-        if(activeProcess->pid != idleProcess->pid) {
-            timesActiveExecuted = 0;
-            queue(processQueue, activeProcess);
+            if (activeProcess->pid != idleProcess->pid) {
+                timesActiveExecuted = 0;
+                queue(processQueue, activeProcess);
+            }
         }
     }else{
         freeProcess(activeProcess);

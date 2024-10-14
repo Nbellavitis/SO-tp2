@@ -113,8 +113,9 @@ static int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64
             newProcess((uint64_t)testeando,0,2,0,NULL);
             return 0;
         case 27:
-            getAllProcessInfo();
-            return 0;
+            return getAllProcessInfo();
+        case 28:
+            return waitpid((pid_t)rsi);
         default:
 
             return 0;
