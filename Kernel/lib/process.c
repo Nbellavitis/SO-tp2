@@ -19,7 +19,7 @@ pid_t newProcess(uint64_t rip, int ground, int priority, int argc, char * argv[]
         freeMemory(pcb);
         return -1;
     }
-    pcb->stackBase += STACK_SIZE;
+    pcb->stackBase += STACK_SIZE -1;
     pcb->rip = rip;
     pcb->ground = ground;
     pcb->status = READY;
@@ -127,8 +127,8 @@ PCB getProcessInfo(pid_t pid){
 
 PCB * getAllProcessInfo(){
     PCB * toRet = (PCB *) allocMemory(sizeof(PCB) * (aliveProcesses + 1));
-    int j=0;
-    for(int i = 0; i < nextProcessId; i++){
+    uint64_t j=0;
+    for(uint64_t i = 0; i < nextProcessId; i++){
         PCB current = getProcessInfo(i);
         if(current != NULL){
             toRet[j++] = current;

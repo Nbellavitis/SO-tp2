@@ -42,7 +42,6 @@ uint64_t contextSwitch(uint64_t rsp){
         return activeProcess->rsp;
     }
     activeProcess->rsp = rsp;
-    if(activeProcess->pid != idleProcess->pid){
     if (activeProcess->status != KILLED ){
         if(activeProcess->status != BLOCKED){
             if(activeProcess->priority - 1 > timesActiveExecuted ){
@@ -51,8 +50,9 @@ uint64_t contextSwitch(uint64_t rsp){
             }
             activeProcess->status = READY;
             timesActiveExecuted = 0;
+        }    if(activeProcess->pid != idleProcess->pid) {
+            queue(processQueue, activeProcess);
         }
-        queue(processQueue,activeProcess);
     }else{
         freeProcess(activeProcess);
     }
@@ -69,7 +69,6 @@ uint64_t contextSwitch(uint64_t rsp){
         freeProcess(activeProcess);
     }
 }
-    }
     activeProcess=idleProcess;
     activePid=idleProcess->pid;
     return activeProcess->rsp;
