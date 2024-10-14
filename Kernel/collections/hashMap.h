@@ -2,15 +2,16 @@
 #define HASHMAP_H
 #include "../mm/mm.h"
 #include "../include/lib.h"
-typedef int64_t (*compareFunc)(void * e1, void * e2);
+#include "../include/process.h"
+typedef int64_t (*compareFunc)(pid_t e1, pid_t e2);
 typedef struct HashMap * HashMapADT;
 
-uint64_t hash( void * key);
-struct Entry * createEntry( void * key, void * value);
+uint64_t hash( pid_t key);
+struct Entry * createEntry( pid_t key, PCB value);
 HashMapADT create_hash_map(compareFunc cmpFunc);
-void insert(HashMapADT hashMap,  void * key, void * value);
-void * lookup(HashMapADT hashMap,  void * key);
-void delete(HashMapADT hashMap,  void * key);
+void insert(HashMapADT hashMap, pid_t key, PCB value);
+void * lookup(HashMapADT hashMap,  pid_t key);
+void delete(HashMapADT hashMap,  pid_t key);
 void free_hash_map(HashMapADT hashMap);
 
 

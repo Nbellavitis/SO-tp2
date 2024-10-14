@@ -2,8 +2,8 @@
 #define TABLE_SIZE 2000
 
 typedef struct Entry {
-    void * key;          
-    void * value;          
+    pid_t key;
+    PCB value;
     struct Entry *next;
  
 } Entry;
@@ -14,12 +14,12 @@ typedef struct HashMap {
     compareFunc cmpFunc; 
 } HashMap;
 
-uint64_t hash( void * key) {
-    return (* (uint64_t * ) key) % TABLE_SIZE;
+uint64_t hash( pid_t key) {
+    return  key % TABLE_SIZE;
 }
 
 
-Entry *createEntry( void * key, void * value) {
+Entry *createEntry( pid_t key, PCB value) {
     Entry *newEntry = (Entry *)allocMemory(sizeof(Entry));
     newEntry->key = key; 
     newEntry->value = value;
@@ -38,7 +38,7 @@ HashMap *create_hash_map(compareFunc cmpFunc) {
 }
 
 
-void insert(HashMap *hashMap,  void * key, void * value) {
+void insert(HashMap *hashMap,  pid_t key, PCB value) {
     unsigned int index = hash(key);
     Entry *newEntry = createEntry(key, value);
 
@@ -52,7 +52,7 @@ void insert(HashMap *hashMap,  void * key, void * value) {
     }
 }
 
-void * lookup(HashMap *hashMap,  void *key) {
+void * lookup(HashMap *hashMap,  pid_t key) {
     unsigned int index = hash(key);
     Entry *current = hashMap->buckets[index];
 
@@ -65,7 +65,7 @@ void * lookup(HashMap *hashMap,  void *key) {
     return NULL; 
 }
 
-void delete(HashMap *hashMap,  void *key) {
+void delete(HashMap *hashMap,  pid_t key) {
     unsigned int index = hash(key);
     Entry *current = hashMap->buckets[index];
     Entry *previous = NULL;

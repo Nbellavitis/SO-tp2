@@ -2,7 +2,8 @@
 #define TPE_LIB_H
 #include <stdint.h>
 #include <stddef.h>
-typedef int64_t pid_t;
+#include "../../../sharedUserKernel.h"
+#define WHITE 0xFFFFFFFF
 
 // Reads a character from input and saves it in the pointer c. 
 // Returns the number of characters saved.
@@ -42,4 +43,11 @@ int getBuffer(char * buf);
 void strToUpper(char *str);
 
 void intToStr(uint64_t num, char* str);
+
+void freeProcessInfo(processInfoPtr * processes);
+
+void printAllProcesses(processInfoPtr * processes);
+
+void printProcess(processInfoPtr process);
+
 #endif // TPE_LIB_H

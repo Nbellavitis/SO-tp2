@@ -7,7 +7,6 @@
 #include "include/eliminator.h"
 #include "include/program.h"
 #include <stdio.h>
-#define WHITE 0xFFFFFFFF
 static char buffer[BUFFER_SIZE] = {0};
 int exitFlag =0;
 int registerFlag = 0;
@@ -72,12 +71,8 @@ const char *commands[] = {
     "mmStatus      Shows the mem status",
     "testPrio      Run the priority test",
     "testProcess   Run the process test",
+    "ps           Shows the process list"
 };
-void nada(){
-    while (1);
-}
-
-
 
 void lineRead(char *buffer) {
     if (strcmp(buffer, "help") == 0) {
@@ -125,11 +120,6 @@ void lineRead(char *buffer) {
     }else if(strcmp(buffer,"testPrio") == 0){
         uint64_t rip=(uint64_t)test_prio;
         createProcess(rip,0,1,0, NULL);
-        PCB * processes = ps();
-        while((*processes)!= NULL){
-            print(0x00ffffff,"PID: %d\n",(*processes)->pid);
-            processes++;
-        }
     }else if(strcmp(buffer,"testProcess") == 0){
     char ** argv=allocMemory(2*sizeof(char*));
     argv[1]="1";
@@ -137,21 +127,15 @@ void lineRead(char *buffer) {
     createProcess((uint64_t)processtest,0,1,2,argv);
     }else if(strcmp(buffer,"testeando") == 0){
     testeando();
+    } else if(strcmp(buffer,"ps") == 0){
+        printAllProcesses(ps());
     }
-//    else if(strcmp(buffer,"ps") == 0){
-//        PCB * processes = ps();
-//        while(processes != NULL){
-//            printProcess(processes);
-//            processes++;
-//        }
-//    }
     else{
         putString(buffer,WHITE);
         putString(":command not found",WHITE);
         putString("\n",WHITE);
     }
     call_printRegisters(0);
- 
 }
 
 char reSize(char * buffer){

@@ -1,5 +1,6 @@
+
 docker start tp2
-docker exec -ti tp2 make clean -C/root/Toolchain
-docker exec -ti tp2 make clean -C/root/
-docker exec -ti tp2 make -C/root/Toolchain
-docker exec -ti tp2 make -C/root/
+docker exec tp2 /bin/bash -c "cd /root/Toolchain && make clean all"
+docker exec tp2 /bin/bash -c "cd /root && make all"
+
+docker exec tp2 /bin/bash -c "cd /root && chmod 777 Image/x64BareBonesImage.qcow2"

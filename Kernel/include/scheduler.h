@@ -13,4 +13,5 @@ void addToReadyQueue(PCB pcb);
 void printQueue();
 void removeAll(PCB pcb);
 PCB getActiveProcess();
+int64_t comparePCB(void * pcb1, void * pcb2);
 #endif //SO_TP2_SCHEDULER_H

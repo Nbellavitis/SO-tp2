@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include "processAsm.h"
 #include "lib.h"
+
 #define READY 0
 #define BLOCKED 1
 #define KILLED 2
@@ -32,7 +33,7 @@ typedef struct PCBType{
 
 typedef struct PCBType * PCB;
 
-int64_t comparePid(void * pid1, void * pid2);
+int64_t comparePid(pid_t pid1, pid_t pid2);
 pid_t newProcess(uint64_t rip, int ground, int priority, int argc, char * argv[]);
 void freeProcess(PCB process);
 int8_t removeFromReadyQueue(PCB pcb);
@@ -40,7 +41,7 @@ int8_t unblockProcess(pid_t pid);
 int8_t killProcess(pid_t pid);
 int8_t blockProcess(pid_t pid);
 int8_t changePrio(pid_t pid,int priority);
-PCB lookUpOnHashMap(pid_t * pid);
-PCB * getAllProcessInfo();
+PCB lookUpOnHashMap(pid_t pid);
+processInfoPtr * getAllProcessInfo();
 uint64_t waitpid(pid_t pid);
 #endif

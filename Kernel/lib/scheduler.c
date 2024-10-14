@@ -25,7 +25,7 @@ int64_t comparePCB(void * pcb1, void * pcb2) {
 void startScheduler() {
     status = ACTIVE;
     processQueue = createQueue(comparePCB);
-    idleProcess = lookUpOnHashMap((pid_t *)newProcess((uint64_t)idle, 1, 1, 0, NULL));
+    idleProcess = lookUpOnHashMap((pid_t) newProcess((uint64_t)idle, 1, 1, 0, NULL));
 }
 
 uint64_t contextSwitch(uint64_t rsp){
@@ -42,13 +42,8 @@ uint64_t contextSwitch(uint64_t rsp){
         return activeProcess->rsp;
     }
     activeProcess->rsp = rsp;
-    if(activeProcess == NULL){
-        drawWord(0xFFFFFF,"NULL");
-    }
-    printNumber(activeProcess->pid,0xFFFFFF);
-    drawWord(0xFFFFFF," ");
     if (activeProcess->status != KILLED ){
-        if(activeProcess->status!= EXITED) {
+        if(activeProcess->status != EXITED) {
             if (activeProcess->status != BLOCKED) {
                 if (activeProcess->priority - 1 > timesActiveExecuted) {
                     timesActiveExecuted++;
@@ -60,6 +55,9 @@ uint64_t contextSwitch(uint64_t rsp){
                 timesActiveExecuted = 0;
                 queue(processQueue, activeProcess);
             }
+
+        } else{
+            queue(processQueue, activeProcess);
         }
     }else{
         freeProcess(activeProcess);
@@ -67,14 +65,16 @@ uint64_t contextSwitch(uint64_t rsp){
     int size = sizeQ(processQueue);
     for(int i=0;i < size; i++ ){
     activeProcess = dequeue(processQueue);
-    if (activeProcess->status == READY ) {
-        activePid = activeProcess->pid;
-        activeProcess->status = RUNNING;
-        return activeProcess->rsp;
-    }else if (activeProcess->status == BLOCKED){
-        queue(processQueue,activeProcess);
-    } else if (activeProcess->status == KILLED) {
-        freeProcess(activeProcess);
+    if(activeProcess != NULL) {
+        if (activeProcess->status == READY) {
+            activePid = activeProcess->pid;
+            activeProcess->status = RUNNING;
+            return activeProcess->rsp;
+        } else if (activeProcess->status == BLOCKED) {
+            queue(processQueue, activeProcess);
+        } else if (activeProcess->status == KILLED) {
+            freeProcess(activeProcess);
+        }
     }
 }
     activeProcess=idleProcess;

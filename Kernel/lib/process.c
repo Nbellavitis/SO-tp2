@@ -8,7 +8,8 @@
 static HashMapADT PCBMap;
 static int  nextProcessId = 0;
 static int aliveProcesses = 0;
-int64_t comparePid(void* pid1, void* pid2);
+int64_t comparePid(pid_t pid1, pid_t pid2);
+
 pid_t newProcess(uint64_t rip, int ground, int priority, int argc, char * argv[]){
     PCB pcb = (PCBType *) allocMemory(sizeof(PCBType));
     if (pcb == NULL){
@@ -27,7 +28,7 @@ pid_t newProcess(uint64_t rip, int ground, int priority, int argc, char * argv[]
     pcb->priority = priority;
     pcb->pid = nextProcessId;
     pcb->argv= argv;
-    pcb->waitingProcesses = createQueue(comparePid);
+    pcb->waitingProcesses = createQueue(comparePCB);
 
     //ACA DEBERIAMOS AGREGARLO AL CHILDPROCESSES
     pcb->ppid = getActivePid(); //te dice el scheduler quien esta corriendo
@@ -36,26 +37,26 @@ pid_t newProcess(uint64_t rip, int ground, int priority, int argc, char * argv[]
     pcb->fd[STDOUT] = STDOUT;
     pcb->fd[STDERR] = STDERR;
 
-    insert(PCBMap,&(pcb->pid),pcb);
+    insert(PCBMap,(pcb->pid),pcb);
     addToReadyQueue(pcb);
 
     aliveProcesses++;
     return nextProcessId++;
 }
 
-int64_t comparePid(void * pid1, void * pid2) {
-    if(pid1 == NULL || pid2 == NULL) {
-        return -1;
-    }
-    pid_t a = *(pid_t *)pid1;
-    pid_t b = *(pid_t *)pid2;
+int64_t comparePid(pid_t pid1, pid_t pid2) {
+//    if(pid1 == NULL || pid2 == NULL) {
+//        return -1;
+//    }
+    pid_t a = pid1;
+    pid_t b = pid2;
     return (a > b) - (a < b);
 }
 void freeProcess(PCB pcb){
-    delete(PCBMap,&(pcb->pid));
+    delete(PCBMap,pcb->pid);
     freeMemory((void *)(pcb->stackBase - STACK_SIZE));
     freeMemory(pcb->argv);
-    freeMemory(pcb->waitingProcesses);
+    freeQueue(pcb->waitingProcesses);
     freeMemory(pcb);
     aliveProcesses--;
 }
@@ -63,7 +64,7 @@ void initMap(){
     PCBMap = create_hash_map(comparePid);
 }
 int8_t unblockProcess(pid_t pid){
-   PCB aux = lookup(PCBMap,&pid);
+   PCB aux = lookup(PCBMap,pid);
     if(aux == NULL){
         return -1;
     }
@@ -75,7 +76,7 @@ int8_t unblockProcess(pid_t pid){
 }
 
 int8_t killProcess(pid_t pid) {
-PCB aux = lookup(PCBMap,&pid);
+PCB aux = lookup(PCBMap,pid);
     if(aux == NULL){
         return -1;
     }
@@ -87,7 +88,7 @@ PCB aux = lookup(PCBMap,&pid);
 }
 
 int8_t blockProcess(pid_t pid) {
-    PCB aux = lookup(PCBMap,&pid);
+    PCB aux = lookup(PCBMap,pid);
     if(aux == NULL){
         return -1;
     }
@@ -99,7 +100,7 @@ int8_t blockProcess(pid_t pid) {
 }
 
 int8_t changePrio(pid_t pid,int priority){
-    PCB aux = lookup(PCBMap,&pid);
+    PCB aux = lookup(PCBMap,pid);
     if(aux == NULL){
         return -1;
     }
@@ -108,16 +109,16 @@ int8_t changePrio(pid_t pid,int priority){
     return 0;
 }
 
-PCB lookUpOnHashMap(pid_t * pid){
+PCB lookUpOnHashMap(pid_t pid){
     return lookup(PCBMap,pid);
 }
 
-PCB getProcessInfo(pid_t pid){
-    PCB aux = lookup(PCBMap,&pid);
+processInfoPtr getProcessInfo(pid_t pid){
+    PCB aux = lookup(PCBMap,pid);
     if(aux == NULL){
         return NULL;
     }
-    PCB toRet = (PCB) allocMemory(sizeof(PCBType));
+    processInfoPtr toRet = (processInfoPtr) allocMemory(sizeof(PCBType));
     toRet->pid = aux->pid;
     toRet->ppid = aux->ppid;
     toRet->rsp = aux->rsp;
@@ -130,11 +131,11 @@ PCB getProcessInfo(pid_t pid){
     return toRet;
 }
 
-PCB * getAllProcessInfo(){
-    PCB * toRet = (PCB *) allocMemory(sizeof(PCB) * (aliveProcesses + 1));
+processInfoPtr * getAllProcessInfo(){
+    processInfoPtr * toRet = (processInfoPtr *) allocMemory(sizeof(PCB) * (aliveProcesses + 1));
     uint64_t j=0;
     for(uint64_t i = 0; i < nextProcessId; i++){
-        PCB current = getProcessInfo(i);
+        processInfoPtr current = getProcessInfo(i);
         if(current != NULL){
             toRet[j++] = current;
         }
@@ -143,7 +144,7 @@ PCB * getAllProcessInfo(){
     return toRet;
 }
 uint64_t waitpid(pid_t pid){
-    PCB aux = lookup(PCBMap,&pid);
+    PCB aux = lookup(PCBMap,pid);
     uint64_t ret;
     if(aux == NULL){
         drawWord(0xFFFFFF,"El proceso no existe");
@@ -158,14 +159,13 @@ uint64_t waitpid(pid_t pid){
     if(aux->status == EXITED){
         drawWord(0xFFFFFF,"El proceso ya termino");
         ret = aux->ret;
-        removeFromReadyQueue(aux);
-        freeProcess(aux);
+        killProcess(aux->pid);
         return ret;
     }
     queue(aux->waitingProcesses,activeProcess);
     blockProcess(activeProcess->pid);
     ret = aux->ret;
-    freeProcess(aux);
+    killProcess(aux->pid);
     return ret;
 }
 
@@ -177,7 +177,6 @@ void exitProcess(uint64_t retStatus){
     while(hasNext(activeProcess->waitingProcesses)){
         PCB toUnblock = next(activeProcess->waitingProcesses);
         unblockProcess(toUnblock->pid);
-        printNumber(toUnblock->pid,0xFFFFFF);
     }
     activeProcess->status = EXITED;
     nice();

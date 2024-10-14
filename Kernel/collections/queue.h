@@ -7,9 +7,9 @@
 #include "../mm/mm.h"
 
 
-typedef int64_t (*compareFunc)(void * e1, void * e2);
+typedef int64_t (*compareFunction)(void * e1, void * e2);
 typedef struct queueCDT * queueADT;
-queueADT createQueue(compareFunc cmpFunc);
+queueADT createQueue(compareFunction cmpFunc);
 
 int8_t queue(queueADT queue, void * in);
 

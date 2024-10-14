@@ -2,7 +2,7 @@
 #define LIB_H
 
 #include <stdint.h>
-typedef int64_t pid_t;
+#include "../../sharedUserKernel.h"
 #define STDIN 0
 #define STDOUT 1
 #define STDERR 2

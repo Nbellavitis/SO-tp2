@@ -167,7 +167,31 @@ void strToUpper(char *str) {
         str++;
     }
 }
-//
-//void printProcess(PCB process){
-//    print()
-//}
+
+void printProcess(processInfoPtr process){
+    print(WHITE,"%d    ",process->pid);
+    print(WHITE,"%d    ",process->ppid);
+    print(WHITE,"%d    ",process->rsp);
+    print(WHITE,"%d    ",process->stackBase);
+    print(WHITE,"%d    ",process->rip);
+    print(WHITE,"%d    ",process->ground);
+    print(WHITE,"%d    ",process->priority);
+    print(WHITE,"%d    ",process->status);
+    print(WHITE,"%s    ",process->name);
+}
+
+void printAllProcesses(processInfoPtr * processes){
+    print(WHITE,"PID    PPID     RSP    StackBase    RIP    Ground    Priority    Status    Name\n");
+    for(int i=0; processes[i] != NULL; i++){
+        printProcess(processes[i]);
+        putC('\n',WHITE);
+    }
+}
+
+void freeProcessInfo(processInfoPtr * processes){
+    while ((*processes) != NULL) {
+        freeMemory(*processes);
+        (*processes)++;
+    }
+    freeMemory(processes);
+}

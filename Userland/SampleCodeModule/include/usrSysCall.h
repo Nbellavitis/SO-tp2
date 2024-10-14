@@ -1,28 +1,12 @@
 #include "stdint.h"
 #include "lib.h"
+#include "../../../sharedUserKernel.h"
 #ifndef USERSYSCALLS_H
 #define USERSYSCALLS_H
 
 #define STDIN 0
 #define STDOUT 1
 #define STDERR 2
-
-typedef struct PCBType{
-    pid_t pid, ppid;
-    uint64_t rsp, stackBase, rip;
-    int ground;
-    int priority;
-    int status;
-    const char * name;
-    char ** argv;
-    int fd[3];
-    uint64_t ret;
-
-    // Waiting Processes
-//    queueADT waitingProcesses;
-}PCBType;
-
-typedef struct PCBType * PCB;
 
 // Reads data from a file descriptor into the kernels buffer
 int call_sys_read(int fd, char *buf, int size);
@@ -94,6 +78,6 @@ pid_t createProcess(uint64_t rip, int ground, int priority, int argc, char * arg
 void testmm();
 void mmStatus();
 void testeando();
-PCB * ps();
+processInfoPtr * ps();
 long int waitpid(pid_t pid);
 #endif /* USERSYSCALLS_H */
