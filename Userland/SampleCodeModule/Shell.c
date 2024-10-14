@@ -69,7 +69,9 @@ const char *commands[] = {
     "div0:         Test the exception of the cero division.",
     "invalidOp:    Test the exception of an invalid operand.",
     "testmm:       allocs memory and run the test",
-    "mmStatus      Shows the mem status"
+    "mmStatus      Shows the mem status",
+    "testPrio      Run the priority test",
+    "testProcess   Run the process test",
 };
 void nada(){
     while (1);
