@@ -75,7 +75,8 @@ uint64_t contextSwitch(uint64_t rsp){
         } else if (activeProcess->status == KILLED) {
             freeProcess(activeProcess);
         } else if (activeProcess->status == EXITED) {
-            if (lookUpOnHashMap(activeProcess->ppid) == NULL) {
+            PCB parent = lookUpOnHashMap(activeProcess->ppid);
+            if (parent == NULL || parent->status == EXITED) {
                 killProcess(activeProcess->pid);
             }
             queue(processQueue, activeProcess);
