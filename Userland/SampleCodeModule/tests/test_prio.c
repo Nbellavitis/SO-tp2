@@ -45,7 +45,8 @@ void test_prio() {
 
   for (i = 0; i < TOTAL_PROCESSES; i++)
     killProcess(pids[i]);
-    putC('\n',0x80008000);
+
+  putC('\n',0x80008000);
 }
 static void endless_loop_print() {
     int64_t pid = getMyPid();

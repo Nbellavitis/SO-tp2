@@ -45,5 +45,8 @@ clean:
 	rm -rf asm/*.o *.o *.bin *.elf
 	rm -rf drivers/*.o *.o *.bin *.elf
 	rm -rf /*.o *.o *.bin *.elf
+	rm -rf collections/*.o *.o *.bin *.elf
+	rm -rf lib/*.o *.o *.bin *.elf
+	rm -rf mm/*.o *.o *.bin *.elf
 
 .PHONY: all clean

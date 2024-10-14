@@ -8,14 +8,14 @@ typedef struct tNode{
 typedef tNode * tList;
 
 typedef struct queueCDT{
-    compareFunc cmpFunc;
+    compareFunction cmpFunc;
     tList first;
     tList current;
     size_t amount;
     tList iter;
 }queueCDT;
 
-queueADT createQueue(compareFunc cmpFunc){
+queueADT createQueue(compareFunction cmpFunc){
     queueADT newQueue = (queueCDT *) allocMemory(sizeof(queueCDT));
     if(newQueue == NULL){
         return NULL;
@@ -68,7 +68,7 @@ void * dequeue(queueADT queue){
 }
 
 
-tList removeFromList(tList list, compareFunc cmp, void * elem, int8_t *flag){
+tList removeFromList(tList list, compareFunction cmp, void * elem, int8_t *flag){
     if (list == NULL) {
         *flag = 0;
         return list;
@@ -91,7 +91,7 @@ int8_t remove(queueADT queue, void * elem) {
         return 0;
     }
 
-    int flag;
+    int8_t flag;
     queue->first = removeFromList(queue->first, queue->cmpFunc, elem, &flag);
     queue->amount -= flag;
     return flag;

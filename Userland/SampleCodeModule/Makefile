@@ -20,6 +20,7 @@ $(MODULE): $(OBJECTS)
 
 clean:
 	rm -rf *.o asm/*.o
+	rm -rf *.o tests/*.o
 	rm -rf ../$(MODULE)
 
 .PHONY: all clean
