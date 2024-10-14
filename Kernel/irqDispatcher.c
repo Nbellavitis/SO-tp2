@@ -110,7 +110,7 @@ static int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64
         case 25:
             return getActivePid();
         case 26:
-            newProcess((uint64_t)testeando,0,2,0,NULL);
+            waitpid(newProcess((uint64_t)testeando,0,2,0,NULL));
             return 0;
         case 27:
             return (int64_t) getAllProcessInfo();

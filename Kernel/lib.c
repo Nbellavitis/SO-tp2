@@ -187,12 +187,6 @@ void sprint(char * buffer, const char* string, ...){
 
 }
 
-void p1(){
-    while(1){
-        //drawWord(0xFFFFFFFF,"soy p1");
-        //newLine();
-    }
-}
 uint64_t p2(int argc, char * argv[]){
     uint64_t i=0;
  while(i < 1000000){
@@ -215,40 +209,11 @@ void testeando(){
         i++;
     }
     for(uint64_t j=0;j<100000000;j++);
-//    PCB * aux = getAllProcessInfo();
-//    while((*aux) != NULL){
-//        drawWord(0xFFFFFFFF,"Proceso:");
-//        printNumber((*aux)->pid,0xFFFFFFFF);
-//        drawWord(0xFFFFFFFF,"Prioridad:");
-//        printNumber((*aux)->priority,0xFFFFFFFF);
-//        drawWord(0xFFFFFFFF,"PPID:");
-//        printNumber((*aux)->ppid,0xFFFFFFFF);
-//        drawWord(0xFFFFFFFF,"Ret:");
-//        printNumber((*aux)->ret,0xFFFFFFFF);
-//        drawWord(0xFFFFFFFF,"WaitingProcesses:");
-//        printNumber(sizeQ((*aux)->waitingProcesses),0xFFFFFFFF);
-//        newLine();
-//        aux++;
-//    }
+
     for(int j=0;j<10;j++){
         drawWord(0xFFFFFFFF,"\nKilling process");
         printNumber(p[j],0xFFFFFFFF);
         waitpid(p[j]);
     }
-//    PCB * aux2 = getAllProcessInfo();
-//    while((*aux2) != NULL){
-//        drawWord(0xFFFFFFFF,"Proceso:");
-//        printNumber((*aux2)->pid,0xFFFFFFFF);
-//        drawWord(0xFFFFFFFF,"Prioridad:");
-//        printNumber((*aux2)->priority,0xFFFFFFFF);
-//        drawWord(0xFFFFFFFF,"PPID:");
-//        printNumber((*aux2)->ppid,0xFFFFFFFF);
-//        drawWord(0xFFFFFFFF,"Ret:");
-//        printNumber((*aux2)->ret,0xFFFFFFFF);
-//        drawWord(0xFFFFFFFF,"WaitingProcesses:");
-//        printNumber(sizeQ((*aux2)->waitingProcesses),0xFFFFFFFF);
-//        newLine();
-//        aux2++;
-//    }
     return;
 }

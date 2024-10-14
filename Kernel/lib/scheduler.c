@@ -74,6 +74,11 @@ uint64_t contextSwitch(uint64_t rsp){
             queue(processQueue, activeProcess);
         } else if (activeProcess->status == KILLED) {
             freeProcess(activeProcess);
+        } else if (activeProcess->status == EXITED) {
+            if (lookUpOnHashMap(activeProcess->ppid) == NULL) {
+                killProcess(activeProcess->pid);
+            }
+            queue(processQueue, activeProcess);
         }
     }
 }
