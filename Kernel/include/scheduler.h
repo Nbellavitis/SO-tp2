@@ -10,7 +10,6 @@ pid_t getActivePid();
 uint64_t contextSwitch(uint64_t rsp);
 void startScheduler();
 void addToReadyQueue(PCB pcb);
-void printQueue();
 void removeAll(PCB pcb);
 PCB getActiveProcess();
 int64_t comparePCB(void * pcb1, void * pcb2);

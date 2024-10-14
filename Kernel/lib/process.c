@@ -17,7 +17,6 @@ pid_t newProcess(uint64_t rip, int ground, int priority, int argc, char * argv[]
         }
     pcb->stackBase = (uint64_t) allocMemory(STACK_SIZE);
     if (pcb->stackBase == 0){
-        drawWord(0xFFFFFF,"PORQUE ME PASA ESTOOO");
         freeMemory(pcb);
         return -1;
     }
@@ -30,8 +29,7 @@ pid_t newProcess(uint64_t rip, int ground, int priority, int argc, char * argv[]
     pcb->argv= argv;
     pcb->waitingProcesses = createQueue(comparePCB);
 
-    //ACA DEBERIAMOS AGREGARLO AL CHILDPROCESSES
-    pcb->ppid = getActivePid(); //te dice el scheduler quien esta corriendo
+    pcb->ppid = getActivePid(); 
     pcb->rsp = createProcess(pcb->stackBase, pcb->rip, argc, argv);
     pcb->fd[STDIN] = STDIN;
     pcb->fd[STDOUT] = STDOUT;
@@ -45,9 +43,6 @@ pid_t newProcess(uint64_t rip, int ground, int priority, int argc, char * argv[]
 }
 
 int64_t comparePid(pid_t pid1, pid_t pid2) {
-//    if(pid1 == NULL || pid2 == NULL) {
-//        return -1;
-//    }
     pid_t a = pid1;
     pid_t b = pid2;
     return (a > b) - (a < b);

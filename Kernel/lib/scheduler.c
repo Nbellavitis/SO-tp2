@@ -114,18 +114,6 @@ PCB getActiveProcess(){
     return activeProcess;
 }
 
-void printQueue(){
-    toBegin(processQueue);
-     drawWord(0xFFFFFF,"size:");
-    printNumber(sizeQ(processQueue),0xFFFFFF);
-     drawChar(0xFFFFFF,' ');
-    while(hasNext(processQueue)){
-       PCB aux=next(processQueue);
-       drawWord(0xFFFFFF,"WHAT");
-       printNumber(aux->pid,0xFFFFFF);
-       drawChar(0xFFFFFF,' ');
-    }
-}
 int8_t removeFromReadyQueue(PCB pcb){
     return remove(processQueue,pcb);
 }
