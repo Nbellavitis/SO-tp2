@@ -49,8 +49,9 @@ uint64_t contextSwitch(uint64_t rsp){
             return activeProcess->rsp;
             }
             activeProcess->status = READY;
+        }
+        if(activeProcess->pid != idleProcess->pid) {
             timesActiveExecuted = 0;
-        }    if(activeProcess->pid != idleProcess->pid) {
             queue(processQueue, activeProcess);
         }
     }else{
@@ -100,10 +101,6 @@ PCBType * findProcessByPid(pid_t pid) {
         }
     }
     return NULL;
-}
-
-void yield(){
-    _irq00Handler();
 }
 
 PCB getActiveProcess(){

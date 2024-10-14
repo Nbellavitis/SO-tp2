@@ -145,69 +145,6 @@ void printNumber(uint64_t num,uint32_t hexColor){
         divisor /= 10;
     }
 }
-
-void p1(){
-    while(1){
-        //drawWord(0xFFFFFFFF,"soy p1");
-        //newLine();
-    }
-}
-void p2(){
- while(1){
-       // drawWord(0xFFFFFFFF,"soy p2");
-       // newLine();
-    }
-}
-void testeando(){
-
-    PCB * aux = getAllProcessInfo();
-    while((*aux) != NULL){
-        drawWord(0xFFFFFFFF,"pid:");
-        printNumber((*aux)->pid,0xFFFFFFFF);
-        drawChar(0xFFFFFFFF,'\n');
-        drawWord(0xFFFFFFFF,"ppid:");
-        printNumber((*aux)->ppid,0xFFFFFFFF);
-        drawChar(0xFFFFFFFF,'\n');
-        drawWord(0xFFFFFFFF,"priority:");
-        printNumber((*aux)->priority,0xFFFFFFFF);
-        drawChar(0xFFFFFFFF,'\n');
-        drawWord(0xFFFFFFFF,"\n");
-        aux++;
-    }
-
-    printMm();
-   pid_t p_1= newProcess((uint64_t)p1,0,1,0,NULL);
-
-    pid_t p_2= newProcess((uint64_t)p1,0,1,0,NULL);
-    pid_t p_3= newProcess((uint64_t)p1,0,1,0,NULL);
-    pid_t p_4= newProcess((uint64_t)p1,0,1,0,NULL);
-    printMm();
-    int k=0;
-    while( k < 100000000){
-        k++;
-    }
-    killProcess(p_1);
-    blockProcess(p_2);
-    int i=0;
-    while( i < 100000000){
-        i++;
-    }
-    unblockProcess(p_2);
-    changePrio(p_2,1);
-    drawWord(0xFFFFFFFF,"cambio prio");
-    int j=0;
-    while(j < 100000000){
-        j++;
-    }
-    changePrio(p_2,1);
-    printMm();
-    killProcess(p_3);
-    killProcess(p_2);
-    printMm();
-    killProcess(p_4);
-    printMm();
-    return;
-}
 void sprint(char * buffer, const char* string, ...){
     va_list args;
     va_start(args, string);
@@ -249,9 +186,46 @@ void sprint(char * buffer, const char* string, ...){
     return;
 
 }
+
+void p1(){
+    while(1){
+        //drawWord(0xFFFFFFFF,"soy p1");
+        //newLine();
+    }
+}
+uint64_t p2(int argc, char * argv[]){
+    uint64_t i=0;
+ while(i < 10000000){
+        i++;
+//        drawWord(0xFFFFFFFF,"soy p4");
+       // newLine();
+    }
+    drawWord(0xFFFFFFF,"p4 termino (dentro de p4)");
+    return 2;
+}
+void testeando(){
+
+
+    pid_t p_4= newProcess((uint64_t)p2,0,1,0,NULL);
+    uint64_t i=0;
+    while (i<1000000){
+        i++;
+    }
+    uint64_t num = waitpid(p_4);
+    printNumber(num,0xFFFFFFFF);
+    drawWord(0xFFFFFFFF,"p3 termino");
+    return;
+}
+
+
 void exitProcess(uint64_t retStatus){
     PCB activeProcess = getActiveProcess();
     activeProcess->ret = retStatus;
+    toBegin(activeProcess->waitingProcesses);
+    while(hasNext(activeProcess->waitingProcesses)){
+        PCB toUnblock = next(activeProcess->waitingProcesses);
+        unblockProcess(toUnblock->pid);
+    }
     activeProcess->status = KILLED;
-    yield();
+    nice();
 }

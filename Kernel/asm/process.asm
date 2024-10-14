@@ -5,7 +5,7 @@ EXTERN exitProcess
 
 callWrapper:
     call rdx
-    mov rsi, rax
+    mov rdi, rax
     call exitProcess
 createProcess:
     push rbp

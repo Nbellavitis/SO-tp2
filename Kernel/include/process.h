@@ -41,4 +41,5 @@ int8_t blockProcess(pid_t pid);
 int8_t changePrio(pid_t pid,int priority);
 PCB lookUpOnHashMap(pid_t * pid);
 PCB * getAllProcessInfo();
+uint64_t waitpid(pid_t pid);
 #endif

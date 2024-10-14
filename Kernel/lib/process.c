@@ -20,7 +20,7 @@ pid_t newProcess(uint64_t rip, int ground, int priority, int argc, char * argv[]
         freeMemory(pcb);
         return -1;
     }
-    pcb->stackBase += STACK_SIZE -1;
+    pcb->stackBase += STACK_SIZE ;
     pcb->rip = rip;
     pcb->ground = ground;
     pcb->status = READY;
@@ -78,7 +78,7 @@ PCB aux = lookup(PCBMap,&pid);
     }
     aux->status=KILLED;
     if(pid == getActivePid()){
-        yield();
+        nice();
     }
    return 0;
 }
@@ -90,7 +90,7 @@ int8_t blockProcess(pid_t pid) {
     }
     aux->status = BLOCKED;
     if(pid == getActivePid()){
-        yield();
+        nice();
     }
     return 0;
 }
@@ -138,4 +138,17 @@ PCB * getAllProcessInfo(){
     }
     toRet[j] = NULL;
     return toRet;
+}
+uint64_t waitpid(pid_t pid){
+    PCB aux = lookup(PCBMap,&pid);
+    if(aux == NULL){
+        return -1;
+    }
+    PCB activeProcess = getActiveProcess();
+    if(activeProcess == NULL){
+        return -1;
+    }
+    queue(aux->waitingProcesses,activeProcess);
+    blockProcess(activeProcess->pid);
+    return aux->ret;
 }

@@ -20,6 +20,7 @@ GLOBAL getRegisters
 GLOBAL printRegistersAsm
 GLOBAL getFlag
 GLOBAL saveRegisters
+GLOBAL nice
 
 EXTERN irqDispatcher
 EXTERN exceptionDispatcher
@@ -293,7 +294,8 @@ _exception0Handler:
 _exception6Handler:
 	exceptionHandler 6
 
-
+nice:
+    int 0x20
 
 SECTION .data
 userland equ 0x400000
