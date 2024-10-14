@@ -4,13 +4,14 @@
 #include "../collections/hashMap.h"
 #include "../Drivers/include/videoDriver.h"
 #include "../collections/queue.h"
-#define MAX_PROCESSES 1000
+#define MAX_PROCESSES 7000
 static HashMapADT PCBMap;
 static int  nextProcessId = 0;
 static int aliveProcesses = 0;
 int64_t comparePid(pid_t pid1, pid_t pid2);
 
 pid_t newProcess(uint64_t rip, int ground, int priority, int argc, char * argv[]){
+    if(aliveProcesses < MAX_PROCESSES){
     PCB pcb = (PCBType *) allocMemory(sizeof(PCBType));
     if (pcb == NULL){
         return -1;
@@ -28,8 +29,12 @@ pid_t newProcess(uint64_t rip, int ground, int priority, int argc, char * argv[]
     pcb->pid = nextProcessId;
     pcb->argv= argv;
     pcb->waitingProcesses = createQueue(comparePCB);
-
-    pcb->ppid = getActivePid(); 
+    if(pcb->pid == 0 || pcb->pid == 1){
+        pcb->ppid = -1;
+    }else{
+         pcb->ppid = getActivePid();
+    }
+    
     pcb->rsp = createProcess(pcb->stackBase, pcb->rip, argc, argv);
     pcb->fd[STDIN] = STDIN;
     pcb->fd[STDOUT] = STDOUT;
@@ -40,6 +45,8 @@ pid_t newProcess(uint64_t rip, int ground, int priority, int argc, char * argv[]
 
     aliveProcesses++;
     return nextProcessId++;
+    }
+    return -1;
 }
 
 int64_t comparePid(pid_t pid1, pid_t pid2) {
@@ -127,7 +134,7 @@ processInfoPtr getProcessInfo(pid_t pid){
 }
 
 processInfoPtr * getAllProcessInfo(){
-    processInfoPtr * toRet = (processInfoPtr *) allocMemory(sizeof(PCB) * (aliveProcesses + 1));
+    processInfoPtr * toRet = (processInfoPtr *) allocMemory(sizeof(PCB) * (aliveProcesses));
     uint64_t j=0;
     for(uint64_t i = 0; i < nextProcessId; i++){
         processInfoPtr current = getProcessInfo(i);

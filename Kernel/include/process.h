@@ -26,8 +26,6 @@ typedef struct PCBType{
     char ** argv;
     int fd[3];
     uint64_t ret;
-
-    // Waiting Processes
     queueADT waitingProcesses;
 }PCBType;
 
