@@ -71,7 +71,8 @@ const char *commands[] = {
     "mmStatus      Shows the mem status",
     "testPrio      Run the priority test",
     "testProcess   Run the process test",
-    "ps           Shows the process list"
+    "ps           Shows the process list",
+    "kill        Kills a process, use: kill n to kill the process with pid n",
 };
 
 void lineRead(char *buffer) {
@@ -129,6 +130,12 @@ void lineRead(char *buffer) {
     testeando();
     } else if(strcmp(buffer,"ps") == 0){
         printAllProcesses(ps());
+    }
+    else if(strcmp(cutString(buffer),"kill") == 0){
+        char * init = buffer + strlen("kill ");
+        if(! strlen(init))
+            return;
+        killProcess(strToInt(init));
     }
     else{
         putString(buffer,WHITE);

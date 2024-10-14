@@ -3,6 +3,7 @@
 #include "include/lib.h"
 #include "include/usrSysCall.h"
 #include <stdarg.h>
+#include <stddef.h>
 #define TO_UPPER(c) (((c) >= 'a' && (c) <= 'z') ? ((c) - ('a' - 'A')) : (c))
 
 
@@ -100,9 +101,7 @@ char * cutString(char *str) {
     }
     return str;
 }
-#include <stddef.h>
 
-#include <stddef.h>
 void reverseStr(char* str, int length) {
     int start = 0;
     int end = length - 1;
@@ -170,7 +169,11 @@ void strToUpper(char *str) {
 
 void printProcess(processInfoPtr process){
     print(WHITE,"%d      ",process->pid);
-    print(WHITE, "%s    ", process->ppid == -1 ? "-1" : "%d", process->ppid);
+    if(process->ppid == -1){
+        print(WHITE, "-1        ");
+    }else{
+    print(WHITE, "%d        ", process->ppid);
+    }
     print(WHITE,"%d    ",process->rsp);
     print(WHITE,"%d     ",process->stackBase);
     print(WHITE,"%d     ",process->rip);
