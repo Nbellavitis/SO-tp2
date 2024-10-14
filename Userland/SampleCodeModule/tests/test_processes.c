@@ -33,7 +33,6 @@ int64_t test_processes(uint64_t argc, char *argv[]) {
 
       if (p_rqs[rq].pid == -1) {
         print(0xFFFFFFFF,"test_processes: ERROR creating process\n");
-        mmStatus();
         return -1;
       } else {
         p_rqs[rq].state = RUNNING;
