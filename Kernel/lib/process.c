@@ -3,6 +3,7 @@
 #include "../include/scheduler.h"
 #include "../collections/hashMap.h"
 #include "../Drivers/include/videoDriver.h"
+#include "../collections/queue.h"
 #define MAX_PROCESSES 1000
 static HashMapADT PCBMap;
 static int  nextProcessId = 0;
@@ -26,7 +27,7 @@ pid_t newProcess(uint64_t rip, int ground, int priority, int argc, char * argv[]
     pcb->priority = priority;
     pcb->pid = nextProcessId;
     pcb->argv= argv;
-    //pcb->childProcessesWaiting = newQueue(comparePid);
+    pcb->waitingProcesses = createQueue(comparePid);
 
     //ACA DEBERIAMOS AGREGARLO AL CHILDPROCESSES
     pcb->ppid = getActivePid(); //te dice el scheduler quien esta corriendo
@@ -54,6 +55,7 @@ void freeProcess(PCB pcb){
     delete(PCBMap,&(pcb->pid));
     freeMemory((void *)(pcb->stackBase - STACK_SIZE));
     freeMemory(pcb->argv);
+    freeQueue(pcb->waitingProcesses);
     freeMemory(pcb);
     aliveProcesses--;
 }
