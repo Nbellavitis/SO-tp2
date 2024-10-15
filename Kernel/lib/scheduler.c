@@ -28,6 +28,31 @@ void startScheduler() {
     idleProcess = lookUpOnHashMap((pid_t) newProcess((uint64_t)idle, 1, 1, 0, NULL));
 }
 
+static PCB findNextReadyProcess(queueADT processQueue) {
+    int size = sizeQ(processQueue);
+    for(int i=0;i < size; i++ ){
+        activeProcess = dequeue(processQueue);
+        if(activeProcess != NULL) {
+            if (activeProcess->status == READY) {
+                activePid = activeProcess->pid;
+                activeProcess->status = RUNNING;
+                return activeProcess;
+            } else if (activeProcess->status == BLOCKED) {
+                queue(processQueue, activeProcess);
+            } else if (activeProcess->status == KILLED) {
+                freeProcess(activeProcess);
+            } else if (activeProcess->status == EXITED) {
+                PCB parent = lookUpOnHashMap(activeProcess->ppid);
+                if (parent == NULL || parent->status == EXITED) {
+                    killProcess(activeProcess->pid);
+                }
+                queue(processQueue, activeProcess);
+            }
+        }
+    }
+    return NULL;
+}
+
 uint64_t contextSwitch(uint64_t rsp){
     if ( status == INACTIVE)
         return rsp;
@@ -62,29 +87,11 @@ uint64_t contextSwitch(uint64_t rsp){
     }else{
         freeProcess(activeProcess);
     }
-    int size = sizeQ(processQueue);
-    for(int i=0;i < size; i++ ){
-    activeProcess = dequeue(processQueue);
-    if(activeProcess != NULL) {
-        if (activeProcess->status == READY) {
-            activePid = activeProcess->pid;
-            activeProcess->status = RUNNING;
-            return activeProcess->rsp;
-        } else if (activeProcess->status == BLOCKED) {
-            queue(processQueue, activeProcess);
-        } else if (activeProcess->status == KILLED) {
-            freeProcess(activeProcess);
-        } else if (activeProcess->status == EXITED) {
-            PCB parent = lookUpOnHashMap(activeProcess->ppid);
-            if (parent == NULL || parent->status == EXITED) {
-                killProcess(activeProcess->pid);
-            }
-            queue(processQueue, activeProcess);
-        }
+    activeProcess = findNextReadyProcess(processQueue);
+    if(activeProcess == NULL){
+        activeProcess=idleProcess;
+        activePid=idleProcess->pid;
     }
-}
-    activeProcess=idleProcess;
-    activePid=idleProcess->pid;
     return activeProcess->rsp;
 }
 
