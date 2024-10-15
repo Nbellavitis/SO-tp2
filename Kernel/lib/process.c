@@ -94,6 +94,9 @@ int8_t blockProcess(pid_t pid) {
     if(aux == NULL){
         return -1;
     }
+    if(aux->status == EXITED || aux->status == KILLED){
+        return -1;
+    }
     aux->status = BLOCKED;
     if(pid == getActivePid()){
         nice();
