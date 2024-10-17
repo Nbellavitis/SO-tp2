@@ -1,5 +1,6 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
+#ifdef BITMAP
 #include "mm.h"
 #include <stdint.h>
 #include "../include/lib.h"
@@ -152,3 +153,4 @@ MemoryStatus getMemoryStatus(){
     status.freeMemory = status.totalMemory - status.usedMemory;
     return status;
 }
+#endif

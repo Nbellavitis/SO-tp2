@@ -5,6 +5,11 @@
 #define HEAP_SIZE 0x10000000 // 256 MiB
 #define BLOCK_SIZE 64
 
+#ifdef MM_BUDDY
+#undef  HEAP_SIZE
+#define HEAP_SIZE 0x800000
+#endif // MM_BUDDY
+
 typedef struct {
     uint32_t totalMemory;
     uint32_t usedMemory;
