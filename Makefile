@@ -1,10 +1,12 @@
+
+
 all: bootloader kernel userland image
 
 bootloader:
 	cd Bootloader; make all
 
 kernel:
-	cd Kernel; make all
+	cd Kernel; make all MM=$(MM)
 
 userland:
 	cd Userland; make all
