@@ -6,8 +6,8 @@
 #define BLOCK_SIZE 64
 
 #ifdef MM_BUDDY
-#undef  HEAP_SIZE
-#define HEAP_SIZE 0x800000
+#undef  HEAP_STRUCTURE_SIZE
+#define HEAP_STRUCTURE_SIZE 0x800000
 #endif // MM_BUDDY
 
 typedef struct {
