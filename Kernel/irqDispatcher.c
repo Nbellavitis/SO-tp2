@@ -1,5 +1,3 @@
-// This is a personal academic project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
 #include <time.h>
 #include <stdint.h>
 #include "Drivers/include/keyboardDriver.h"
@@ -16,110 +14,202 @@
 #include "mm/mm.h"
 #include "tests/test_util.h"
 #include "include/irqDispatcher.h"
+
+
 static void int_21();
 static int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
+void timer_handler();
+
+
+static void (*irq_handlers[])(uint64_t, uint64_t, uint64_t, uint64_t, uint64_t, uint64_t);
+
 void irqDispatcher(uint64_t irq,uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
-	switch (irq) {
-		case 0:
-            timer_handler();
-			break;
-		case 1:
-			int_21();
-			break;
-        case 0x80:
-            int_80(rdi, rsi,  rdx, rcx, r8, r9);
-            break;
-        }
-	return;
+    switch (irq) {
+    case 0:
+      timer_handler();
+        break;
+    case 1:
+        int_21();
+        break;
+    case 0x80:
+        int_80(rdi, rsi,  rdx, rcx, r8, r9);
+        break;
+    }
+    return;
 }
 
 void int_21() {
-	keyboard_handler();
+    keyboard_handler();
 }
-static int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
-    switch(rdi) {
-        case 1:
-            sys_write(rsi, (char *)rdx, rcx,r8);
-            return 0;
-        case 2:
-            return sys_read(rsi,(char *) rdx, rcx);
-        case 3:
-            clock((char *) rsi);
-            return 0;
-        case 4:
-            if(getFlag() || rsi == 1){
-                if(getFlag()==0){
-                    drawWord(0x00FF0000,"You must take a screenshot first, press : and try again.\n");
-                    return 0;
-                }
-                printRegisters(getRegisters(), 0x00ffffff);
-            }
-            //la idea faltaria que se prenda al pedir registros
-            return 0;
-        case 5:
-            clear();
-            return 0;
-        case 6:
-            return ticks_elapsed();
-        case 7:
-           return (getHeight());
-        case 8:
-           return (getWidth());
-        case 9:
-            moveCursorX((uint16_t)rsi);
-            return 0;
-        case 10:
-            moveCursorY((uint16_t)rsi);
-            return 0;
-        case 11:
-            drawRectangle(rsi, rdx, rcx, r8, r9);
-            return 0;
-        case 12:
-            sleepms(rsi);
-            return 0;
-        case 13:
-            return (int) setFontSize(rsi);
-        case 14:
-            beep();
-            return 0;
-        case 15:
-            runTestMm();
-           return 0;
-        case 16:
-            printMm();
-            return 0;
-        case 17:
-            exitProcess(rsi);
-            return 0;
-        case 18:
 
-           return newProcess(rsi,rdx,rcx,r8,(char **)r9);
-        case 19:
-            return  killProcess((pid_t) rsi);
-        case 20:
-            return  blockProcess((pid_t) rsi);
-        case 21:
-            return  unblockProcess((pid_t) rsi);
-        case 22:
-            return (uint64_t) allocMemory((size_t)rsi);
-        case 23:
-             freeMemory((void *)rsi);
-             return 0;
-        case 24:
-            return changePrio((pid_t) rsi,(int) rdx);
-        case 25:
-            return getActivePid();
-        case 26:
-            waitpid(newProcess((uint64_t)testeando,0,2,0,NULL));
-            return 0;
-        case 27:
-            return (int64_t) getAllProcessInfo();
-        case 28:
-            return waitpid((pid_t)rsi);
-        default:
 
+typedef int (*syscall_handler_t)(uint64_t, uint64_t, uint64_t, uint64_t, uint64_t, uint64_t);
+
+static int sys_write_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+    sys_write(rsi, (char *)rdx, rcx, r8);
+    return 0;
+}
+
+static int sys_read_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+    return sys_read(rsi, (char *)rdx, rcx);
+}
+
+static int clock_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+    clock((char *)rsi);
+    return 0;
+}
+
+static int clear_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+    clear();
+    return 0;
+}
+
+static int ticks_elapsed_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+    return ticks_elapsed();
+}
+
+static int get_height_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+    return getHeight();
+}
+
+static int get_width_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+    return getWidth();
+}
+
+static int move_cursor_x_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+    moveCursorX((uint16_t)rsi);
+    return 0;
+}
+
+static int move_cursor_y_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+    moveCursorY((uint16_t)rsi);
+    return 0;
+}
+
+static int draw_rectangle_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+    drawRectangle(rsi, rdx, rcx, r8, r9);
+    return 0;
+}
+
+static int sleepms_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+    sleepms(rsi);
+    return 0;
+}
+
+static int set_font_size_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+    return setFontSize(rsi);
+}
+
+static int beep_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+    beep();
+    return 0;
+}
+
+static int run_test_mm_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+    runTestMm();
+    return 0;
+}
+
+static int print_mm_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+    printMm();
+    return 0;
+}
+
+static int exit_process_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+    exitProcess(rsi);
+    return 0;
+}
+
+static int new_process_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+    return newProcess(rsi, rdx, rcx, r8, (char **)r9);
+}
+
+static int kill_process_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+    return killProcess((pid_t)rsi);
+}
+
+static int block_process_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+    return blockProcess((pid_t)rsi);
+}
+
+static int unblock_process_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+    return unblockProcess((pid_t)rsi);
+}
+
+static int alloc_memory_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+    return (uint64_t)allocMemory((size_t)rsi);
+}
+
+static int free_memory_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+    freeMemory((void *)rsi);
+    return 0;
+}
+
+static int change_priority_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+    return changePrio((pid_t)rsi, (int)rdx);
+}
+
+static int get_active_pid_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+    return getActivePid();
+}
+
+static int waitpid_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+    return waitpid((pid_t)rsi);
+}
+
+static int get_all_process_info_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+    return (int64_t)getAllProcessInfo();
+}
+static int getRegistersState(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
+    if(getFlag() || rsi == 1){
+        if(getFlag()==0){
+            drawWord(0x00FF0000,"You must take a screenshot first, press : and try again.\n");
             return 0;
+        }
+        printRegisters(getRegisters(), 0x00ffffff);
+
     }
+    return 0;
 }
 
+//la idea faltaria que se prenda al pedir registros
 
+// Array de funciones de llamadas al sistema (syscalls)
+syscall_handler_t syscallHandlers[] = {
+    NULL,                       // 0 (reservado)
+    sys_write_wrapper,           // 1
+    sys_read_wrapper,            // 2
+    clock_wrapper,               // 3
+    getRegistersState,           // 4
+    clear_wrapper,               // 5
+    ticks_elapsed_wrapper,       // 6
+    get_height_wrapper,          // 7
+    get_width_wrapper,           // 8
+    move_cursor_x_wrapper,       // 9
+    move_cursor_y_wrapper,       // 10
+    draw_rectangle_wrapper,      // 11
+    sleepms_wrapper,             // 12
+    set_font_size_wrapper,       // 13
+    beep_wrapper,                // 14
+    run_test_mm_wrapper,         // 15
+    print_mm_wrapper,            // 16
+    exit_process_wrapper,        // 17
+    new_process_wrapper,         // 18
+    kill_process_wrapper,        // 19
+    block_process_wrapper,       // 20
+    unblock_process_wrapper,     // 21
+    alloc_memory_wrapper,        // 22
+    free_memory_wrapper,         // 23
+    change_priority_wrapper,     // 24
+    get_active_pid_wrapper,      // 25
+    waitpid_wrapper,             // 26
+    get_all_process_info_wrapper // 27
+};
+
+// Función int_80 utilizando el array de syscalls
+static int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+    if (rdi < sizeof(syscallHandlers) / sizeof(syscallHandlers[0]) && syscallHandlers[rdi] != NULL) {
+        return syscallHandlers[rdi](rdi, rsi, rdx, rcx, r8, r9);
+    }
+    return 0; // Valor por defecto en caso de syscall no válida
+}

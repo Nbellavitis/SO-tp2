@@ -8,7 +8,7 @@
 // Reads a character from input and saves it in the pointer c. 
 // Returns the number of characters saved.
 int getC(char * c);
-
+int strncmp(const char *str1, const char *str2, size_t n);
 // Prints the character passed as the first argument in the color specified by the second argument.
 void putC(char c, uint32_t hexColor);
 
