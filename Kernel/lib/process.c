@@ -57,7 +57,7 @@ int64_t comparePid(pid_t pid1, pid_t pid2) {
 void freeProcess(PCB pcb){
     delete(PCBMap,pcb->pid);
     freeMemory((void *)(pcb->stackBase - STACK_SIZE));
-
+	freeMemory(pcb->argv);
     freeQueue(pcb->waitingProcesses);
     freeMemory(pcb);
     aliveProcesses--;
