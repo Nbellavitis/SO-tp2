@@ -21,4 +21,5 @@ void runTestMm();
 void testeando();
 void printNumber(uint64_t num,uint32_t hexColor);
 void exitProcess(uint64_t status);
+int strcmp(const char *s1, const char *s2);
 #endif

@@ -23,7 +23,11 @@ GLOBAL allocMemory
 GLOBAL freeMemory
 GLOBAL changePrio
 GLOBAL getMyPid
-
+GLOBAL yield
+GLOBAL semOpen
+GLOBAL semWait
+GLOBAL semPost
+GLOBAL semClose
 GLOBAL testeando
 GLOBAL ps
 GLOBAL waitpid
@@ -99,6 +103,16 @@ ps:
     call_to_handler 27
 waitpid:
     call_to_handler 28
+yield:
+    call_to_handler 29
+semOpen:
+    call_to_handler 30
+semWait:
+    call_to_handler 31
+semPost:
+    call_to_handler 32
+semClose:
+    call_to_handler 33
 InvalidOpasm:
     mov rax, 0x12345678
     rdpmc

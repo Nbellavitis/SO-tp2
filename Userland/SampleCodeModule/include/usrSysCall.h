@@ -80,4 +80,9 @@ void mmStatus();
 void testeando();
 processInfoPtr * ps();
 long int waitpid(pid_t pid);
+int semOpen(char * name, int initialValue);
+void semClose(char * name);
+void semWait(char * name);
+void semPost(char * name);
+void yield();
 #endif /* USERSYSCALLS_H */

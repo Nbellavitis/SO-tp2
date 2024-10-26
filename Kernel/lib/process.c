@@ -8,7 +8,7 @@
 static HashMapADT PCBMap;
 static int  nextProcessId = 0;
 static int aliveProcesses = 0;
-int64_t comparePid(pid_t pid1, pid_t pid2);
+
 
 pid_t newProcess(uint64_t rip, int ground, int priority, int argc, char * argv[]){
     if(aliveProcesses < MAX_PROCESSES){
@@ -57,7 +57,7 @@ int64_t comparePid(pid_t pid1, pid_t pid2) {
 void freeProcess(PCB pcb){
     delete(PCBMap,pcb->pid);
     freeMemory((void *)(pcb->stackBase - STACK_SIZE));
-    freeMemory(pcb->argv);
+
     freeQueue(pcb->waitingProcesses);
     freeMemory(pcb);
     aliveProcesses--;
@@ -84,7 +84,7 @@ PCB aux = lookup(PCBMap,pid);
     }
     aux->status=KILLED;
     if(pid == getActivePid()){
-        nice();
+        yield();
     }
    return 0;
 }
@@ -99,7 +99,7 @@ int8_t blockProcess(pid_t pid) {
     }
     aux->status = BLOCKED;
     if(pid == getActivePid()){
-        nice();
+        yield();
     }
     return 0;
 }
@@ -184,5 +184,5 @@ void exitProcess(uint64_t retStatus){
         unblockProcess(toUnblock->pid);
     }
     activeProcess->status = EXITED;
-    nice();
+    yield();
 }

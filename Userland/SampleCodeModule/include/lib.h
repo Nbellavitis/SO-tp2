@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include "../../../sharedUserKernel.h"
+#include "test_util.h"
 #define WHITE 0xFFFFFFFF
 
 // Reads a character from input and saves it in the pointer c. 

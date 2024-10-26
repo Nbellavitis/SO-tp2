@@ -54,8 +54,11 @@ static PCB findNextReadyProcess(queueADT processQueue) {
 }
 
 uint64_t contextSwitch(uint64_t rsp){
+
     if ( status == INACTIVE)
         return rsp;
+
+  //  printNumber(activePid,0xFFFFFFFF);
     if ( activePid == KERNEL_PID){
         activeProcess = dequeue(processQueue);
         activePid = 0;

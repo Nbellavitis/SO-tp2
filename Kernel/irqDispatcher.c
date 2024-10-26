@@ -14,7 +14,7 @@
 #include "mm/mm.h"
 #include "tests/test_util.h"
 #include "include/irqDispatcher.h"
-
+#include "include/sems.h"
 
 static void int_21();
 static int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
@@ -116,12 +116,12 @@ static int print_mm_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t r
 }
 
 static int exit_process_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
-    exitProcess(rsi);
+    exitProcess((pid_t)rsi);
     return 0;
 }
 
 static int new_process_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
-    return newProcess(rsi, rdx, rcx, r8, (char **)r9);
+ 		return newProcess(rsi,rdx,rcx,r8,(char **)r9);
 }
 
 static int kill_process_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
@@ -137,7 +137,7 @@ static int unblock_process_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uin
 }
 
 static int alloc_memory_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
-    return (uint64_t)allocMemory((size_t)rsi);
+    return (uint64_t) allocMemory((uint64_t)rsi);
 }
 
 static int free_memory_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
@@ -172,9 +172,30 @@ static int getRegistersState(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t 
     return 0;
 }
 
-//la idea faltaria que se prenda al pedir registros
+static int yield_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
+    yield();
+    return 0;
+}
+static int semOpen_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
+    return semOpen((char *)rsi, rdx);
 
-// Array de funciones de llamadas al sistema (syscalls)
+}
+static int semClose_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
+    semClose((char *)rsi);
+    return 0;
+}
+static int semWait_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
+    semWait((char *)rsi);
+    return 0;
+}
+static int semPost_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
+    semPost((char *)rsi);
+    return 0;
+}
+static int testeandoWrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
+    testeando();
+    return 0;
+}
 syscall_handler_t syscallHandlers[] = {
     NULL,                       // 0 (reservado)
     sys_write_wrapper,           // 1
@@ -202,8 +223,14 @@ syscall_handler_t syscallHandlers[] = {
     free_memory_wrapper,         // 23
     change_priority_wrapper,     // 24
     get_active_pid_wrapper,      // 25
-    waitpid_wrapper,             // 26
-    get_all_process_info_wrapper // 27
+    testeandoWrapper,           // 26
+    get_all_process_info_wrapper, // 27
+    waitpid_wrapper, 				// 28
+	yield_wrapper,               // 29
+    semOpen_wrapper,             // 30
+    semWait_wrapper,            // 31
+    semPost_wrapper,            // 32
+    semClose_wrapper            // 33
 };
 
 // Función int_80 utilizando el array de syscalls
@@ -211,5 +238,5 @@ static int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64
     if (rdi < sizeof(syscallHandlers) / sizeof(syscallHandlers[0]) && syscallHandlers[rdi] != NULL) {
         return syscallHandlers[rdi](rdi, rsi, rdx, rcx, r8, r9);
     }
-    return 0; // Valor por defecto en caso de syscall no válida
+    return 0;
 }

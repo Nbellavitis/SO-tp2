@@ -11,7 +11,8 @@
 #include <idtLoader.h>
 
 #include <stdint.h>
-
+void acquire(uint8_t *lock);
+void release(uint8_t *lock);
 void _irq00Handler(void);
 void _irq01Handler(void);
 void _irq02Handler(void);
@@ -36,7 +37,7 @@ void picMasterMask(uint8_t mask);
 
 void picSlaveMask(uint8_t mask);
 
-void nice(void);
+void yield(void);
 
 //Termina la ejecución de la cpu.
 void haltcpu(void);

@@ -20,8 +20,9 @@ GLOBAL getRegisters
 GLOBAL printRegistersAsm
 GLOBAL getFlag
 GLOBAL saveRegisters
-GLOBAL nice
-
+GLOBAL yield
+GLOBAL acquire
+GLOBAL release
 EXTERN irqDispatcher
 EXTERN exceptionDispatcher
 EXTERN retUserland
@@ -294,7 +295,20 @@ _exception0Handler:
 _exception6Handler:
 	exceptionHandler 6
 
-nice:
+acquire:
+  mov al, 0
+ .retry:
+  xchg [rdi], al
+  test al, al
+  jz .retry
+  ret
+
+release:
+  mov byte [rdi], 1
+  ret
+
+
+yield:
     int 0x20
 
 SECTION .data

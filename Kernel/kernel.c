@@ -15,6 +15,7 @@
 #include "include/scheduler.h"
 #include "collections/queue.h"
 #include "collections/hashMap.h"
+#include "include/sems.h"
 extern uint8_t text;
 extern uint8_t rodata;
 extern uint8_t data;
@@ -110,7 +111,7 @@ int main()
 	initMap();
 	startScheduler();
 	init_shell();
-
+	semInit();
 	 while(1){
 		// Busy-wait loop
 	}

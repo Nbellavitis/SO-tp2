@@ -35,7 +35,7 @@ void testPriority();
 void runProcessTest();
 void showProcesses();
 void killProcessCommand();
-
+void runTestSync();
 
 typedef struct {
      char *command;
@@ -57,7 +57,8 @@ Command commands[] = {
     {"testPrio", testPriority, "Run the priority test."},
     {"testProcess", runProcessTest, "Run the process test."},
     {"ps", showProcesses, "Shows the process list."},
-    {"kill", killProcessCommand, "Kills a process, use: kill n to kill the process with pid n."}
+    {"kill", killProcessCommand, "Kills a process, use: kill n to kill the process with pid n."},
+    {"testSync", runTestSync, "Run the sync test."}
 };
 
 void bufferControl(){
@@ -177,7 +178,13 @@ void killProcessCommand() {
         return;
     killProcess(strToInt(init));
 }
+void runTestSync(){
+  char **argv = allocMemory(2 * sizeof(char *));
 
+  argv[1] = "1";
+  argv[0] = "3";
+  (createProcess((uint64_t) testSync, 0, 1, 2, argv));
+}
 
 void lineRead(char *buffer) {
     if (strcmp(buffer, "help") == 0) {

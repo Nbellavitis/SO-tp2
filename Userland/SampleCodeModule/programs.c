@@ -26,3 +26,12 @@ void processtest(int argc, char *argv[]) {
     print(0xFFFFFFFF,"Process test %s\n", testResult == 0 ? "passed" : "failed");
 
 }
+void testSync(int argc, char *argv[]) {
+    if (argc != 2) {
+        print(0xFFFFFFFF, "Usage: testSync <number_of_processes>\n");
+        return;
+    }
+    test_sync(argc, argv);
+    return;
+
+}
