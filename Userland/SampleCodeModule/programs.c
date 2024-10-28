@@ -27,6 +27,7 @@ void processtest(int argc, char *argv[]) {
 
 }
 void testSync(int argc, char *argv[]) {
+
     if (argc != 2) {
         print(0xFFFFFFFF, "Usage: testSync <number_of_processes>\n");
         return;

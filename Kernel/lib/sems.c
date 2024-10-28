@@ -35,8 +35,8 @@ static int lookupSemaphore(const char *name){
   }
   return -1;
 }
-static uint8_t getSemLock(semCollectionCDT * semCollection, semdata_t * sem){
-  return sem->lock;
+static uint8_t * getSemLock(semCollectionCDT * semCollection, semdata_t * sem){
+  return &(sem->lock);
 }
 int semOpen(char *name, int initialValue){
  int aux= lookupSemaphore(name);
@@ -70,17 +70,16 @@ void semPost(char *name){
   }
 
  semdata_t * sem = semCollection->semaphores[aux];
-  uint8_t semLock = getSemLock(semCollection, sem);
- acquire(&semLock);
-  if(sem->attachedProcesses > 0){
+ uint8_t * semLock = getSemLock(semCollection, sem);
+ acquire(semLock);
+  if(sizeQ(sem->waitingQueue) > 0){
     PCB aux = dequeue(sem->waitingQueue);
-    sem->attachedProcesses--;
     unblockProcess(aux->pid);
-    release(&semLock);
+    release(semLock);
     return;
 }
   sem->value++;
-  release(&semLock);
+  release(semLock);
  return;
 }
 void semWait(char *name){
@@ -89,16 +88,16 @@ void semWait(char *name){
     return;
   }
   semdata_t * sem = semCollection->semaphores[aux];
-  uint8_t semLock = getSemLock(semCollection, sem);
-  acquire(&semLock);
+  uint8_t * semLock = getSemLock(semCollection, sem);
+  acquire(semLock);
   if(sem->value > 0){
     sem->value--;
-    release(&semLock);
+    release(semLock);
     return;
   }
   sem->attachedProcesses++;
   queue(sem->waitingQueue, lookUpOnHashMap(getActivePid()));
-  release(&semLock);
+  release(semLock);
   blockProcess(getActivePid());
   return;
 }
@@ -108,17 +107,16 @@ void semClose(char *name){
     return;
   }
   semdata_t * sem = semCollection->semaphores[aux];
-  uint8_t semLock = getSemLock(semCollection, sem);
-  acquire(&semLock);
-  sem->attachedProcesses--;
+  uint8_t * semLock = getSemLock(semCollection, sem);
+  acquire(semLock);
   if(sizeQ(sem->waitingQueue) > 0){
-    release(&semLock);
+    release(semLock);
     return;
   }
   freeQueue(sem->waitingQueue);
   freeMemory(sem);
   semCollection->semaphores[aux] = NULL;
   semCollection->semaphoresCount--;
-  release(&semLock);
+  release(semLock);
   return;
 }

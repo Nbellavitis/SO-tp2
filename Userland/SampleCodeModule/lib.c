@@ -199,7 +199,7 @@ void printAllProcesses(processInfoPtr * processes){
     print(WHITE,"PID    PPID     RSP        StackBase    RIP       Ground   Priority   Status    Name\n");
     for(int i=0; processes[i] != NULL; i++){
         printProcess(processes[i]);
-        freeMemory(processes[i]);
+        //freeMemory(processes[i]);
         putC('\n',WHITE);
     }
     freeMemory(processes);   

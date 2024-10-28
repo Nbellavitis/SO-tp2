@@ -124,6 +124,10 @@ processInfoPtr getProcessInfo(pid_t pid){
         return NULL;
     }
     processInfoPtr toRet = (processInfoPtr) allocMemory(sizeof(PCBType));
+    if(toRet == NULL){
+      drawWord(0x00FF0000,"Error allocating memory\n");
+        return NULL;
+    }
     toRet->pid = aux->pid;
     toRet->ppid = aux->ppid;
     toRet->rsp = aux->rsp;
@@ -138,6 +142,10 @@ processInfoPtr getProcessInfo(pid_t pid){
 
 processInfoPtr * getAllProcessInfo(){
     processInfoPtr * toRet = (processInfoPtr *) allocMemory(sizeof(PCB) * (aliveProcesses));
+    if(toRet == NULL){
+      drawWord(0x00FF0000,"Error allocating memory\n");
+        return NULL;
+    }
     uint64_t j=0;
     for(uint64_t i = 0; i < nextProcessId; i++){
         processInfoPtr current = getProcessInfo(i);

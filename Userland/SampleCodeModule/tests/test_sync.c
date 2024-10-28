@@ -15,6 +15,7 @@ void slowInc(int64_t *p, int64_t inc) {
 }
 
 uint64_t my_process_inc(uint64_t argc, char *argv[]) {
+
     uint64_t n;
     int8_t inc;
     int8_t use_sem;
@@ -54,6 +55,7 @@ uint64_t my_process_inc(uint64_t argc, char *argv[]) {
 }
 
 uint64_t test_sync(uint64_t argc, char *argv[]) { //{n, use_sem, 0}
+    print(0xFFFFFFFF, "testSync\n");
     uint64_t pids[2 * TOTAL_PAIR_PROCESSES];
 
     if (argc != 2)

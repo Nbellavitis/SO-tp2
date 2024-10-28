@@ -20,23 +20,23 @@ typedef struct mm{
    uint32_t blockQty;
    uint32_t blocksUsed;
    uint32_t *bitmap;
-   size_t current;
+   uint32_t current;
    lastFreed lastFreed;
 } mm;
 
 static void initializeBitmap();
-static size_t sizeToBlockQty(size_t size);
+static uint32_t sizeToBlockQty(uint32_t size);
 
 mm memoryManager;
 int mmInit ( void * baseAddress ,uint64_t memorySize)  {
-    size_t totalNeeded = memorySize;
+    uint32_t totalNeeded = memorySize;
     memoryManager.start = baseAddress;
     memoryManager.blockQty = totalNeeded / BLOCK_SIZE;
     if(memorySize % BLOCK_SIZE != 0){
         memoryManager.blockQty++;
         totalNeeded = BLOCK_SIZE * memoryManager.blockQty;
     }
-    size_t bitMapSize = memoryManager.blockQty / BLOCK_SIZE;
+    uint32_t bitMapSize = memoryManager.blockQty / BLOCK_SIZE;
     if(memoryManager.blockQty % BLOCK_SIZE != 0){
         bitMapSize++;
     }
@@ -53,8 +53,8 @@ int mmInit ( void * baseAddress ,uint64_t memorySize)  {
     initializeBitmap();
     return 0;
 }
-static size_t sizeToBlockQty(size_t size){
-    return (size_t) ((size % BLOCK_SIZE)? (size / BLOCK_SIZE) + 1 : size / BLOCK_SIZE);
+static uint32_t sizeToBlockQty(uint32_t size){
+    return (uint32_t) ((size % BLOCK_SIZE)? (size / BLOCK_SIZE) + 1 : size / BLOCK_SIZE);
 }
 
 static void initializeBitmap(){
@@ -62,9 +62,9 @@ static void initializeBitmap(){
         memoryManager.bitmap[i] = FREE;
     }
 }
-static uintptr_t findFreeBlocks( size_t blocksNeeded, size_t start, size_t end){
-    size_t freeBlocks = 0;
-    size_t i;
+static uintptr_t findFreeBlocks( uint32_t blocksNeeded, uint32_t start, uint32_t end){
+    uint32_t freeBlocks = 0;
+    uint32_t i;
     for(i = start; i < end; i++){
         if(memoryManager.bitmap[i] == FREE){
             freeBlocks++;
@@ -78,7 +78,7 @@ static uintptr_t findFreeBlocks( size_t blocksNeeded, size_t start, size_t end){
     if(freeBlocks == blocksNeeded){
         return (uintptr_t)(memoryManager.start + (i-blocksNeeded+1) * BLOCK_SIZE);
     }
-    return -1;
+    return 0;
 }
 static void * markGroupAsUsed(uint32_t blocksNeeded, uint32_t index){
     memoryManager.bitmap[index] = START_BOUNDARY;
@@ -91,8 +91,8 @@ static void * markGroupAsUsed(uint32_t blocksNeeded, uint32_t index){
     return (void *) (memoryManager.start + index * BLOCK_SIZE);
 }
 
-void * allocMemory(size_t size){
-    size_t blocksNeeded = sizeToBlockQty(size);
+void * allocMemory(size_t  size){
+    uint32_t blocksNeeded = sizeToBlockQty(size);
     if(blocksNeeded > memoryManager.blockQty - memoryManager.blocksUsed){
         return NULL;
     }
@@ -102,10 +102,10 @@ void * allocMemory(size_t size){
     uintptr_t initialBlockAddress = findFreeBlocks( blocksNeeded, memoryManager.current, memoryManager.blockQty);
    
 
-    if(initialBlockAddress == -1){
+    if(initialBlockAddress == 0){
      initialBlockAddress = findFreeBlocks( blocksNeeded, 0, memoryManager.blockQty);
     }
-     if(initialBlockAddress == -1){
+     if(initialBlockAddress == 0){
          return NULL;
  }
     memoryManager.current = sizeToBlockQty(initialBlockAddress - (uintptr_t) memoryManager.start) +blocksNeeded;
@@ -126,7 +126,7 @@ void freeMemory(void * memory){
         return;
     }
     uintptr_t blockAddress = (uintptr_t) memory;
-    size_t blockIndex = (blockAddress - (uintptr_t) memoryManager.start) / BLOCK_SIZE;
+    uint32_t blockIndex = (blockAddress - (uintptr_t) memoryManager.start) / BLOCK_SIZE;
     memoryManager.lastFreed.index = blockIndex;
     if(memoryManager.bitmap[blockIndex] == SINGLE_BLOCK){
         memoryManager.bitmap[blockIndex] = FREE;
@@ -137,7 +137,7 @@ void freeMemory(void * memory){
     if(memoryManager.bitmap[blockIndex] != START_BOUNDARY){
         return;
     }
-    size_t blocksToFree = 0;
+    uint32_t blocksToFree = 0;
     while(memoryManager.bitmap[blockIndex + blocksToFree] != END_BOUNDARY){
         memoryManager.bitmap[blockIndex + blocksToFree] = FREE;
         blocksToFree++;
