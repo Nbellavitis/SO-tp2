@@ -183,7 +183,7 @@ void runTestSync(){
   char **argv = allocMemory(2 * sizeof(char *));
 
   argv[1] = "1";
-  argv[0] = "1000000";
+  argv[0] = "50000";
  waitpid(createProcess((uint64_t) testSync, 0, 1, 2, argv));
 }
 void runTestNoSync(){

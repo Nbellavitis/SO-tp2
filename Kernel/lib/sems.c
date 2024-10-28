@@ -41,6 +41,9 @@ static uint8_t * getSemLock(semCollectionCDT * semCollection, semdata_t * sem){
 int semOpen(char *name, int initialValue){
  int aux= lookupSemaphore(name);
  if(aux != -1){
+     acquire(&(semCollection->semaphores[aux]->lock));
+     semCollection->semaphores[aux]->attachedProcesses++;
+     release(&(semCollection->semaphores[aux]->lock));
     return 1;
   }
   for(int i = 0; i < SEMAPHORES_CAPACITY; i++){
@@ -53,7 +56,7 @@ int semOpen(char *name, int initialValue){
       sem->name = name;
       sem->isLinked = 1;
       sem->value = initialValue;
-      sem->attachedProcesses = 0;
+      sem->attachedProcesses = 1;
       sem->waitingQueue = createQueue(comparePCB);
       semCollection->semaphores[i] = sem;
       sem->lock = (initialValue > 0) ? 1 : 0;
@@ -95,7 +98,6 @@ void semWait(char *name){
     release(semLock);
     return;
   }
-  sem->attachedProcesses++;
   queue(sem->waitingQueue, lookUpOnHashMap(getActivePid()));
   release(semLock);
   blockProcess(getActivePid());
@@ -109,7 +111,8 @@ void semClose(char *name){
   semdata_t * sem = semCollection->semaphores[aux];
   uint8_t * semLock = getSemLock(semCollection, sem);
   acquire(semLock);
-  if(sizeQ(sem->waitingQueue) > 0){
+    sem->attachedProcesses--;
+  if(sem->attachedProcesses > 0){
     release(semLock);
     return;
   }
@@ -117,6 +120,6 @@ void semClose(char *name){
   freeMemory(sem);
   semCollection->semaphores[aux] = NULL;
   semCollection->semaphoresCount--;
-  release(semLock);
+//  release(semLock);
   return;
 }
