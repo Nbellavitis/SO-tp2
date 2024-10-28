@@ -10,18 +10,12 @@
 
 enum {FREE,USED, START_BOUNDARY,END_BOUNDARY, SINGLE_BLOCK};
 
-typedef struct {
-    uint32_t index;
-    uint32_t blocks;
-} lastFreed;
-
 typedef struct mm{
    void * start;
    uint32_t blockQty;
    uint32_t blocksUsed;
    uint32_t *bitmap;
    uint32_t current;
-   lastFreed lastFreed;
 } mm;
 
 static void initializeBitmap();
@@ -96,11 +90,7 @@ void * allocMemory(size_t  size){
     if(blocksNeeded > memoryManager.blockQty - memoryManager.blocksUsed){
         return NULL;
     }
-    if(blocksNeeded < memoryManager.lastFreed.blocks){
-        return markGroupAsUsed(memoryManager.lastFreed.blocks, memoryManager.lastFreed.index);
-    }
     uintptr_t initialBlockAddress = findFreeBlocks( blocksNeeded, memoryManager.current, memoryManager.blockQty);
-   
 
     if(initialBlockAddress == 0){
      initialBlockAddress = findFreeBlocks( blocksNeeded, 0, memoryManager.blockQty);
@@ -127,10 +117,8 @@ void freeMemory(void * memory){
     }
     uintptr_t blockAddress = (uintptr_t) memory;
     uint32_t blockIndex = (blockAddress - (uintptr_t) memoryManager.start) / BLOCK_SIZE;
-    memoryManager.lastFreed.index = blockIndex;
     if(memoryManager.bitmap[blockIndex] == SINGLE_BLOCK){
         memoryManager.bitmap[blockIndex] = FREE;
-        memoryManager.lastFreed.blocks = 1;
         memoryManager.blocksUsed--;
         return;
     }
@@ -144,7 +132,6 @@ void freeMemory(void * memory){
     }
     memoryManager.bitmap[blockIndex + blocksToFree] = FREE;
     memoryManager.blocksUsed -= blocksToFree + 1;
-    memoryManager.lastFreed.blocks = blocksToFree + 1;
 }
 MemoryStatus getMemoryStatus(){
     MemoryStatus status;
