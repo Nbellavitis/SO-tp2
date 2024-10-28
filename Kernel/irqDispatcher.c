@@ -39,6 +39,7 @@ void irqDispatcher(uint64_t irq,uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64
 }
 
 void int_21() {
+    unblockProcess(1);
     keyboard_handler();
 }
 
@@ -51,6 +52,7 @@ static int sys_write_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t 
 }
 
 static int sys_read_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+    blockProcess(getActivePid());
     return sys_read(rsi, (char *)rdx, rcx);
 }
 

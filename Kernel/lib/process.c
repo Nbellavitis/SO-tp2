@@ -8,7 +8,7 @@
 static HashMapADT PCBMap;
 static int  nextProcessId = 0;
 static int aliveProcesses = 0;
-
+#define SHELL_PID 1
 
 pid_t newProcess(uint64_t rip, int ground, int priority, int argc, char * argv[]){
     if(aliveProcesses < MAX_PROCESSES){
@@ -168,20 +168,29 @@ uint64_t waitpid(pid_t pid){
         return ret;
     }
     queue(aux->waitingProcesses,activeProcess);
-    blockProcess(activeProcess->pid);
-    ret = aux->ret;
-    killProcess(aux->pid);
-    return ret;
+    if(aux->ground == 1 || aux->ppid != SHELL_PID){
+        blockProcess(activeProcess->pid);
+        ret = aux->ret;
+        killProcess(aux->pid);
+        return ret;
+    }
+    return -1;
 }
 
 
 void exitProcess(uint64_t retStatus){
     PCB activeProcess = getActiveProcess();
     activeProcess->ret = retStatus;
+    if(activeProcess->ground == 0 && activeProcess->ppid == SHELL_PID){
+         killProcess(activeProcess->pid);
+        return;
+    }
     toBegin(activeProcess->waitingProcesses);
     while(hasNext(activeProcess->waitingProcesses)){
         PCB toUnblock = next(activeProcess->waitingProcesses);
-        unblockProcess(toUnblock->pid);
+        if(toUnblock->status == BLOCKED) {
+            unblockProcess(toUnblock->pid);
+        }
     }
     activeProcess->status = EXITED;
     yield();

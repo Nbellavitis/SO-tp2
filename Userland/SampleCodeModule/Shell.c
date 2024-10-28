@@ -158,14 +158,14 @@ void showMemStatus() {
 
 void testPriority() {
     uint64_t rip = (uint64_t) test_prio;
-    waitpid(createProcess(rip, 0, 1, 0, NULL));
+ waitpid(createProcess(rip, 0, 1, 0, NULL));
 }
 
 void runProcessTest() {
     char **argv = allocMemory(2 * sizeof(char *));
     argv[1] = "1";
     argv[0] = "processtest";
-    createProcess((uint64_t) processtest, 0, 1, 2, argv);
+    createProcess((uint64_t) processtest, 0, 0, 2, argv);
 }
 
 void showProcesses() {
@@ -182,7 +182,7 @@ void runTestSync(){
   char **argv = allocMemory(2 * sizeof(char *));
 
   argv[1] = "1";
-  argv[0] = "4";
+  argv[0] = "13";
  waitpid(createProcess((uint64_t) testSync, 0, 1, 2, argv));
 }
 
