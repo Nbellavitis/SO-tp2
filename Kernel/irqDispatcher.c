@@ -21,7 +21,7 @@ static int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64
 void timer_handler();
 
 
-static void (*irq_handlers[])(uint64_t, uint64_t, uint64_t, uint64_t, uint64_t, uint64_t);
+//static void (*irq_handlers[])(uint64_t, uint64_t, uint64_t, uint64_t, uint64_t, uint64_t);
 
 void irqDispatcher(uint64_t irq,uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
     switch (irq) {

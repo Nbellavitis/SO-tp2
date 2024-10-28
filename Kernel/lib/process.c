@@ -152,17 +152,13 @@ uint64_t waitpid(pid_t pid){
     PCB aux = lookup(PCBMap,pid);
     uint64_t ret;
     if(aux == NULL){
-        drawWord(0xFFFFFF,"El proceso no existe");
-        printNumber(pid,0xFFFFFF);
         return -1;
     }
     PCB activeProcess = getActiveProcess();
     if(activeProcess == NULL){
-        drawWord(0xFFFFFF,"No hay proceso activo");
         return -1;
     }
     if(aux->status == EXITED){
-        drawWord(0xFFFFFF,"El proceso ya termino");
         ret = aux->ret;
         killProcess(aux->pid);
         return ret;

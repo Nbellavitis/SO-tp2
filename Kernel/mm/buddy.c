@@ -97,14 +97,14 @@ void *allocMemory(size_t size) {
     uint64_t blockSize = 1 << (MIN_ALLOC_LOG2 + order);
     status.usedMemory += blockSize;
     status.freeMemory -= blockSize;
-    return (void *)((block) +sizeof(Block));
+  return (void *)((uint8_t *)block + sizeof(Block));
 }
 
 void freeMemory(void *address) {
     if (address == NULL || address < buddy.start || address >= (void *)((uint64_t)buddy.start + buddy.totalMemorySize)) {
         return;
     }
-    Block *block = (Block *)address - sizeof(Block);
+    Block *block = (Block *)((uint8_t *)address - sizeof(Block));
     if (block->status != USED) {
         return;
     }

@@ -37,7 +37,6 @@ uint64_t my_process_inc(uint64_t argc, char *argv[]) {
 
     uint64_t i;
     for (i = 0; i < n; i++) {
-
         if (use_sem)
             semWait(SEM_ID);
         slowInc(&global, inc);
@@ -68,8 +67,8 @@ uint64_t test_sync(uint64_t argc, char *argv[]) { //{n, use_sem, 0}
 
     uint64_t i;
     for (i = 0; i < TOTAL_PAIR_PROCESSES; i++) {
-        pids[i] = createProcess((uint64_t)my_process_inc,0,1, 3, argvDec);
-        pids[i + TOTAL_PAIR_PROCESSES] = createProcess((uint64_t)my_process_inc,0,1,3, argvInc);
+        pids[i] = createProcess((uint64_t)my_process_inc,1,1, 3, argvDec);
+        pids[i + TOTAL_PAIR_PROCESSES] = createProcess((uint64_t)my_process_inc,1,1,3, argvInc);
     }
 
     for (i = 0; i < TOTAL_PAIR_PROCESSES; i++) {

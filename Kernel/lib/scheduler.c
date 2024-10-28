@@ -75,6 +75,7 @@ uint64_t contextSwitch(uint64_t rsp){
             if (activeProcess->status != BLOCKED) {
                 if (activeProcess->priority - 1 > timesActiveExecuted) {
                     timesActiveExecuted++;
+                   // printNumber(activePid,0xFFFFFFFF);
                     return activeProcess->rsp;
                 }
                 activeProcess->status = READY;

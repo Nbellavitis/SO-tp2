@@ -181,9 +181,9 @@ void killProcessCommand() {
 void runTestSync(){
   char **argv = allocMemory(2 * sizeof(char *));
 
-  argv[1] = "1";
-  argv[0] = "13";
- waitpid(createProcess((uint64_t) testSync, 0, 1, 2, argv));
+  argv[1] = "0";
+  argv[0] = "300";
+ waitpid(createProcess((uint64_t) testSync, 1, 1, 2, argv));
 }
 
 void lineRead(char *buffer) {
