@@ -36,7 +36,7 @@ void runProcessTest();
 void showProcesses();
 void killProcessCommand();
 void runTestSync();
-
+void runTestNoSync();
 typedef struct {
      char *command;
     CommandFunction function;
@@ -58,7 +58,8 @@ Command commands[] = {
     {"testProcess", runProcessTest, "Run the process test."},
     {"ps", showProcesses, "Shows the process list."},
     {"kill", killProcessCommand, "Kills a process, use: kill n to kill the process with pid n."},
-    {"testSync", runTestSync, "Run the sync test."}
+    {"testSync", runTestSync, "Run the sync test."},
+    {"testNoSync", runTestNoSync, "Run the sync test without semaphores."}
 };
 
 void bufferControl(){
@@ -181,8 +182,14 @@ void killProcessCommand() {
 void runTestSync(){
   char **argv = allocMemory(2 * sizeof(char *));
 
+  argv[1] = "1";
+  argv[0] = "10";
+ waitpid(createProcess((uint64_t) testSync, 1, 1, 2, argv));
+}
+void runTestNoSync(){
+  char **argv = allocMemory(2 * sizeof(char *));
   argv[1] = "0";
-  argv[0] = "300";
+  argv[0] = "10";
  waitpid(createProcess((uint64_t) testSync, 1, 1, 2, argv));
 }
 
