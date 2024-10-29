@@ -42,6 +42,9 @@ int semOpen(char *name, int initialValue){
  int aux= lookupSemaphore(name);
  if(aux != -1){
      acquire(&(semCollection->semaphores[aux]->lock));
+     if(semCollection->semaphores[aux]== NULL){
+         return 0;
+     }
      semCollection->semaphores[aux]->attachedProcesses++;
      release(&(semCollection->semaphores[aux]->lock));
     return 1;
@@ -116,10 +119,11 @@ void semClose(char *name){
     release(semLock);
     return;
   }
-  freeQueue(sem->waitingQueue);
-  freeMemory(sem);
-  semCollection->semaphores[aux] = NULL;
-  semCollection->semaphoresCount--;
-//  release(semLock);
+    semCollection->semaphores[aux] = NULL;
+    semCollection->semaphoresCount--;
+  release(semLock);
+    freeQueue(sem->waitingQueue);
+    freeMemory(sem);
+
   return;
 }
