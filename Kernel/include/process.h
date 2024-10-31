@@ -22,6 +22,7 @@ typedef struct PCBType{
     int ground;
     int priority;
     int status;
+    int waiting;
      char * name;
     char ** argv;
     int fd[3];

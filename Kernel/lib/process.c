@@ -28,6 +28,7 @@ pid_t newProcess(uint64_t rip, int ground, int priority, int argc, char * argv[]
     pcb->priority = priority;
     pcb->pid = nextProcessId;
     pcb->argv= argv;
+    pcb->waiting = 0;
     pcb->waitingProcesses = createQueue(comparePCB);
     if(pcb->pid == 0 || pcb->pid == 1){
         pcb->ppid = -1;
@@ -174,7 +175,9 @@ uint64_t waitpid(pid_t pid){
     }
     queue(aux->waitingProcesses,activeProcess);
     if(aux->ground == 1 || aux->ppid != SHELL_PID){
+      	activeProcess->waiting = 1;
         blockProcess(activeProcess->pid);
+        activeProcess->waiting = 0;
         ret = aux->ret;
         killProcess(aux->pid);
         return ret;
