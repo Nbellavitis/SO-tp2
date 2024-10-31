@@ -97,6 +97,7 @@ int8_t blockProcess(pid_t pid) {
     if(aux->status == EXITED || aux->status == KILLED){
         return -1;
     }
+
     aux->status = BLOCKED;
     if(pid == getActivePid()){
         yield();
@@ -193,6 +194,7 @@ void exitProcess(uint64_t retStatus){
     while(hasNext(activeProcess->waitingProcesses)){
         PCB toUnblock = next(activeProcess->waitingProcesses);
         if(toUnblock->status == BLOCKED) {
+            printNumber(toUnblock->pid,0xFFFFFF);
             unblockProcess(toUnblock->pid);
         }
     }

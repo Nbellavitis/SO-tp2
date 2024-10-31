@@ -159,7 +159,7 @@ void showMemStatus() {
 
 void testPriority() {
     uint64_t rip = (uint64_t) test_prio;
- waitpid(createProcess(rip, 0, 1, 0, NULL));
+ waitpid(createProcess(rip, 1, 1, 0, NULL));
 }
 
 void runProcessTest() {

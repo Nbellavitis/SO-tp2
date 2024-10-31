@@ -12,6 +12,7 @@ static pid_t activePid = KERNEL_PID;
 static size_t status = INACTIVE;
 static PCB activeProcess = NULL;
 static int timesActiveExecuted =0;
+static PCB currentForegroundProcess = NULL;
 static void idle();
 int64_t comparePCB(void * pcb1, void * pcb2) {
     if (pcb1 == NULL || pcb2 == NULL) {
@@ -25,7 +26,7 @@ int64_t comparePCB(void * pcb1, void * pcb2) {
 void startScheduler() {
     status = ACTIVE;
     processQueue = createQueue(comparePCB);
-    idleProcess = lookUpOnHashMap((pid_t) newProcess((uint64_t)idle, 1, 1, 0, NULL));
+    idleProcess = lookUpOnHashMap((pid_t) newProcess((uint64_t)idle, 0, 1, 0, NULL));
 }
 
 static PCB findNextReadyProcess(queueADT processQueue) {
@@ -36,6 +37,9 @@ static PCB findNextReadyProcess(queueADT processQueue) {
             if (activeProcess->status == READY) {
                 activePid = activeProcess->pid;
                 activeProcess->status = RUNNING;
+                if(activeProcess->ground == FOREGROUND){
+                    currentForegroundProcess = activeProcess;
+                }
                 return activeProcess;
             } else if (activeProcess->status == BLOCKED) {
                 queue(processQueue, activeProcess);
@@ -75,7 +79,6 @@ uint64_t contextSwitch(uint64_t rsp){
             if (activeProcess->status != BLOCKED) {
                 if (activeProcess->priority - 1 > timesActiveExecuted) {
                     timesActiveExecuted++;
-                   // printNumber(activePid,0xFFFFFFFF);
                     return activeProcess->rsp;
                 }
                 activeProcess->status = READY;
@@ -134,4 +137,7 @@ PCB getActiveProcess(){
 
 int8_t removeFromReadyQueue(PCB pcb){
     return remove(processQueue,pcb);
+}
+PCB getCurrentForegroundProcess(){
+    return currentForegroundProcess;
 }
