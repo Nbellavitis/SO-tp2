@@ -194,7 +194,6 @@ void exitProcess(uint64_t retStatus){
     while(hasNext(activeProcess->waitingProcesses)){
         PCB toUnblock = next(activeProcess->waitingProcesses);
         if(toUnblock->status == BLOCKED) {
-            printNumber(toUnblock->pid,0xFFFFFF);
             unblockProcess(toUnblock->pid);
         }
     }
