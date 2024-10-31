@@ -85,6 +85,19 @@ int strlen(const char *str) {
     }
     return length;
 }
+char *strcpy(char *dest, const char *src) {
+    char *original_dest = dest; // Guardar el inicio de dest para retornar al final
+
+    while (*src != '\0') { // Mientras no lleguemos al carácter nulo
+        *dest = *src;      // Copiar carácter de src a dest
+        dest++;            // Avanzar al siguiente carácter en dest
+        src++;             // Avanzar al siguiente carácter en src
+    }
+    *dest = '\0'; // Añadir el carácter nulo al final de dest
+
+    return original_dest; // Retornar el inicio de dest
+}
+
 int strcmp( char *str1,  char *str2) {
     while (*str1 && *str2 && *str1 == *str2) {
         str1++;

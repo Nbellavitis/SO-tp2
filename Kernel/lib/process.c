@@ -187,7 +187,7 @@ void exitProcess(uint64_t retStatus){
     PCB activeProcess = getActiveProcess();
     activeProcess->ret = retStatus;
     if(activeProcess->ground == 0 && activeProcess->ppid == SHELL_PID){
-         killProcess(activeProcess->pid);
+        killProcess(activeProcess->pid);
         return;
     }
     toBegin(activeProcess->waitingProcesses);

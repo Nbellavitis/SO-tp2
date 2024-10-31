@@ -99,12 +99,28 @@ void bufferControl(){
 
 
 void executeCommand(const char *buffer) {
+    int background = buffer[strlen(buffer) - 1] == '&';
+    char commandBuffer[BUFFER_SIZE];
+    strcpy(commandBuffer, buffer);
+
+    if (background) {
+        // Eliminar el símbolo '&' del comando
+        commandBuffer[strlen(commandBuffer) - 1] = '\0';
+    }
+
     for (int i = 0; i < sizeof(commands) / sizeof(commands[0]); i++) {
-        if (strncmp(buffer, commands[i].command, strlen(commands[i].command)) == 0) {
-            commands[i].function();
+        if (strncmp(commandBuffer, commands[i].command, strlen(commands[i].command)) == 0) {
+            if (background) {
+                // Crear un proceso en segundo plano sin esperar
+                createProcess((uint64_t)commands[i].function, 0, 0, 0, NULL);
+            } else {
+                // Ejecutar el comando normalmente
+                waitpid(createProcess((uint64_t)commands[i].function, 1, 0, 0, NULL));
+            }
             return;
         }
     }
+
     putString(buffer, WHITE);
     putString(": command not found\n", WHITE);
 }

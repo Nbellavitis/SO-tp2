@@ -51,4 +51,6 @@ void printAllProcesses(processInfoPtr * processes);
 
 void printProcess(processInfoPtr process);
 
+char *strcpy(char *dest, const char *src) ;
+
 #endif // TPE_LIB_H
