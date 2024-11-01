@@ -39,11 +39,13 @@ void irqDispatcher(uint64_t irq,uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64
 }
 
 void int_21() {
-  	PCB aux = lookUpOnHashMap(1);
+
+    keyboard_handler();
+    PCB aux = lookUpOnHashMap(1);
     if(aux->waiting != 1){
         unblockProcess(1);
     }
-    keyboard_handler();
+
 }
 
 
