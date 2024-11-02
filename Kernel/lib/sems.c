@@ -62,7 +62,7 @@ int semOpen(char *name, int initialValue){
       sem->attachedProcesses = 1;
       sem->waitingQueue = createQueue(comparePCB);
       semCollection->semaphores[i] = sem;
-      sem->lock = (initialValue > 0) ? 1 : 0;
+      sem->lock = 1;
       semCollection->semaphoresCount++;
       return 1;
     }
