@@ -1,6 +1,6 @@
 #ifndef LIB_H
 #define LIB_H
-
+#include <stddef.h>
 #include <stdint.h>
 #include "../../sharedUserKernel.h"
 #define STDIN 0
@@ -22,4 +22,8 @@ void testeando();
 void printNumber(uint64_t num,uint32_t hexColor);
 void exitProcess(uint64_t status);
 int strcmp(const char *s1, const char *s2);
+char * strAppend( char * s1,  char * s2);
+size_t strlen(const char * s);
+char * strcpy(char * destination, const char * source);
+char * strcat(char * destination, const char * source);
 #endif

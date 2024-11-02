@@ -2,6 +2,8 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
 #include <stdint.h>
 #include <stdarg.h>
+#include <string.h>
+
 #include <time.h>
 #include "include/interrupts.h"
 #include "Drivers/include/videoDriver.h"
@@ -223,4 +225,45 @@ int strcmp(const char *s1, const char *s2) {
         s2++;
     }
     return *(unsigned char *)s1 - *(unsigned char *)s2;
+}
+char * strAppend(char * s1, char * s2){
+    char * result = (char *) allocMemory(strlen(s1) + strlen(s2) + 1);
+    if(result == NULL){
+        return NULL;
+    }
+   result = strcpy(result,s1);
+   result = strcat(result,s2);
+    return result;
+}
+size_t strlen(const char *str) {
+    int length = 0;
+    while (str[length] != '\0') {
+        length++;
+    }
+    return length;
+}
+char *strcpy(char *dest, const char *src) {
+    char *original_dest = dest; // Guardar el inicio de dest para retornar al final
+
+    while (*src != '\0') { // Mientras no lleguemos al carácter nulo
+        *dest = *src;      // Copiar carácter de src a dest
+        dest++;            // Avanzar al siguiente carácter en dest
+        src++;             // Avanzar al siguiente carácter en src
+    }
+    *dest = '\0'; // Añadir el carácter nulo al final de dest
+
+    return original_dest; // Retornar el inicio de dest
+}
+char * strcat(char * destination, const char * source){
+    char * original_dest = destination;
+    while(*destination != '\0'){
+        destination++;
+    }
+    while(*source != '\0'){
+        *destination = *source;
+        destination++;
+        source++;
+    }
+    *destination = '\0';
+    return original_dest;
 }
