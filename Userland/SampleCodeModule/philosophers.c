@@ -103,8 +103,8 @@ void generateIdString(const char* prefix, int id, char* output, int maxLen) {
     output[i] = '\0';
 }
 
-void createPhilosophers() {
-    for (int i = 0; i < philosopherCount; i++) {
+void createPhilosophers(int maxPhilos) {
+    for (int i = 0; i < maxPhilos; i++) {
         char id[ID_SIZE];
         intToStr(i, id);
 
@@ -178,18 +178,9 @@ void philo(int argc, char *argv[]) {
         freeMemory(philosophers);
         return;
     }
-
-
-    for (int i = 0; i < maxPhilos; i++) {
-        philosophers[i] = -1;
-        semaphores[i] = NULL;
-        status[i] = THINKING;
-    }
-
+    createPhilosophers();
+    print("\nCommands: 'q' to quit, 'a' to add philosopher, 'r' to remove philosopher\n", WHITE);
     while (1) {
-        createPhilosophers();
-        print("\nCommands: 'q' to quit, 'a' to add philosopher, 'r' to remove philosopher\n", WHITE);
-
         char c;
         if (getC(&c) <= 0 || c == EOF) {
             killPhilosophers();
@@ -197,16 +188,15 @@ void philo(int argc, char *argv[]) {
             freeMemory(philosophers);
             freeMemory(status);
         }
-
         switch (c) {
             case 'q':
                 killPhilosophers();
                 freeMemory(semaphores);
                 freeMemory(philosophers);
                 freeMemory(status);
+                return;
             case 'a':
                 if (philosopherCount < maxPhilos) {
-                    killPhilosophers();
                     philosopherCount++;
                     print("Added philosopher. Total: ", WHITE);
                     print(philosopherCount, WHITE);
@@ -219,7 +209,6 @@ void philo(int argc, char *argv[]) {
                 break;
             case 'r':
                 if (philosopherCount > INITIAL) {
-                    killPhilosophers();
                     philosopherCount--;
                     print("Removed philosopher. Total: ", WHITE);
                     print(philosopherCount, WHITE);

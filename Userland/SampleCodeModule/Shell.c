@@ -209,6 +209,14 @@ void runTestNoSync(){
  waitpid(createProcess((uint64_t) testSync, 1, 1, 2, argv));
 }
 
+void runPhilo(){
+    char **argv = allocMemory(2 * sizeof(char *));
+    argv[1] = "1";//cantidad inicial de filosofos
+    argv[0] = "10";//cantdiad maxima de filosofos
+
+    waitpid(createProcess((uint64_t) philo, 1, 1, 2, argv));
+}
+
 void lineRead(char *buffer) {
     if (strcmp(buffer, "help") == 0) {
         putString("The following commands may be used: \n", WHITE);
