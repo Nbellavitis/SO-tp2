@@ -12,6 +12,8 @@
 #define SEM_NAME_SIZE 20
 #define ID_SIZE 10
 
+char * auxSem = "sem_";
+
 int * status;
 uint64_t philosopherCount = INITIAL;
 char ** semaphores;
@@ -26,16 +28,20 @@ int getRightIndex(int id) {
 }
 
 void printState(void) {
+    semWait(auxSem);
     for (int i = 0; i < philosopherCount; i++) {
         print(status[i] == EATING ? "E" : ".", WHITE);
         print(" ", WHITE);
 
     }
     print("\n", WHITE);
+    semPost(auxSem);
 }
 
 void take_fork(int id) {
+    semWait(auxSem);
     status[id] = HUNGRY;
+    semPost(auxSem);
     if (id % 2 == 0) {
         semWait(semaphores[id]);
         semWait(semaphores[getRightIndex(id)]);
@@ -53,7 +59,9 @@ void put_fork(int id) {
         semPost(semaphores[id]);
         semPost(semaphores[getRightIndex(id)]);
     }
+    semWait(auxSem);
     status[id] = THINKING;
+    semPost(auxSem);
 }
 
 void *philosopher(int argc, char *argv[]) {
@@ -69,12 +77,15 @@ void *philosopher(int argc, char *argv[]) {
     }
 
     while (1) {
+        semWait(auxSem);
         status[id] = THINKING;
+        semPost(auxSem);
         for (volatile int i = 0; i < TIME; i++);
 
         take_fork(id);
-
+        semWait(auxSem);
         status[id] = EATING;
+        semPost(auxSem);
         printState();
         for (volatile int i = 0; i < TIME; i++);
 
@@ -178,6 +189,7 @@ void philo(int argc, char *argv[]) {
         freeMemory(philosophers);
         return;
     }
+    semOpen(auxSem, 1);
     createPhilosophers();
     print("\nCommands: 'q' to quit, 'a' to add philosopher, 'r' to remove philosopher\n", WHITE);
     while (1) {

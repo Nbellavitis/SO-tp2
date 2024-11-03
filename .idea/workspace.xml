@@ -16,7 +16,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7e2392a9-b4f1-4a24-8bc2-a7dc7f1afbbd" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/Userland/SampleCodeModule/Shell.c" beforeDir="false" afterPath="$PROJECT_DIR$/Userland/SampleCodeModule/Shell.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Userland/SampleCodeModule/philosophers.c" beforeDir="false" afterPath="$PROJECT_DIR$/Userland/SampleCodeModule/philosophers.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -120,6 +121,7 @@
       <workItem from="1730147639668" duration="564000" />
       <workItem from="1730416395335" duration="1816000" />
       <workItem from="1730659357759" duration="8809000" />
+      <workItem from="1730671887216" duration="765000" />
     </task>
     <servers />
   </component>
