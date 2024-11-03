@@ -196,6 +196,7 @@ void philo(int argc, char *argv[]) {
         char c;
         if (getC(&c) <= 0 || c == EOF) {
             killPhilosophers();
+            semClose(auxSem);
             freeMemory(semaphores);
             freeMemory(philosophers);
             freeMemory(status);
@@ -203,6 +204,7 @@ void philo(int argc, char *argv[]) {
         switch (c) {
             case 'q':
                 killPhilosophers();
+                semClose(auxSem);
                 freeMemory(semaphores);
                 freeMemory(philosophers);
                 freeMemory(status);
