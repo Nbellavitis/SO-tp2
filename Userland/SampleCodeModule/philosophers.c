@@ -312,13 +312,8 @@ void philo(int argc, char *argv[]) {
                     status[philosopherCount] = THINKING;
                     philosopherCount++;
 
-                    print("Added philosopher. Total: ", WHITE);
-                    print(philosopherCount, WHITE);
-                    print("\n", WHITE);
                 } else {
-                    print("Max philosophers (", WHITE);
-                    print(maxPhilos, WHITE);
-                    print(") reached\n", WHITE);
+                    print("Max philosophers reached\n", WHITE);
                 }
                 semPost(auxSem);
                 break;
@@ -326,13 +321,8 @@ void philo(int argc, char *argv[]) {
                 semWait(auxSem);
                 if (philosopherCount > INITIAL) {
                     removePhilosopher(philosopherCount - 1);
-                    print("Removed philosopher. Total: ", WHITE);
-                    print(philosopherCount, WHITE);
-                    print("\n", WHITE);
-                } else {
-                    print("Minimum philosophers (", WHITE);
-                    print(INITIAL, WHITE);
-                    print(") reached\n", WHITE);
+                }else{
+                    print("Min philosophers reached\n", WHITE);
                 }
                 semPost(auxSem);
                 break;
