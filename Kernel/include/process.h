@@ -22,10 +22,10 @@ typedef struct PCBType{
     int ground;
     int priority;
     int status;
-    int waiting;
+    int waitingFor;
      char * name;
     char ** argv;
-    int fd[3];
+    char * fd[3];
     uint64_t ret;
     queueADT waitingProcesses;
 }PCBType;
@@ -33,14 +33,15 @@ typedef struct PCBType{
 typedef struct PCBType * PCB;
 
 int64_t comparePid(pid_t pid1, pid_t pid2);
-pid_t newProcess(uint64_t rip, int ground, int priority, int argc, char * argv[]);
+pid_t newProcess(uint64_t rip, int ground, int priority, int argc, char * argv[], char * fd[2]);
 void freeProcess(PCB process);
 int8_t removeFromReadyQueue(PCB pcb);
 int8_t unblockProcess(pid_t pid);
 int8_t killProcess(pid_t pid);
-int8_t blockProcess(pid_t pid);
+int8_t blockProcess(pid_t pid, int reason);
 int8_t changePrio(pid_t pid,int priority);
 PCB lookUpOnHashMap(pid_t pid);
+queueADT getBlockedQueue();
 processInfoPtr * getAllProcessInfo();
 uint64_t waitpid(pid_t pid);
 #endif

@@ -6,12 +6,15 @@
 #define STDIN 0
 #define STDOUT 1
 #define STDERR 2
+#define CHILD_PROCESS 1
+#define READ_STDIN 2
+#define SEM 3
 void * memset(void * destination, int32_t character, uint64_t length);
 
 void * memcpy(void * destination, const void * source, uint64_t length);
 
 char *cpuVendor(char *result);
-int myStrcmp(const char s1, const char s2);
+int strcmp(const char * s1, const char * s2);
 //freezes for the amount of ms indicated
 void sleepms(uint32_t ms);
 void reverseStr(char* str, int length);

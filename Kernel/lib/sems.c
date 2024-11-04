@@ -103,7 +103,7 @@ void semWait(char *name){
   }
   queue(sem->waitingQueue, lookUpOnHashMap(getActivePid()));
   release(semLock);
-  blockProcess(getActivePid());
+  blockProcess(getActivePid(), SEM);
   return;
 }
 void semClose(char *name){

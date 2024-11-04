@@ -6,6 +6,7 @@
 #include "include/usrSysCall.h"
 #include "include/eliminator.h"
 #include "include/program.h"
+#include "include/philosophers.h"
 #include <stdio.h>
 static char buffer[BUFFER_SIZE] = {0};
 int exitFlag =0;
@@ -15,6 +16,7 @@ void lineRead(char * buffer);
 void call_InvalidOp();
 char reSize(char * buffer);
 void call_div0();
+void testeandoo();
 
 void startingLine(){
     char * startingLine = "$>";
@@ -59,7 +61,8 @@ Command commands[] = {
     {"ps", showProcesses, "Shows the process list."},
     {"kill", killProcessCommand, "Kills a process, use: kill n to kill the process with pid n."},
     {"testSync", runTestSync, "Run the sync test."},
-    {"testNoSync", runTestNoSync, "Run the sync test without semaphores."}
+    {"testNoSync", runTestNoSync, "Run the sync test without semaphores."},
+    {"testeando", testeandoo, "testeando"}
 };
 
 void bufferControl(){
@@ -112,10 +115,16 @@ void executeCommand(const char *buffer) {
         if (strncmp(commandBuffer, commands[i].command, strlen(commands[i].command)) == 0) {
             if (background) {
                 // Crear un proceso en segundo plano sin esperar
-                createProcess((uint64_t)commands[i].function, 0, 0, 0, NULL);
+                char **descriptors = allocMemory(2 * sizeof(char *));
+                descriptors[0] = "tty";
+                descriptors[1] = "tty";
+                createProcess((uint64_t)commands[i].function, 0, 0, NULL, descriptors);
             } else {
+                char **descriptors = allocMemory(2 * sizeof(char *));
+                descriptors[0] = "tty";
+                descriptors[1] = "tty";
                 // Ejecutar el comando normalmente
-                waitpid(createProcess((uint64_t)commands[i].function, 1, 0, 0, NULL));
+                waitpid( createProcess((uint64_t)commands[i].function, 1, 0, NULL,descriptors));
             }
             return;
         }
@@ -125,7 +134,9 @@ void executeCommand(const char *buffer) {
     putString(": command not found\n", WHITE);
 }
 
-
+void testeandoo(){
+    testeando();
+}
 void showTime() {
     char time[9];
     call_timeClock(time);
@@ -175,14 +186,20 @@ void showMemStatus() {
 
 void testPriority() {
     uint64_t rip = (uint64_t) test_prio;
- waitpid(createProcess(rip, 1, 1, 0, NULL));
+    char **descriptors = allocMemory(2 * sizeof(char *));
+    descriptors[0] = "tty";
+    descriptors[1] = "tty";
+    waitpid(createProcess(rip, 1,  0, NULL, descriptors));
 }
 
 void runProcessTest() {
     char **argv = allocMemory(2 * sizeof(char *));
     argv[1] = "1";
     argv[0] = "processtest";
-    createProcess((uint64_t) processtest, 0, 0, 2, argv);
+    char **descriptors = allocMemory(2 * sizeof(char *));
+    descriptors[0] = "tty";
+    descriptors[1] = "tty";
+    createProcess((uint64_t) processtest, 0, 2, argv, descriptors);
 }
 
 void showProcesses() {
@@ -200,21 +217,29 @@ void runTestSync(){
 
   argv[1] = "1";
   argv[0] = "50000";
- waitpid(createProcess((uint64_t) testSync, 0, 1, 2, argv));
+    char **descriptors = allocMemory(2 * sizeof(char *));
+    descriptors[0] = "tty";
+    descriptors[1] = "tty";
+ waitpid(createProcess((uint64_t) testSync, 0,  2, argv,descriptors));
 }
 void runTestNoSync(){
   char **argv = allocMemory(2 * sizeof(char *));
   argv[1] = "0";
   argv[0] = "10";
- waitpid(createProcess((uint64_t) testSync, 1, 1, 2, argv));
+    char **descriptors = allocMemory(2 * sizeof(char *));
+    descriptors[0] = "tty";
+    descriptors[1] = "tty";
+ waitpid(createProcess((uint64_t) testSync, 1,  2, argv, descriptors));
 }
 
 void runPhilo(){
     char **argv = allocMemory(2 * sizeof(char *));
     argv[1] = "1";//cantidad inicial de filosofos
     argv[0] = "10";//cantdiad maxima de filosofos
-
-    waitpid(createProcess((uint64_t) philo, 1, 1, 2, argv));
+    char **descriptors = allocMemory(2 * sizeof(char *));
+    descriptors[0] = "tty";
+    descriptors[1] = "tty";
+    waitpid(createProcess((uint64_t) philo, 1,  2, argv,descriptors));
 }
 
 void lineRead(char *buffer) {

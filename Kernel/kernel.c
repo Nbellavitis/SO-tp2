@@ -97,7 +97,7 @@ void * initializeKernelBinary()
 
 int init_shell() {
 	char * argv[]= {"Shell", (void *) 0};
-    newProcess((uint64_t)sampleCodeModuleAddress, 1 , 1, 1, argv);
+    newProcess((uint64_t)sampleCodeModuleAddress, 1 , 1, 1, argv, (char *[]){"tty", "tty"});
 	return 1;
 }
 

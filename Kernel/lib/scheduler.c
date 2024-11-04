@@ -26,7 +26,7 @@ int64_t comparePCB(void * pcb1, void * pcb2) {
 void startScheduler() {
     status = ACTIVE;
     processQueue = createQueue(comparePCB);
-    idleProcess = lookUpOnHashMap((pid_t) newProcess((uint64_t)idle, 0, 1, 0, NULL));
+    idleProcess = lookUpOnHashMap((pid_t) newProcess((uint64_t)idle, 0, 1, 0, NULL, (char *[]){"tty", "null"}));
 }
 
 static PCB findNextReadyProcess(queueADT processQueue) {
@@ -62,7 +62,7 @@ uint64_t contextSwitch(uint64_t rsp){
     if ( status == INACTIVE)
         return rsp;
 
-
+    printNumber(activePid,0xFFFFFFFF);
     if ( activePid == KERNEL_PID){
         activeProcess = dequeue(processQueue);
         activePid = 0;

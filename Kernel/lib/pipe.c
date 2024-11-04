@@ -56,7 +56,7 @@ int pipeOpen(char * name){
     return 0;
 }
 
-int pipeWrite(char * name, char * str, int len){
+int pipeWrite(char * name, const char * str, int len){
     for(int i = 0; i < MAX_PIPES; i++){
         if(pipes[i] != NULL && strcmp(pipes[i]->name, name) == 0){
             //semWait(pipes[i]->mutex);

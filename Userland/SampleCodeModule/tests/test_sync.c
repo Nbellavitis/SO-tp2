@@ -65,11 +65,13 @@ uint64_t test_sync(uint64_t argc, char *argv[]) { //{n, use_sem, 0}
     char *argvInc[] = {argv[0], "1", argv[1], NULL};
 
     global = 0;
-
+    char ** descriptors = allocMemory(2 * sizeof(char *));
+    descriptors[0] = "tty";
+    descriptors[1] = "tty";
     uint64_t i;
     for (i = 0; i < TOTAL_PAIR_PROCESSES; i++) {
-        pids[i] = createProcess((uint64_t)my_process_inc,1,1, 3, argvDec);
-        pids[i + TOTAL_PAIR_PROCESSES] = createProcess((uint64_t)my_process_inc,1,1,3, argvInc);
+        pids[i] = createProcess((uint64_t)my_process_inc,1, 3, argvDec, descriptors);
+        pids[i + TOTAL_PAIR_PROCESSES] = createProcess((uint64_t)my_process_inc,1,3, argvInc,descriptors);
     }
 
     for (i = 0; i < TOTAL_PAIR_PROCESSES; i++) {

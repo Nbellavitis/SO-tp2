@@ -5,6 +5,7 @@
 #include "include/videoDriver.h"
 #include "../include/scheduler.h"
 #include "../include/libasm.h"
+#define EOF -1
 int keyMapRow = 0;
 int ctrlPressed = 0;
 

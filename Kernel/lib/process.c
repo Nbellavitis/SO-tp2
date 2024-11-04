@@ -6,11 +6,12 @@
 #include "../collections/queue.h"
 #define MAX_PROCESSES 7000
 static HashMapADT PCBMap;
+queueADT blockedProcesses;
 static int  nextProcessId = 0;
 static int aliveProcesses = 0;
 #define SHELL_PID 1
 
-pid_t newProcess(uint64_t rip, int ground, int priority, int argc, char * argv[]){
+pid_t newProcess(uint64_t rip, int ground, int priority, int argc, char * argv[], char * descriptors[2]){
     if(aliveProcesses < MAX_PROCESSES){
     PCB pcb = (PCBType *) allocMemory(sizeof(PCBType));
     if (pcb == NULL){
@@ -28,7 +29,7 @@ pid_t newProcess(uint64_t rip, int ground, int priority, int argc, char * argv[]
     pcb->priority = priority;
     pcb->pid = nextProcessId;
     pcb->argv= argv;
-    pcb->waiting = 0;
+    pcb->waitingFor = 0;
     pcb->waitingProcesses = createQueue(comparePCB);
     if(pcb->pid == 0 || pcb->pid == 1){
         pcb->ppid = -1;
@@ -37,9 +38,9 @@ pid_t newProcess(uint64_t rip, int ground, int priority, int argc, char * argv[]
     }
     
     pcb->rsp = createProcess(pcb->stackBase, pcb->rip, argc, argv);
-    pcb->fd[STDIN] = STDIN;
-    pcb->fd[STDOUT] = STDOUT;
-    pcb->fd[STDERR] = STDERR;
+    pcb->fd[STDIN] = descriptors[0];
+    pcb->fd[STDOUT] = descriptors[1];
+    pcb->fd[STDERR] = "tty";
 
     insert(PCBMap,(pcb->pid),pcb);
     addToReadyQueue(pcb);
@@ -60,11 +61,15 @@ void freeProcess(PCB pcb){
     freeMemory((void *)(pcb->stackBase - STACK_SIZE));
 	freeMemory(pcb->argv);
     freeQueue(pcb->waitingProcesses);
+    for(int i = 0; i < 3; i++){
+        freeMemory(pcb->fd[i]);
+    }
     freeMemory(pcb);
     aliveProcesses--;
 }
 void initMap(){
     PCBMap = create_hash_map(comparePid);
+    blockedProcesses = createQueue(comparePCB);
 }
 int8_t unblockProcess(pid_t pid){
    PCB aux = lookup(PCBMap,pid);
@@ -75,6 +80,7 @@ int8_t unblockProcess(pid_t pid){
         return -1;
     }
     aux->status=READY;
+    remove(blockedProcesses, aux);
     return 0;
 }
 
@@ -90,7 +96,7 @@ PCB aux = lookup(PCBMap,pid);
    return 0;
 }
 
-int8_t blockProcess(pid_t pid) {
+int8_t blockProcess(pid_t pid, int reason) {
     PCB aux = lookup(PCBMap,pid);
     if(aux == NULL){
         return -1;
@@ -100,6 +106,8 @@ int8_t blockProcess(pid_t pid) {
     }
 
     aux->status = BLOCKED;
+    aux->waitingFor = reason;
+    queue(blockedProcesses, aux);
     if(pid == getActivePid()){
         yield();
     }
@@ -175,9 +183,10 @@ uint64_t waitpid(pid_t pid){
     }
     queue(aux->waitingProcesses,activeProcess);
     if(aux->ground == 1 || aux->ppid != SHELL_PID){
-      	activeProcess->waiting = 1;
-        blockProcess(activeProcess->pid);
-        activeProcess->waiting = 0;
+        printNumber( aux->pid,0xffff);
+      	activeProcess->waitingFor = CHILD_PROCESS;
+        blockProcess(activeProcess->pid, CHILD_PROCESS);
+        activeProcess->waitingFor = 0;
         ret = aux->ret;
         killProcess(aux->pid);
         return ret;
@@ -202,4 +211,7 @@ void exitProcess(uint64_t retStatus){
     }
     activeProcess->status = EXITED;
     yield();
+}
+queueADT getBlockedQueue(){
+    return blockedProcesses;
 }

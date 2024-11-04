@@ -41,10 +41,17 @@ void irqDispatcher(uint64_t irq,uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64
 void int_21() {
 
     keyboard_handler();
-    PCB aux = lookUpOnHashMap(1);
-    if(aux->waiting != 1){
-        unblockProcess(1);
-    }
+   queueADT queue = getBlockedQueue();
+    toBegin(queue);
+   while(hasNext(queue)){
+       PCB pcb = next(queue);
+       printNumber(pcb->pid, 0x00FF0000);
+       printNumber(pcb->waitingFor, 0x00FFFF0);
+       if(pcb->waitingFor == READ_STDIN){
+           unblockProcess(pcb->pid);
+           return;
+       }
+   }
 
 }
 
@@ -57,7 +64,6 @@ static int sys_write_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t 
 }
 
 static int sys_read_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
-    blockProcess(getActivePid());
     return sys_read(rsi, (char *)rdx, rcx);
 }
 
@@ -128,7 +134,7 @@ static int exit_process_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64
 }
 
 static int new_process_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
- 		return newProcess(rsi,rdx,rcx,r8,(char **)r9);
+ 		return newProcess(rsi,rdx,1, rcx,(char **)r8, (char **)r9);
 }
 
 static int kill_process_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
@@ -136,7 +142,7 @@ static int kill_process_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64
 }
 
 static int block_process_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
-    return blockProcess((pid_t)rsi);
+    return blockProcess((pid_t)rsi, CHILD_PROCESS);
 }
 
 static int unblock_process_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
