@@ -168,7 +168,7 @@ void executePipedCommands(char *buffer) {
         return;
         }
     pid1=createProcess((uint64_t)cm1, 1, 0, descriptors1, descriptors1);
-    waitpid(createProcess((uint64_t)cm2, 1, 0, descriptors2, descriptors2));
+    waitpid(createProcess((uint64_t)cm2, 0, 0, descriptors2, descriptors2));
     waitpid(pid1);
     pipeClose("shellPipe");
     freeMemory(descriptors1);
