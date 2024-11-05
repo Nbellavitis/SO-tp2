@@ -65,7 +65,10 @@ Command commands[] = {
     {"testSync", runTestSync, "Run the sync test."},
     {"testNoSync", runTestNoSync, "Run the sync test without semaphores."},
     {"testeando", testeandoo, "testeando"},
-    {"cat",cat,"Reads from stdin and writes to stdout"}
+    {"cat",cat,"Reads from stdin and writes to stdout"},
+    {"loop",loop,"prints his pid every 100000 ms"},
+    //{"wc",wc,"Counts the number of lines in the input"},
+//   	{"filter",filter,"f"}
 };
 
 void bufferControl(){
@@ -159,6 +162,7 @@ void executePipedCommands(char *buffer) {
         freeMemory(descriptors1);
         freeMemory(descriptors2);
         putString("Command not found\n",WHITE);
+        return;
         }
     pid1=createProcess((uint64_t)cm1, 1, 0, descriptors1, descriptors1);
     waitpid(createProcess((uint64_t)cm2, 1, 0, descriptors2, descriptors2));

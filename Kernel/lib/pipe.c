@@ -1,4 +1,5 @@
 #include "../include/pipe.h"
+#define EOF -1
 typedef struct Pipe{
     char * name;
     char buffer[BUFF_SIZE];
@@ -91,7 +92,7 @@ int pipeRead(char * name, char * save, int len){
 int pipeClose(char * name){
     for(int i = 0; i < MAX_PIPES; i++){
         if(pipes[i] != NULL && strcmp(pipes[i]->name, name) == 0){
-            //semClose(pipes[i]->mutex);
+            pipeWrite(name, (char *)EOF, 2);
             semClose(pipes[i]->writeSem);
             semClose(pipes[i]->readSem);
             freeMemory(pipes[i]->writeSem);

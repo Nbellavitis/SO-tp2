@@ -43,7 +43,12 @@ void keyboardHandler() {
              killProcess(aux->pid);
           }
             drawWord(0x00FF0000,"Process killed\n");
-        } else if (keyMap[keyMapRow][code] != 0) {
+        } else if(ctrlPressed && keyMap[keyMapRow][code] == 'd'){
+            buff[buff_pos] = EOF;
+            incBufferLen(1);
+            setPos(buff_pos);
+        }
+        else if (keyMap[keyMapRow][code] != 0) {
             buff[buff_pos] = keyMap[keyMapRow][code];
             incBufferLen(1);
             setPos(buff_pos);

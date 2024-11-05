@@ -1,5 +1,6 @@
 #include "include/program.h"
 #include "include/lib.h"
+#include "include/usrSysCall.h"
 #define MAX_COMMAND_LENGTH 256
 #define EOF -1
 void priotest(int argc, char *argv[]) {
@@ -59,4 +60,16 @@ void cat(){
     }
     putC('\n',WHITE);
     return;
+}
+
+
+
+#define TIME 100000
+
+
+void loop() {
+    while (1) {
+        print( WHITE, "Hola soy pid: %d\n", getMyPid());
+        call_sleepms(TIME);
+    }
 }
