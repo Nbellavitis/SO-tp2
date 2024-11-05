@@ -3,7 +3,7 @@
 #define TIME 100000
 #include "include/usrSysCall.h"
 #define EOF -1
-#define MAX_BUFFER 4096
+#define MAX_BUFFER 1024
 void priotest(int argc, char *argv[]) {
     test_prio();
 }
@@ -81,7 +81,7 @@ void wc(){
     }
     putC('\n',WHITE);
 
-    print(WHITE,"Line count: %d\n", lines);
+    print(WHITE,"Line count: %d\n", --lines);
     putC('\n',WHITE);
 }
 

@@ -133,6 +133,12 @@ void removePhilosopher(int id) {
         put_fork(id);
         semWait(auxSem);
     }
+    if (status[id-1] == EATING) {
+        print(WHITE, " left Philosopher to be removed is eating\n");
+        semPost(auxSem);
+        put_fork(id-1);
+        semWait(auxSem);
+    }
 
     killProcess(philosophers[id]);
     semPost(auxSem);
@@ -373,9 +379,12 @@ void philo(int argc, char *argv[]) {
             case 'r':
                 semWait(auxSem);
                 if (philosopherCount > INITIAL) {
+                  semPost(auxSem);
                     removePhilosopher(philosopherCount - 1);
+                }else{
+                    semPost(auxSem);
                 }
-                semPost(auxSem);
+
                 break;
         }
     }
