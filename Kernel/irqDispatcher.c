@@ -203,6 +203,19 @@ static int semPost_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rc
     semPost((char *)rsi);
     return 0;
 }
+static int pipeOpen_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+    return pipeOpen((char *)rsi);
+}
+static int pipeWrite_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+    return pipeWrite((char *)rsi, (char *)rdx, rcx);
+}
+static int pipeRead_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+    return pipeRead((char *)rsi, (char *)rdx, rcx);
+}
+static int pipeClose_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+    return pipeClose((char *)rsi);
+}
+
 static int testeandoWrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
     testeando();
     return 0;
@@ -241,7 +254,11 @@ syscall_handler_t syscallHandlers[] = {
     semOpen_wrapper,             // 30
     semWait_wrapper,            // 31
     semPost_wrapper,            // 32
-    semClose_wrapper            // 33
+    semClose_wrapper,            // 33
+    pipeOpen_wrapper,            // 34
+    pipeWrite_wrapper,           // 35
+    pipeRead_wrapper,            // 36
+    pipeClose_wrapper            // 37
 };
 
 // Función int_80 utilizando el array de syscalls

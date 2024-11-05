@@ -207,6 +207,26 @@ void printProcess(processInfoPtr process){
     print(WHITE,"%d    ",process->status);
    // print(WHITE,"%s    ",process->name);
 }
+void trimAndRemoveExtraSpaces(const char *src, char *dest) {
+    // Remover espacios iniciales
+    while (*src == ' ') src++;
+
+    // Remover espacios finales y múltiples espacios intermedios
+    int spaceFound = 0;
+    while (*src) {
+        if (*src != ' ') {
+            *dest++ = *src;
+            spaceFound = 0;
+        } else if (!spaceFound) {
+            *dest++ = ' ';
+            spaceFound = 1;
+        }
+        src++;
+    }
+    // Remover espacio final si quedó
+    if (dest > src && *(dest - 1) == ' ') dest--;
+    *dest = '\0';
+}
 
 void printAllProcesses(processInfoPtr * processes){
     print(WHITE,"PID    PPID     RSP        StackBase    RIP       Ground   Priority   Status    Name\n");

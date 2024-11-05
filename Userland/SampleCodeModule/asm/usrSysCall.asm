@@ -31,6 +31,11 @@ GLOBAL semClose
 GLOBAL testeando
 GLOBAL ps
 GLOBAL waitpid
+GLOBAL pipeOpen
+GLOBAL pipeClose
+GLOBAL pipeRead
+GLOBAL pipeWrite
+
 
 section .text
 
@@ -113,6 +118,14 @@ semPost:
     call_to_handler 32
 semClose:
     call_to_handler 33
+pipeOpen:
+    call_to_handler 34
+pipeClose:
+    call_to_handler 35
+pipeRead:
+    call_to_handler 36
+pipeWrite:
+    call_to_handler 37
 InvalidOpasm:
     mov rax, 0x12345678
     rdpmc

@@ -85,4 +85,8 @@ void semClose(char * name);
 void semWait(char * name);
 void semPost(char * name);
 void yield();
+int pipeOpen(char * name);
+int pipeWrite(char * name, const char * str, int len);
+int pipeRead(char * name, char * str, int len);
+int pipeClose(char * name);
 #endif /* USERSYSCALLS_H */
