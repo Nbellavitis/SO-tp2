@@ -7,7 +7,7 @@
 #include "Drivers/include/keyboardDriver.h"
 #include "Drivers/include/videoDriver.h"
 #include "mm/mm.h"
-#include "tests/test_util.h"
+#include "tests/testUtil.h"
 #include "include/lib.h"
 #include "include/process.h"
 #include "include/scheduler.h"
@@ -96,7 +96,7 @@ void * initializeKernelBinary()
 	return getStackBase();
 }
 
-int init_shell() {
+int initShell() {
 	char * argv[]= {"Shell", (void *) 0};
     newProcess((uint64_t)sampleCodeModuleAddress, 1 , 1, 1, argv, (char *[]){"tty", "tty"});
 	return 1;
@@ -104,12 +104,12 @@ int init_shell() {
 
 int main()
 {
-	load_idt();
+	loadIdt();
 	mmInit(heapAddress, 0x2700000);
     //((EntryPoint)sampleCodeModuleAddress)();  whot
 	initMap();
 	startScheduler();
-	init_shell();
+	initShell();
 	semInit();
     initPipes();
 	 while(1){

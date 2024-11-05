@@ -9,7 +9,7 @@
 // DECLARACIÓN DE PROTOTIPOS
 //******************************************************************************
 
-void load_idt();
+void loadIdt();
 
 
 #endif // _IDTLOADER_H_

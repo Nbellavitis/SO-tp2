@@ -2,7 +2,7 @@
 #include <stdint.h>
 #include "Drivers/include/keyboardDriver.h"
 #include "Drivers/include/videoDriver.h"
-#include "Drivers/include/SoundDriver.h"
+#include "Drivers/include/soundDriver.h"
 #include "include/libasm.h"
 #include <syscalls.h>
 #include <naiveConsole.h>
@@ -12,257 +12,254 @@
 #include "include/lib.h"
 #include "include/registerHandling.h"
 #include "mm/mm.h"
-#include "tests/test_util.h"
+#include "tests/testUtil.h"
 #include "include/irqDispatcher.h"
 #include "include/sems.h"
 #include "include/pipe.h"
-static void int_21();
-static int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
-void timer_handler();
 
+static void int21();
+static int int80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
+void timerHandler();
 
-//static void (*irq_handlers[])(uint64_t, uint64_t, uint64_t, uint64_t, uint64_t, uint64_t);
-
-void irqDispatcher(uint64_t irq,uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+void irqDispatcher(uint64_t irq, uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
     switch (irq) {
-    case 0:
-      timer_handler();
-        break;
-    case 1:
-        int_21();
-        break;
-    case 0x80:
-        int_80(rdi, rsi,  rdx, rcx, r8, r9);
-        break;
+        case 0:
+            timerHandler();
+            break;
+        case 1:
+            int21();
+            break;
+        case 0x80:
+            int80(rdi, rsi, rdx, rcx, r8, r9);
+            break;
     }
     return;
 }
 
-void int_21() {
-keyboard_handler();
-PCB aux = getCurrentForegroundProcess();
-	if(aux != NULL && aux->pid != 1){
-        if(aux->waitingFor == READ_STDIN){
+void int21() {
+    keyboardHandler();
+    PCB aux = getCurrentForegroundProcess();
+    if (aux != NULL && aux->pid != 1) {
+        if (aux->waitingFor == READ_STDIN) {
             unblockProcess(aux->pid);
         }
-    }else{
-    	PCB shell = lookUpOnHashMap(1);
-    	if(shell->waitingFor == READ_STDIN){
+    } else {
+        PCB shell = lookUpOnHashMap(1);
+        if (shell->waitingFor == READ_STDIN) {
             unblockProcess(1);
         }
     }
 }
 
+typedef int (*syscallHandler_t)(uint64_t, uint64_t, uint64_t, uint64_t, uint64_t, uint64_t);
 
-typedef int (*syscall_handler_t)(uint64_t, uint64_t, uint64_t, uint64_t, uint64_t, uint64_t);
-
-static int sys_write_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
-    sys_write(rsi, (char *)rdx, rcx, r8);
+static int sysWriteWrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+    sysWrite(rsi, (char *)rdx, rcx, r8);
     return 0;
 }
 
-static int sys_read_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
-    return sys_read(rsi, (char *)rdx, rcx);
+static int sysReadWrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+    return sysRead(rsi, (char *)rdx, rcx);
 }
 
-static int clock_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+static int clockWrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
     clock((char *)rsi);
     return 0;
 }
 
-static int clear_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+static int clearWrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
     clear();
     return 0;
 }
 
-static int ticks_elapsed_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
-    return ticks_elapsed();
+static int ticksElapsedWrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+    return ticksElapsed();
 }
 
-static int get_height_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+static int getHeightWrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
     return getHeight();
 }
 
-static int get_width_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+static int getWidthWrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
     return getWidth();
 }
 
-static int move_cursor_x_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+static int moveCursorXWrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
     moveCursorX((uint16_t)rsi);
     return 0;
 }
 
-static int move_cursor_y_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+static int moveCursorYWrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
     moveCursorY((uint16_t)rsi);
     return 0;
 }
 
-static int draw_rectangle_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+static int drawRectangleWrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
     drawRectangle(rsi, rdx, rcx, r8, r9);
     return 0;
 }
 
-static int sleepms_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+static int sleepmsWrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
     sleepms(rsi);
     return 0;
 }
 
-static int set_font_size_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+static int setFontSizeWrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
     return setFontSize(rsi);
 }
 
-static int beep_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+static int beepWrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
     beep();
     return 0;
 }
 
-static int run_test_mm_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+static int runTestMemWrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
     runTestMm();
     return 0;
 }
 
-static int print_mm_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+static int printMemWrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
     printMm();
     return 0;
 }
 
-static int exit_process_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+static int exitProcessWrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
     exitProcess((pid_t)rsi);
     return 0;
 }
 
-static int new_process_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
- 		return newProcess(rsi,rdx,1, rcx,(char **)r8, (char **)r9);
+static int newProcessWrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+    return newProcess(rsi, rdx, 1, rcx, (char **)r8, (char **)r9);
 }
 
-static int kill_process_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+static int killProcessWrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
     return killProcess((pid_t)rsi);
 }
 
-static int block_process_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+static int blockProcessWrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
     return blockProcess((pid_t)rsi, CHILD_PROCESS);
 }
 
-static int unblock_process_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+static int unblockProcessWrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
     return unblockProcess((pid_t)rsi);
 }
 
-static int alloc_memory_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
-    return (uint64_t) allocMemory((uint64_t)rsi);
+static int allocMemoryWrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+    return (uint64_t)allocMemory((uint64_t)rsi);
 }
 
-static int free_memory_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+static int freeMemoryWrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
     freeMemory((void *)rsi);
     return 0;
 }
 
-static int change_priority_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+static int changePriorityWrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
     return changePrio((pid_t)rsi, (int)rdx);
 }
 
-static int get_active_pid_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+static int getActivePidWrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
     return getActivePid();
 }
 
-static int waitpid_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+static int waitpidWrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
     return waitpid((pid_t)rsi);
 }
 
-static int get_all_process_info_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+static int getAllProcessInfoWrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
     return (int64_t)getAllProcessInfo();
 }
-static int getRegistersState(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
-    if(getFlag() || rsi == 1){
-        if(getFlag()==0){
-            drawWord(0x00FF0000,"You must take a screenshot first, press : and try again.\n");
+
+static int getRegistersStateWrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+    if (getFlag() || rsi == 1) {
+        if (getFlag() == 0) {
+            drawWord(0x00FF0000, "You must take a screenshot first, press : and try again.\n");
             return 0;
         }
         printRegisters(getRegisters(), 0x00ffffff);
-
     }
     return 0;
 }
 
-static int yield_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
+static int yieldWrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
     yield();
     return 0;
 }
-static int semOpen_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
-    return semOpen((char *)rsi, rdx);
-
-}
-static int semClose_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
-    semClose((char *)rsi);
-    return 0;
-}
-static int semWait_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
-    semWait((char *)rsi);
-    return 0;
-}
-static int semPost_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
-    semPost((char *)rsi);
-    return 0;
-}
-static int pipeOpen_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
-    return pipeOpen((char *)rsi);
-}
-static int pipeWrite_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
-    return pipeWrite((char *)rsi, (char *)rdx, rcx);
-}
-static int pipeRead_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
-    return pipeRead((char *)rsi, (char *)rdx, rcx);
-}
-static int pipeClose_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
-    return pipeClose((char *)rsi);
-}
-
 static int testeandoWrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
     testeando();
     return 0;
 }
-syscall_handler_t syscallHandlers[] = {
-    NULL,                       // 0 (reservado)
-    sys_write_wrapper,           // 1
-    sys_read_wrapper,            // 2
-    clock_wrapper,               // 3
-    getRegistersState,           // 4
-    clear_wrapper,               // 5
-    ticks_elapsed_wrapper,       // 6
-    get_height_wrapper,          // 7
-    get_width_wrapper,           // 8
-    move_cursor_x_wrapper,       // 9
-    move_cursor_y_wrapper,       // 10
-    draw_rectangle_wrapper,      // 11
-    sleepms_wrapper,             // 12
-    set_font_size_wrapper,       // 13
-    beep_wrapper,                // 14
-    run_test_mm_wrapper,         // 15
-    print_mm_wrapper,            // 16
-    exit_process_wrapper,        // 17
-    new_process_wrapper,         // 18
-    kill_process_wrapper,        // 19
-    block_process_wrapper,       // 20
-    unblock_process_wrapper,     // 21
-    alloc_memory_wrapper,        // 22
-    free_memory_wrapper,         // 23
-    change_priority_wrapper,     // 24
-    get_active_pid_wrapper,      // 25
-    testeandoWrapper,           // 26
-    get_all_process_info_wrapper, // 27
-    waitpid_wrapper, 				// 28
-	yield_wrapper,               // 29
-    semOpen_wrapper,             // 30
-    semWait_wrapper,            // 31
-    semPost_wrapper,            // 32
-    semClose_wrapper,            // 33
-    pipeOpen_wrapper,            // 34
-    pipeWrite_wrapper,           // 35
-    pipeRead_wrapper,            // 36
-    pipeClose_wrapper            // 37
+static int semOpenWrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
+    return semOpen((char *)rsi, rdx);
+}
+
+static int semCloseWrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
+    semClose((char *)rsi);
+    return 0;
+}
+static int semWaitWrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
+    semWait((char *)rsi);
+    return 0;
+}
+static int semPostWrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
+    semPost((char *)rsi);
+    return 0;
+}
+static int pipeOpenWrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+    return pipeOpen((char *)rsi);
+}
+static int pipeWriteWrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+    return pipeWrite((char *)rsi, (char *)rdx, rcx);
+}
+static int pipeReadWrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+    return pipeRead((char *)rsi, (char *)rdx, rcx);
+}
+static int pipeCloseWrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+    return pipeClose((char *)rsi);
+}
+
+syscallHandler_t syscallHandlers[] = {
+        NULL,                       // 0 (reservado)
+        sysWriteWrapper,           // 1
+        sysReadWrapper,            // 2
+        clockWrapper,               // 3
+        getRegistersStateWrapper,           // 4
+        clearWrapper,               // 5
+        ticksElapsedWrapper,       // 6
+        getHeightWrapper,          // 7
+        getWidthWrapper,           // 8
+        moveCursorXWrapper,       // 9
+        moveCursorYWrapper,       // 10
+        drawRectangleWrapper,      // 11
+        sleepmsWrapper,             // 12
+        setFontSizeWrapper,       // 13
+        beepWrapper,                // 14
+        runTestMemWrapper,         // 15
+        printMemWrapper,            // 16
+        exitProcessWrapper,        // 17
+        newProcessWrapper,         // 18
+        killProcessWrapper,        // 19
+        blockProcessWrapper,       // 20
+        unblockProcessWrapper,     // 21
+        allocMemoryWrapper,        // 22
+        freeMemoryWrapper,         // 23
+        changePriorityWrapper,     // 24
+        getActivePidWrapper,      // 25
+        testeandoWrapper,           // 26
+        getAllProcessInfoWrapper, // 27
+        waitpidWrapper, 				// 28
+        yieldWrapper,               // 29
+        semOpenWrapper,             // 30
+        semWaitWrapper,            // 31
+        semPostWrapper,            // 32
+        semCloseWrapper,            // 33
+        pipeOpenWrapper,            // 34
+        pipeWriteWrapper,           // 35
+        pipeReadWrapper,            // 36
+        pipeCloseWrapper            // 37
 };
 
 // Función int_80 utilizando el array de syscalls
-static int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+static int int80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
     if (rdi < sizeof(syscallHandlers) / sizeof(syscallHandlers[0]) && syscallHandlers[rdi] != NULL) {
         return syscallHandlers[rdi](rdi, rsi, rdx, rcx, r8, r9);
     }

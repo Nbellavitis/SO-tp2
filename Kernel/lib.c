@@ -9,7 +9,7 @@
 #include "Drivers/include/videoDriver.h"
 #include "mm/mm.h"
 #include "include/lib.h"
-#include "tests/test_util.h"
+#include "tests/testUtil.h"
 #include "include/process.h"
 #include "include/scheduler.h"
 #define WAIT 500000
@@ -64,8 +64,8 @@ void * memcpy(void * destination, const void * source, uint64_t length)
 }
 
 void sleepms(uint32_t ms){
-    uint32_t start = ticks_elapsed();
-    while (ms > 18* (ticks_elapsed() - start)){
+    uint32_t start = ticksElapsed();
+    while (ms > 18* (ticksElapsed() - start)){
 		_hlt();
 	}
 }

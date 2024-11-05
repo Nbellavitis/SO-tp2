@@ -10,7 +10,7 @@
 #include <naiveConsole.h>
 #define MIN(x,y) x < y ? x : y
 
-void sys_write(int descriptor, const char * str, int len,uint32_t hexColor){
+void sysWrite(int descriptor, const char * str, int len,uint32_t hexColor){
     switch(descriptor){
         case STDOUT:
             if(strcmp( getActiveProcess()->fd[STDOUT], "tty") == 0){
@@ -29,7 +29,7 @@ void sys_write(int descriptor, const char * str, int len,uint32_t hexColor){
 
 }
 
-int sys_read(int descriptor, char * save, int len){
+int sysRead(int descriptor, char * save, int len){
     
     if(descriptor != STDIN){
         drawWord(0x00ff0000, "no such descriptor");
@@ -56,8 +56,6 @@ int sys_read(int descriptor, char * save, int len){
     } else{
         return pipeRead(getActiveProcess()->fd[STDIN], save, len);
     }
-   
-
 }
 
 void twoChars(char * first,int j, char * app){

@@ -28,7 +28,7 @@ uint8_t scancodeShiftToAscii[] = {
 uint8_t *keyMap[] = {scancodeToAscii, scancodeShiftToAscii};
 
 
-void keyboard_handler() {
+void keyboardHandler() {
     uint16_t code = getKey();
     if (code < 0x80) { // Key pressed
         char *buff = getBufferAddress();
