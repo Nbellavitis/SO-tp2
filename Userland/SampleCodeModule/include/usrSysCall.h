@@ -74,7 +74,7 @@ void changePrio(pid_t pid, int prio);
 pid_t getMyPid();
 void * allocMemory(size_t size);
 void  freeMemory(void * mem);
-pid_t createProcess(uint64_t rip, int ground, int priority, int argc, char * argv[]);
+pid_t createProcess(uint64_t rip, int ground, int argc, char * argv[], char * fd[2]);
 void testmm();
 void mmStatus();
 void testeando();
@@ -85,4 +85,8 @@ void semClose(char * name);
 void semWait(char * name);
 void semPost(char * name);
 void yield();
+int pipeOpen(char * name);
+int pipeWrite(char * name, const char * str, int len);
+int pipeRead(char * name, char * str, int len);
+int pipeClose(char * name);
 #endif /* USERSYSCALLS_H */

@@ -14,6 +14,7 @@
 #include "collections/queue.h"
 #include "collections/hashMap.h"
 #include "include/sems.h"
+#include "include/pipe.h"
 extern uint8_t text;
 extern uint8_t rodata;
 extern uint8_t data;
@@ -97,7 +98,7 @@ void * initializeKernelBinary()
 
 int init_shell() {
 	char * argv[]= {"Shell", (void *) 0};
-    newProcess((uint64_t)sampleCodeModuleAddress, 1 , 1, 1, argv);
+    newProcess((uint64_t)sampleCodeModuleAddress, 1 , 1, 1, argv, (char *[]){"tty", "tty"});
 	return 1;
 }
 
@@ -110,6 +111,7 @@ int main()
 	startScheduler();
 	init_shell();
 	semInit();
+    initPipes();
 	 while(1){
 		// Busy-wait loop
 	}

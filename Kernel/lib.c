@@ -199,25 +199,25 @@ uint64_t p2(int argc, char * argv[]){
     return 2;
 }
 void testeando(){
-
-    pid_t p[10];
-    uint64_t i=0;
-    while (i<10){
-        drawWord(0xFFFFFFFF,"Creando proceso");
-        p[i] = newProcess((uint64_t)p2,0,1,0,NULL);
-        if(p[i] == -1){
-            drawWord(0xFFFFFFFF,"Error al crear proceso");
-        }
-        i++;
-    }
-    for(uint64_t j=0;j<100000000;j++);
-
-    for(int j=0;j<10;j++){
-        drawWord(0xFFFFFFFF,"\nKilling process");
-        printNumber(p[j],0xFFFFFFFF);
-        waitpid(p[j]);
-    }
-    return;
+while(1);
+//    pid_t p[10];
+//    uint64_t i=0;
+//    while (i<10){
+//        drawWord(0xFFFFFFFF,"Creando proceso");
+//        p[i] = newProcess((uint64_t)p2,0,1,0,NULL);
+//        if(p[i] == -1){
+//            drawWord(0xFFFFFFFF,"Error al crear proceso");
+//        }
+//        i++;
+//    }
+//    for(uint64_t j=0;j<100000000;j++);
+//
+//    for(int j=0;j<10;j++){
+//        drawWord(0xFFFFFFFF,"\nKilling process");
+//        printNumber(p[j],0xFFFFFFFF);
+//        waitpid(p[j]);
+//    }
+//    return;
 }
 int strcmp(const char *s1, const char *s2) {
     while (*s1 && (*s1 == *s2)) {

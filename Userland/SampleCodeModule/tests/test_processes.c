@@ -29,7 +29,10 @@ int64_t test_processes(uint64_t argc, char *argv[]) {
     // Create max_processes processes
 
     for (rq = 0; rq < max_processes; rq++) {
-      p_rqs[rq].pid = createProcess((uint64_t)endless_loop, 0,1, 0, argvAux);
+        char **descriptors = allocMemory(2 * sizeof(char *));
+        descriptors[0] = "tty";
+        descriptors[1] = "tty";
+      p_rqs[rq].pid = createProcess((uint64_t)endless_loop, 0, 0, argvAux,descriptors);
 
       if (p_rqs[rq].pid == -1) {
         print(0xFFFFFFFF,"test_processes: ERROR creating process\n");

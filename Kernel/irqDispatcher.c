@@ -15,7 +15,7 @@
 #include "tests/test_util.h"
 #include "include/irqDispatcher.h"
 #include "include/sems.h"
-
+#include "include/pipe.h"
 static void int_21();
 static int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
 void timer_handler();
@@ -39,13 +39,18 @@ void irqDispatcher(uint64_t irq,uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64
 }
 
 void int_21() {
-
-    keyboard_handler();
-    PCB aux = lookUpOnHashMap(1);
-    if(aux->waiting != 1){
-        unblockProcess(1);
+keyboard_handler();
+PCB aux = getCurrentForegroundProcess();
+	if(aux != NULL && aux->pid != 1){
+        if(aux->waitingFor == READ_STDIN){
+            unblockProcess(aux->pid);
+        }
+    }else{
+    	PCB shell = lookUpOnHashMap(1);
+    	if(shell->waitingFor == READ_STDIN){
+            unblockProcess(1);
+        }
     }
-
 }
 
 
@@ -57,7 +62,6 @@ static int sys_write_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t 
 }
 
 static int sys_read_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
-    blockProcess(getActivePid());
     return sys_read(rsi, (char *)rdx, rcx);
 }
 
@@ -128,7 +132,7 @@ static int exit_process_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64
 }
 
 static int new_process_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
- 		return newProcess(rsi,rdx,rcx,r8,(char **)r9);
+ 		return newProcess(rsi,rdx,1, rcx,(char **)r8, (char **)r9);
 }
 
 static int kill_process_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
@@ -136,7 +140,7 @@ static int kill_process_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64
 }
 
 static int block_process_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
-    return blockProcess((pid_t)rsi);
+    return blockProcess((pid_t)rsi, CHILD_PROCESS);
 }
 
 static int unblock_process_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
@@ -199,6 +203,19 @@ static int semPost_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rc
     semPost((char *)rsi);
     return 0;
 }
+static int pipeOpen_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+    return pipeOpen((char *)rsi);
+}
+static int pipeWrite_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+    return pipeWrite((char *)rsi, (char *)rdx, rcx);
+}
+static int pipeRead_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+    return pipeRead((char *)rsi, (char *)rdx, rcx);
+}
+static int pipeClose_wrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+    return pipeClose((char *)rsi);
+}
+
 static int testeandoWrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
     testeando();
     return 0;
@@ -237,7 +254,11 @@ syscall_handler_t syscallHandlers[] = {
     semOpen_wrapper,             // 30
     semWait_wrapper,            // 31
     semPost_wrapper,            // 32
-    semClose_wrapper            // 33
+    semClose_wrapper,            // 33
+    pipeOpen_wrapper,            // 34
+    pipeWrite_wrapper,           // 35
+    pipeRead_wrapper,            // 36
+    pipeClose_wrapper            // 37
 };
 
 // Función int_80 utilizando el array de syscalls
