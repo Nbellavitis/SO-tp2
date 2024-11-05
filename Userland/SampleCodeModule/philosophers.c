@@ -1,5 +1,6 @@
 #include "include/usrSysCall.h"
 #include "include/lib.h"
+#include <stdio.h>
 
 #define TIME 100000000
 #define INITIAL 5
@@ -15,14 +16,19 @@
 
 typedef char bool;
 char * auxSem = "sem_";
+char * lastEating = "sem_lastEating";
+char * almostLastThinking = "sem_almostLastThinking";
 int * status;
 uint64_t philosopherCount = INITIAL;
 char ** semaphores;
 pid_t * philosophers;
 
 typedef struct {
-    int id;
-   char * args;
+    pid_t pid;
+    char * id;
+   char ** args;
+   char * semName;
+   char ** descriptors;
 } Philosopher;
 
 int getLeftIndex(int id) {
@@ -73,6 +79,14 @@ void take_fork(int id) {
         semWait(semaphores[getRightIndex(id)]);
         semWait(semaphores[id]);
     }
+    semWait(auxSem);
+    status[id] = EATING;
+    if(id == philosopherCount - 1){
+        semPost(auxSem);
+        semWait(lastEating);
+    } else{
+        semPost(auxSem);
+    }
 }
 
 void put_fork(int id) {
@@ -87,26 +101,42 @@ void put_fork(int id) {
     }
     semWait(auxSem);
     status[id] = THINKING;
+    if(id == philosopherCount - 1){
+        semPost(lastEating);
+    }
+    semPost(auxSem);
+
+}
+void put_fork_for_remove(int id){
+
+    if (id % 2 == 0) {
+        semPost(semaphores[getRightIndex(id)]);
+//        semPost(semaphores[id]);
+    } else {
+//        semPost(semaphores[id]);
+        semPost(semaphores[getRightIndex(id)]);
+    }
+    semWait(auxSem);
+    status[id] = THINKING;
+    if(id == philosopherCount - 1){
+        semPost(lastEating);
+    }
     semPost(auxSem);
 }
 
 void removePhilosopher(int id) {
-    if (!isValidId(id)) return;
 
     semWait(auxSem);
     if (status[id] == EATING) {
+        print(WHITE, "Philosopher to be removed is eating\n");
+        semPost(auxSem);
         put_fork(id);
+        semWait(auxSem);
     }
 
     killProcess(philosophers[id]);
+    semPost(auxSem);
     semClose(semaphores[id]);
-
-    for (int i = id; i < philosopherCount - 1; i++) {
-        philosophers[i] = philosophers[i + 1];
-        semaphores[i] = semaphores[i + 1];
-        status[i] = status[i + 1];
-    }
-
     philosopherCount--;
     semPost(auxSem);
 }
@@ -129,20 +159,18 @@ void philosopher(int argc, char *argv[]) {
             semPost(auxSem);
             return;
         }
+//        if(id == philosopherCount - 2){
+//            semPost(auxSem);
+//            semWait(almostLastThinking);
+//            semPost(almostLastThinking);
+//            semWait(auxSem);
+//        }
         status[id] = THINKING;
         semPost(auxSem);
 
         for (volatile int i = 0; i < TIME; i++);
 
         take_fork(id);
-        semWait(auxSem);
-        if (!isValidId(id)) {
-            print(WHITE, "Invalid philosopher ID\n");
-            semPost(auxSem);
-            return;
-        }
-        status[id] = EATING;
-        semPost(auxSem);
 
         printState();
         for (volatile int i = 0; i < TIME; i++);
@@ -186,15 +214,6 @@ void createPhilosophers(int philosCount) {
         char **descriptors = allocMemory(2 * sizeof(char *));
         descriptors[0] = "tty";
         descriptors[1] = "tty";
-        philosophers[i] = createProcess((uint64_t)philosopher, 0, 2, arg, descriptors);
-        if (philosophers[i] < 0) {
-            print(WHITE, "Failed to create philosopher ");
-            print(WHITE, "%d", i);
-            print(WHITE, "\n");
-            semPost(auxSem);
-            return;
-        }
-
         if (semOpen(semName, 1) == 0) {
             print(WHITE, "Failed to create semaphore ");
             print(WHITE, "%d",i);
@@ -204,6 +223,16 @@ void createPhilosophers(int philosCount) {
             return;
         }
         semaphores[i] = semName;
+        philosophers[i] = createProcess((uint64_t)philosopher, 0, 2, arg, descriptors);
+        if (philosophers[i] < 0) {
+            print(WHITE, "Failed to create philosopher ");
+            print(WHITE, "%d", i);
+            print(WHITE, "\n");
+            semPost(auxSem);
+            return;
+        }
+
+
 
         status[i] = THINKING;
     }
@@ -215,9 +244,6 @@ void killPhilosophers() {
 
     semWait(auxSem);
     for (int i = 0; i < philosopherCount; i++) {
-        if (status[i] == EATING) {
-            put_fork(i);
-        }
         if (philosophers[i] > 0) {
             killProcess(philosophers[i]);
             philosophers[i] = -1;
@@ -271,6 +297,23 @@ void philo(int argc, char *argv[]) {
         freeMemory(philosophers);
         return;
     }
+    if(semOpen(lastEating, 1) == 0){
+        print(WHITE, "Failed to create lastEating semaphore\n");
+        freeMemory(status);
+        freeMemory(semaphores);
+        freeMemory(philosophers);
+        semClose(auxSem);
+        return;
+    }
+    if(semOpen(almostLastThinking, 1) == 0){
+        print(WHITE, "Failed to create almostLastThinking semaphore\n");
+        freeMemory(status);
+        freeMemory(semaphores);
+        freeMemory(philosophers);
+        semClose(auxSem);
+        semClose(lastEating);
+        return;
+    }
 
     createPhilosophers(INITIAL);
     print(WHITE, "\nCommands: 'q' to quit, 'a' to add philosopher, 'r' to remove philosopher\n");
@@ -281,6 +324,7 @@ void philo(int argc, char *argv[]) {
             case 'q':
                 killPhilosophers();
                 semClose(auxSem);
+                semClose(lastEating);
                 freeMemory(semaphores);
                 freeMemory(philosophers);
                 freeMemory(status);
@@ -299,13 +343,6 @@ void philo(int argc, char *argv[]) {
                     char **descriptors = allocMemory(2 * sizeof(char *));
                     descriptors[0] = "tty";
                     descriptors[1] = "tty";
-                    pid_t newPhil = createProcess((uint64_t) philosopher, 0,  2, arg,descriptors);
-                    if (newPhil < 0) {
-                        print(WHITE, "Failed to create new philosopher\n");
-                        semPost(auxSem);
-                        break;
-
-                    }
                     if (semOpen(semName, 1) == 0) {
                         print(WHITE, "Failed to create semaphore ");
                         print(WHITE, "%d", philosopherCount);
@@ -315,11 +352,31 @@ void philo(int argc, char *argv[]) {
                         return;
                     }
                     semaphores[philosopherCount] = semName;
+                    semPost(auxSem);
+                    semWait(lastEating);
+                    pid_t newPhil = createProcess((uint64_t) philosopher, 0,  2, arg,descriptors);
+                    if (newPhil < 0) {
+                        print(WHITE, "Failed to create new philosopher\n");
+                        semPost(auxSem);
+                        break;
+
+                    }
+                    semPost(lastEating);
+                    semWait(auxSem);
+
                     status[philosopherCount] = THINKING;
                     philosophers[philosopherCount] = newPhil;
                     philosopherCount ++;
                 }
                 semPost(auxSem);
+                break;
+            case 'r':
+                semWait(auxSem);
+                if (philosopherCount > INITIAL) {
+                    removePhilosopher(philosopherCount - 1);
+                }
+                semPost(auxSem);
+                break;
         }
     }
     killPhilosophers();
