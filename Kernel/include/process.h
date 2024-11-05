@@ -41,7 +41,6 @@ int8_t killProcess(pid_t pid);
 int8_t blockProcess(pid_t pid, int reason);
 int8_t changePrio(pid_t pid,int priority);
 PCB lookUpOnHashMap(pid_t pid);
-queueADT getBlockedQueue();
 processInfoPtr * getAllProcessInfo();
 uint64_t waitpid(pid_t pid);
 #endif

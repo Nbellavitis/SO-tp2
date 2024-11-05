@@ -6,7 +6,7 @@
 #include "../collections/queue.h"
 #define MAX_PROCESSES 7000
 static HashMapADT PCBMap;
-queueADT blockedProcesses;
+
 static int  nextProcessId = 0;
 static int aliveProcesses = 0;
 #define SHELL_PID 1
@@ -69,7 +69,7 @@ void freeProcess(PCB pcb){
 }
 void initMap(){
     PCBMap = create_hash_map(comparePid);
-    blockedProcesses = createQueue(comparePCB);
+
 }
 int8_t unblockProcess(pid_t pid){
    PCB aux = lookup(PCBMap,pid);
@@ -80,7 +80,6 @@ int8_t unblockProcess(pid_t pid){
         return -1;
     }
     aux->status=READY;
-    remove(blockedProcesses, aux);
     return 0;
 }
 
@@ -90,6 +89,9 @@ PCB aux = lookup(PCBMap,pid);
         return -1;
     }
     aux->status=KILLED;
+    if(aux == getCurrentForegroundProcess()){
+        setNullForegroundProcess();
+    }
     if(pid == getActivePid()){
         yield();
     }
@@ -107,7 +109,6 @@ int8_t blockProcess(pid_t pid, int reason) {
 
     aux->status = BLOCKED;
     aux->waitingFor = reason;
-    queue(blockedProcesses, aux);
     if(pid == getActivePid()){
         yield();
     }
@@ -183,7 +184,7 @@ uint64_t waitpid(pid_t pid){
     }
     queue(aux->waitingProcesses,activeProcess);
     if(aux->ground == 1 || aux->ppid != SHELL_PID){
-        printNumber( aux->pid,0xffff);
+        //printNumber( aux->pid,0xffff);
       	activeProcess->waitingFor = CHILD_PROCESS;
         blockProcess(activeProcess->pid, CHILD_PROCESS);
         activeProcess->waitingFor = 0;
@@ -209,9 +210,9 @@ void exitProcess(uint64_t retStatus){
             unblockProcess(toUnblock->pid);
         }
     }
+    if(activeProcess == getCurrentForegroundProcess()){
+        setNullForegroundProcess();
+    }
     activeProcess->status = EXITED;
     yield();
-}
-queueADT getBlockedQueue(){
-    return blockedProcesses;
 }

@@ -62,7 +62,7 @@ uint64_t contextSwitch(uint64_t rsp){
     if ( status == INACTIVE)
         return rsp;
 
-    printNumber(activePid,0xFFFFFFFF);
+    //printNumber(activePid,0xFFFFFFFF);
     if ( activePid == KERNEL_PID){
         activeProcess = dequeue(processQueue);
         activePid = 0;
@@ -71,6 +71,9 @@ uint64_t contextSwitch(uint64_t rsp){
         }
         activePid = activeProcess->pid;
         activeProcess->status = RUNNING;
+        if(activeProcess->ground == FOREGROUND){
+                currentForegroundProcess = activeProcess;
+        }
         return activeProcess->rsp;
     }
     activeProcess->rsp = rsp;
@@ -79,6 +82,9 @@ uint64_t contextSwitch(uint64_t rsp){
             if (activeProcess->status != BLOCKED) {
                 if (activeProcess->priority - 1 > timesActiveExecuted) {
                     timesActiveExecuted++;
+                        if(activeProcess->ground == FOREGROUND){
+                    currentForegroundProcess = activeProcess;
+                }
                     return activeProcess->rsp;
                 }
                 activeProcess->status = READY;
@@ -99,7 +105,9 @@ uint64_t contextSwitch(uint64_t rsp){
         activeProcess=idleProcess;
         activePid=idleProcess->pid;
     }
-    //printNumber(activePid,0xFFFFFFFF);
+       if(activeProcess->ground == FOREGROUND){
+          currentForegroundProcess = activeProcess;
+         }
     return activeProcess->rsp;
 }
 
@@ -140,4 +148,7 @@ int8_t removeFromReadyQueue(PCB pcb){
 }
 PCB getCurrentForegroundProcess(){
     return currentForegroundProcess;
+}
+void setNullForegroundProcess(){
+    currentForegroundProcess = NULL;
 }

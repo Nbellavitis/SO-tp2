@@ -39,20 +39,18 @@ void irqDispatcher(uint64_t irq,uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64
 }
 
 void int_21() {
-
-    keyboard_handler();
-   queueADT queue = getBlockedQueue();
-    toBegin(queue);
-   while(hasNext(queue)){
-       PCB pcb = next(queue);
-       printNumber(pcb->pid, 0x00FF0000);
-       printNumber(pcb->waitingFor, 0x00FFFF0);
-       if(pcb->waitingFor == READ_STDIN){
-           unblockProcess(pcb->pid);
-           return;
-       }
-   }
-
+keyboard_handler();
+PCB aux = getCurrentForegroundProcess();
+	if(aux != NULL && aux->pid != 1){
+        if(aux->waitingFor == READ_STDIN){
+            unblockProcess(aux->pid);
+        }
+    }else{
+    	PCB shell = lookUpOnHashMap(1);
+    	if(shell->waitingFor == READ_STDIN){
+            unblockProcess(1);
+        }
+    }
 }
 
 

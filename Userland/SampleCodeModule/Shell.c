@@ -189,7 +189,7 @@ void testPriority() {
     char **descriptors = allocMemory(2 * sizeof(char *));
     descriptors[0] = "tty";
     descriptors[1] = "tty";
-    waitpid(createProcess(rip, 1,  0, NULL, descriptors));
+    waitpid(createProcess(rip, 0,  0, NULL, descriptors));
 }
 
 void runProcessTest() {
