@@ -52,5 +52,7 @@ void printAllProcesses(processInfoPtr * processes);
 void printProcess(processInfoPtr process);
 
 char *strcpy(char *dest, const char *src) ;
-
+char *strtok(char *str, const char *delim);
+char *strchr(const char *str, int c);
+char *strstr(const char *haystack, const char *needle);
 #endif // TPE_LIB_H

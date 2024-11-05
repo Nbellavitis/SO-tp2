@@ -238,3 +238,67 @@ void printAllProcesses(processInfoPtr * processes){
     freeMemory(processes);   
 }
 
+ char *strchr(const char *str, int c) {
+    while (*str) {
+        if (*str == (char)c) {
+            return (char *)str;
+        }
+        str++;
+    }
+    return NULL;
+}
+
+char *strtok(char *str, const char *delim) {
+    static char *last;
+    if (str == NULL) {
+        str = last;
+    }
+    if (str == NULL) {
+        return NULL;
+    }
+
+    // Skip leading delimiters
+    while (*str && strchr(delim, *str)) {
+        str++;
+    }
+    if (*str == '\0') {
+        last = NULL;
+        return NULL;
+    }
+
+    char *token = str;
+
+    // Find the end of the token
+    while (*str && !strchr(delim, *str)) {
+        str++;
+    }
+    if (*str) {
+        *str = '\0';
+        last = str + 1;
+    } else {
+        last = NULL;
+    }
+
+    return token;
+}
+char *strstr(const char *haystack, const char *needle) {
+    if (!*needle) {
+        return (char *)haystack;
+    }
+
+    for (const char *h = haystack; *h; h++) {
+        const char *h_iter = h;
+        const char *n_iter = needle;
+
+        while (*h_iter && *n_iter && *h_iter == *n_iter) {
+            h_iter++;
+            n_iter++;
+        }
+
+        if (!*n_iter) {
+            return (char *)h;
+        }
+    }
+
+    return NULL;
+}

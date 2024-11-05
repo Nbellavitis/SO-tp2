@@ -14,6 +14,7 @@
 #include "collections/queue.h"
 #include "collections/hashMap.h"
 #include "include/sems.h"
+#include "include/pipe.h"
 extern uint8_t text;
 extern uint8_t rodata;
 extern uint8_t data;
@@ -110,6 +111,7 @@ int main()
 	startScheduler();
 	init_shell();
 	semInit();
+    initPipes();
 	 while(1){
 		// Busy-wait loop
 	}

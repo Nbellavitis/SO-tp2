@@ -15,7 +15,7 @@
 #include "tests/test_util.h"
 #include "include/irqDispatcher.h"
 #include "include/sems.h"
-
+#include "include/pipe.h"
 static void int_21();
 static int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
 void timer_handler();

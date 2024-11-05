@@ -100,6 +100,71 @@ void bufferControl(){
     }
 }
 
+char *trimWhitespace(char *str) {
+    char *end;
+
+
+    while (((unsigned char)*str) == ' ') str++;
+
+    if (*str == 0)
+        return str;
+
+
+    end = str + strlen(str) - 1;
+    while (end > str && (((unsigned char)*end) == ' ')) end--;
+
+
+    *(end + 1) = 0;
+
+    return str;
+}
+
+void executePipedCommands(char *buffer) {
+    char *command1 = strtok(buffer, "|");
+    char *command2 = strtok(NULL, "|");
+    command1 = trimWhitespace(command1);
+    command2 = trimWhitespace(command2);
+    putString(command1, WHITE);
+    putString("\n", WHITE);
+    putString(command2, WHITE);
+    char **descriptors1 = allocMemory(2 * sizeof(char *));
+    descriptors1[0] = "tty";
+    descriptors1[1] = "shellPipe";
+    char **descriptors2 = allocMemory(2 * sizeof(char *));
+    descriptors2[0] = "shellPipe";
+    descriptors2[1] = "tty";
+   int pid1=-1;
+   int pid2=-1;
+   CommandFunction cm1 = NULL;
+   CommandFunction cm2 = NULL;
+   int found2=0;
+	for(int i = 0; i < sizeof(commands) / sizeof(commands[0]); i++) {
+        if (strncmp(command1, commands[i].command, strlen(commands[i].command)) == 0) {
+			cm1=commands[i].function;
+            break;
+        }
+    }
+    if(cm1==NULL){
+        freeMemory(descriptors1);
+        freeMemory(descriptors2);
+        putString("Command not found\n",WHITE);
+        return;
+    }
+    for(int i = 0; i < sizeof(commands) / sizeof(commands[0]); i++) {
+        if (strncmp(command2, commands[i].command, strlen(commands[i].command)) == 0) {
+          cm2=commands[i].function;
+            break;
+        }
+    }
+	if(cm2==NULL){
+        freeMemory(descriptors1);
+        freeMemory(descriptors2);
+        putString("Command not found\n",WHITE);
+        }
+    pid1=createProcess((uint64_t)cm1, 1, 0, NULL, descriptors1);
+    waitpid(createProcess((uint64_t)cm2, 1, 0, NULL, descriptors2));
+    waitpid(pid1);
+}
 
 void executeCommand(const char *buffer) {
     int background = buffer[strlen(buffer) - 1] == '&';
@@ -123,7 +188,6 @@ void executeCommand(const char *buffer) {
                 char **descriptors = allocMemory(2 * sizeof(char *));
                 descriptors[0] = "tty";
                 descriptors[1] = "tty";
-                // Ejecutar el comando normalmente
                 waitpid( createProcess((uint64_t)commands[i].function, 1, 0, NULL,descriptors));
             }
             return;
@@ -252,7 +316,11 @@ void lineRead(char *buffer) {
             putString("\n", WHITE);
         }
     } else {
+      if(strstr(buffer,"|") != NULL){
+		executePipedCommands(buffer);
+        }else{
         executeCommand(buffer);
+        }
     }
 }
 int shellInit() {
