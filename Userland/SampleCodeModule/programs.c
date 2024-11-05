@@ -60,3 +60,36 @@ void cat(){
     putC('\n',WHITE);
     return;
 }
+
+
+
+
+void wc(){
+    char c ;
+    getC(&c);
+    int i=0;
+    while (c != EOF){
+        if(c != 0){
+            if(c=='\n'){
+                i++;
+            }
+        }
+        getC(&c);
+    }
+    putInt(i,WHITE);
+    putC('\n',WHITE);
+}
+
+void filter(){
+    char c ;
+    getC(&c);
+    while (c != EOF){
+        if(c != 0){
+            if(c != 'a' && c != 'e' && c != 'i' && c != 'o' && c != 'u'){
+                putC(c,WHITE);
+            }
+        }
+        getC(&c);
+    }
+    putC('\n',WHITE);
+}
