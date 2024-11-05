@@ -35,7 +35,7 @@ GLOBAL pipeOpen
 GLOBAL pipeClose
 GLOBAL pipeRead
 GLOBAL pipeWrite
-
+GLOBAL pipeOpenAnon
 
 section .text
 
@@ -126,6 +126,8 @@ pipeRead:
     call_to_handler 36
 pipeWrite:
     call_to_handler 37
+pipeOpenAnon:
+    call_to_handler 38
 InvalidOpasm:
     mov rax, 0x12345678
     rdpmc

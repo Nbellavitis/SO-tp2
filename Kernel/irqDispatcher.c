@@ -216,7 +216,9 @@ static int pipeReadWrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rc
 static int pipeCloseWrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
     return pipeClose((char *)rsi);
 }
-
+static int pipeOpenAnonWrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
+    return pipeOpenAnon((char *)rsi);
+}
 syscallHandler_t syscallHandlers[] = {
         NULL,                       // 0 (reservado)
         sysWriteWrapper,           // 1
@@ -255,7 +257,8 @@ syscallHandler_t syscallHandlers[] = {
         pipeOpenWrapper,            // 34
         pipeWriteWrapper,           // 35
         pipeReadWrapper,            // 36
-        pipeCloseWrapper            // 37
+        pipeCloseWrapper,            // 37
+        pipeOpenAnonWrapper        // 38
 };
 
 // Función int_80 utilizando el array de syscalls

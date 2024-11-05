@@ -89,4 +89,5 @@ int pipeOpen(char * name);
 int pipeWrite(char * name, const char * str, int len);
 int pipeRead(char * name, char * str, int len);
 int pipeClose(char * name);
+int pipeOpenAnon(char * name);
 #endif /* USERSYSCALLS_H */

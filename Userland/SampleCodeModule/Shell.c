@@ -41,6 +41,7 @@ void killProcessCommand(int argc, char *argv[]);
 void runTestSync(int argc, char *argv[]);
 void runTestNoSync(int argc, char *argv[]);
 void testeandoo(int argc, char *argv[]);
+void runPhilo(int argc, char *argv[]);
 typedef struct {
      char *command;
     CommandFunction function;
@@ -67,8 +68,10 @@ Command commands[] = {
     {"testeando", testeandoo, "testeando"},
     {"cat",cat,"Reads from stdin and writes to stdout"},
     {"loop",loop,"prints his pid every 100000 ms"},
-    //{"wc",wc,"Counts the number of lines in the input"},
-//   	{"filter",filter,"f"}
+    {"wc",wc,"Counts the number of lines in the input"},
+    {"philo",runPhilo,"run philo"},
+ 	{"filter",filter,"filters the inputs vowels"},
+
 };
 
 void bufferControl(){
@@ -136,7 +139,7 @@ void executePipedCommands(char *buffer) {
     char **descriptors2 = allocMemory(2 * sizeof(char *));
     descriptors2[0] = "shellPipe";
     descriptors2[1] = "tty";
-    pipeOpen("shellPipe");
+    pipeOpenAnon("shellPipe");
    int pid1=-1;
    CommandFunction cm1 = NULL;
    CommandFunction cm2 = NULL;
@@ -311,15 +314,15 @@ void runTestNoSync(int argc, char *argv[]){
 
 void runPhilo(int argc, char *argv[]){
     char **argv2 = allocMemory(2 * sizeof(char *));
-    argv[1] = "1";//cantidad inicial de filosofos
-    argv[0] = "10";//cantdiad maxima de filosofos
+    argv2[0] = "1";//cantidad inicial de filosofos
+    argv2[1] = "10";//cantdiad maxima de filosofos
       if (argc == 0){
     	char **descriptors = allocMemory(2 * sizeof(char *));
     	descriptors[0] = "tty";
     	descriptors[1] = "tty";
-        createProcess((uint64_t) philo, 0, 2, argv2, descriptors);
+        createProcess((uint64_t) philo, 1, 2, argv2, descriptors);
     }else{
-    createProcess((uint64_t) philo, 0, 2, argv2, argv);
+    createProcess((uint64_t) philo, 1, 2, argv2, argv);
     }
 }
 

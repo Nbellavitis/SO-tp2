@@ -11,5 +11,5 @@ int pipeOpen(char * name);
 int pipeWrite(char * name,const  char * str, int len);
 int pipeRead(char * name, char * save, int len);
 int pipeClose(char * name);
-
+int pipeOpenAnon(char * name);
 #endif //SO_TP2_PIPE_H

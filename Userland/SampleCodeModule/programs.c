@@ -1,7 +1,9 @@
 #include "include/program.h"
 #include "include/lib.h"
-#define MAX_COMMAND_LENGTH 256
+#define TIME 100000
+#include "include/usrSysCall.h"
 #define EOF -1
+#define MAX_BUFFER 4096
 void priotest(int argc, char *argv[]) {
     test_prio();
 }
@@ -17,7 +19,7 @@ void processtest(int argc, char *argv[]) {
 
     if (satoi(argv[1]) <= 0) {
 
-        print(0xFFFFFFFF, "Mayor a 0 papi\n");
+        print(0xFFFFFFFF, "debe ser mayor a 0\n");
         return;
     }
 
@@ -42,7 +44,7 @@ void testSync(int argc, char *argv[]) {
 void cat(){
     char c ;
     getC(&c);
-    char comm[MAX_COMMAND_LENGTH]={0};
+    char comm[MAX_BUFFER]={0};
     int i=0;
     while (c != EOF){
       if(c != 0){
@@ -65,31 +67,46 @@ void cat(){
 
 
 void wc(){
-    char c ;
+    int lines = 1;
+    char c;
     getC(&c);
-    int i=0;
     while (c != EOF){
-        if(c != 0){
-            if(c=='\n'){
-                i++;
-            }
+      if(c != 0){
+        if (c == '\n' ){
+            lines++;
         }
+        putC(c,WHITE);
+      }
         getC(&c);
     }
-    putInt(i,WHITE);
+    putC('\n',WHITE);
+
+    print(WHITE,"Line count: %d\n", lines);
     putC('\n',WHITE);
 }
 
 void filter(){
     char c ;
     getC(&c);
+    char comm[MAX_BUFFER]={0};
+    int i=0;
     while (c != EOF){
         if(c != 0){
-            if(c != 'a' && c != 'e' && c != 'i' && c != 'o' && c != 'u'){
-                putC(c,WHITE);
+            putC(c,WHITE);
+            if(c != 'a' && c != 'e' && c != 'i' && c != 'o' && c != 'u' && c != 'A' && c != 'E' && c != 'I' && c != 'O' && c != 'U'){
+                comm[i++]=c;
             }
         }
         getC(&c);
     }
+    print(WHITE,"%s", comm);
     putC('\n',WHITE);
+    return;
+}
+
+void loop() {
+    while (1) {
+        print( WHITE, "Hola soy pid: %d\n", getMyPid());
+        call_sleepms(TIME);
+    }
 }

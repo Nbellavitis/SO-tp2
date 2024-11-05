@@ -6,4 +6,6 @@ void processtest(int argc, char *argv[]);
 void testSync(int argc, char *argv[]);
 void cat();
 void loop();
+void wc();
+void filter();
 #endif

@@ -216,6 +216,8 @@ void exitProcess(uint64_t retStatus){
     if(activeProcess == getCurrentForegroundProcess()){
         setNullForegroundProcess();
     }
+    pipeClose(activeProcess->fd[STDIN]);
+    pipeClose(activeProcess->fd[STDOUT]);
     activeProcess->status = EXITED;
     yield();
 }
