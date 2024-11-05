@@ -1,5 +1,7 @@
 #include "include/program.h"
 #include "include/lib.h"
+#define MAX_COMMAND_LENGTH 256
+#define EOF -1
 void priotest(int argc, char *argv[]) {
     test_prio();
 }
@@ -35,4 +37,26 @@ void testSync(int argc, char *argv[]) {
     test_sync(argc, argv);
     return;
 
+}
+
+void cat(){
+    char c ;
+    getC(&c);
+    char comm[MAX_COMMAND_LENGTH]={0};
+    int i=0;
+    while (c != EOF){
+      if(c != 0){
+        putC(c,WHITE);
+        comm[i++]=c;
+        if(c=='\n'){
+            comm[i]='\0';
+            print(WHITE,"%s", comm);
+            comm[0]='\0';
+            i=0;
+        }
+       }
+    getC(&c);
+    }
+    putC('\n',WHITE);
+    return;
 }

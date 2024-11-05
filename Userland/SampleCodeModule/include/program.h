@@ -4,4 +4,5 @@
 void priotest(int argc, char *argv[]);
 void processtest(int argc, char *argv[]);
 void testSync(int argc, char *argv[]);
+void cat();
 #endif
