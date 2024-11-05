@@ -41,7 +41,6 @@ void killProcessCommand(int argc, char *argv[]);
 void runTestSync(int argc, char *argv[]);
 void runTestNoSync(int argc, char *argv[]);
 void testeandoo(int argc, char *argv[]);
-
 typedef struct {
      char *command;
     CommandFunction function;
@@ -65,7 +64,8 @@ Command commands[] = {
     {"kill", killProcessCommand, "Kills a process, use: kill n to kill the process with pid n."},
     {"testSync", runTestSync, "Run the sync test."},
     {"testNoSync", runTestNoSync, "Run the sync test without semaphores."},
-    {"testeando", testeandoo, "testeando"}
+    {"testeando", testeandoo, "testeando"},
+    {"cat",cat,"Reads from stdin and writes to stdout"}
 };
 
 void bufferControl(){
