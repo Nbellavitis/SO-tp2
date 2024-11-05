@@ -11,12 +11,11 @@
 static char buffer[BUFFER_SIZE] = {0};
 int exitFlag =0;
 int registerFlag = 0;
-typedef void (*CommandFunction)(void);
+typedef void (*CommandFunction)(int argc, char *argv[]);
 void lineRead(char * buffer);
 void call_InvalidOp();
 char reSize(char * buffer);
 void call_div0();
-void testeandoo();
 
 void startingLine(){
     char * startingLine = "$>";
@@ -24,21 +23,25 @@ void startingLine(){
     clearBuffer(buffer);
 }
 
-void showTime();
-void resizeFont();
-void getRegisters();
-void clearTerminal();
-void exitShell();
-void testDiv0();
-void testInvalidOp();
-void testMemory();
-void showMemStatus();
-void testPriority();
-void runProcessTest();
-void showProcesses();
-void killProcessCommand();
-void runTestSync();
-void runTestNoSync();
+
+
+void showTime(int argc, char *argv[]);
+void resizeFont(int argc, char *argv[]);
+void getRegisters(int argc, char *argv[]);
+void clearTerminal(int argc, char *argv[]);
+void exitShell(int argc, char *argv[]);
+void testDiv0(int argc, char *argv[]);
+void testInvalidOp(int argc, char *argv[]);
+void testMemory(int argc, char *argv[]);
+void showMemStatus(int argc, char *argv[]);
+void testPriority(int argc, char *argv[]);
+void runProcessTest(int argc, char *argv[]);
+void showProcesses(int argc, char *argv[]);
+void killProcessCommand(int argc, char *argv[]);
+void runTestSync(int argc, char *argv[]);
+void runTestNoSync(int argc, char *argv[]);
+void testeandoo(int argc, char *argv[]);
+
 typedef struct {
      char *command;
     CommandFunction function;
@@ -132,10 +135,8 @@ void executePipedCommands(char *buffer) {
     descriptors2[1] = "tty";
     pipeOpen("shellPipe");
    int pid1=-1;
-   int pid2=-1;
    CommandFunction cm1 = NULL;
    CommandFunction cm2 = NULL;
-   int found2=0;
 	for(int i = 0; i < sizeof(commands) / sizeof(commands[0]); i++) {
         if (strncmp(command1, commands[i].command, strlen(commands[i].command)) == 0) {
 			cm1=commands[i].function;
@@ -159,8 +160,8 @@ void executePipedCommands(char *buffer) {
         freeMemory(descriptors2);
         putString("Command not found\n",WHITE);
         }
-    pid1=createProcess((uint64_t)cm1, 1, 0, NULL, descriptors1);
-    waitpid(createProcess((uint64_t)cm2, 1, 0, NULL, descriptors2));
+    pid1=createProcess((uint64_t)cm1, 1, 0, descriptors1, descriptors1);
+    waitpid(createProcess((uint64_t)cm2, 1, 0, descriptors2, descriptors2));
     waitpid(pid1);
     pipeClose("shellPipe");
     freeMemory(descriptors1);
@@ -199,17 +200,17 @@ void executeCommand(const char *buffer) {
     putString(": command not found\n", WHITE);
 }
 
-void testeandoo(){
+void testeandoo(int argc, char *argv[]){
     testeando();
 }
-void showTime() {
+void showTime(int argc, char *argv[]) {
     char time[9];
     call_timeClock(time);
     putString(time, WHITE);
     putString("\n", WHITE);
 }
 
-void resizeFont() {
+void resizeFont(int argc, char *argv[]) {
     if (reSize(buffer) != 0) {
         call_clear();
     } else {
@@ -218,93 +219,104 @@ void resizeFont() {
     clearBuffer(buffer);
 }
 
-void getRegisters() {
+void getRegisters(int argc, char *argv[]) {
     call_printRegisters(1);
 }
 
-void clearTerminal() {
+void clearTerminal(int argc, char *argv[]) {
     call_clear();
     clearBuffer(buffer);
 }
 
-void exitShell() {
+void exitShell(int argc, char *argv[]) {
     exitFlag = 1;
     call_clear();
     clearBuffer(buffer);
 }
 
-void testDiv0() {
+void testDiv0(int argc, char *argv[]) {
     call_div0();
 }
 
-void testInvalidOp() {
+void testInvalidOp(int argc, char *argv[]) {
     call_InvalidOp();
 }
 
-void testMemory() {
+void testMemory(int argc, char *argv[]) {
     testmm();
 }
 
-void showMemStatus() {
+void showMemStatus(int argc, char *argv[]) {
     mmStatus();
 }
 
-void testPriority() {
-    uint64_t rip = (uint64_t) test_prio;
-    char **descriptors = allocMemory(2 * sizeof(char *));
-    descriptors[0] = "tty";
-    descriptors[1] = "tty";
-    waitpid(createProcess(rip, 0,  0, NULL, descriptors));
+void testPriority(int argc, char *argv[]) {
+ 	test_prio();
 }
 
-void runProcessTest() {
-    char **argv = allocMemory(2 * sizeof(char *));
+void runProcessTest(int argc, char *argv[]) {
+    char **argv2 = allocMemory(2 * sizeof(char *));
     argv[1] = "1";
     argv[0] = "processtest";
-    char **descriptors = allocMemory(2 * sizeof(char *));
-    descriptors[0] = "tty";
-    descriptors[1] = "tty";
-    createProcess((uint64_t) processtest, 0, 2, argv, descriptors);
+    if (argc == 0){
+    	char **descriptors = allocMemory(2 * sizeof(char *));
+    	descriptors[0] = "tty";
+    	descriptors[1] = "tty";
+        createProcess((uint64_t) processtest, 0, 2, argv2, descriptors);
+    }else{
+    createProcess((uint64_t) processtest, 0, 2, argv2, argv);
+    }
 }
 
-void showProcesses() {
+void showProcesses(int argc, char *argv[]) {
     printAllProcesses(ps());
 }
 
-void killProcessCommand() {
+void killProcessCommand(int argc, char *argv[]) {
     char *init = buffer + strlen("kill ");
     if (!strlen(init))
         return;
     killProcess(strToInt(init));
 }
-void runTestSync(){
-  char **argv = allocMemory(2 * sizeof(char *));
-
+void runTestSync(int argc, char *argv[]){
+  char **argv2 = allocMemory(2 * sizeof(char *));
   argv[1] = "1";
   argv[0] = "50000";
-    char **descriptors = allocMemory(2 * sizeof(char *));
-    descriptors[0] = "tty";
-    descriptors[1] = "tty";
- waitpid(createProcess((uint64_t) testSync, 0,  2, argv,descriptors));
+   if (argc == 0){
+    	char **descriptors = allocMemory(2 * sizeof(char *));
+    	descriptors[0] = "tty";
+    	descriptors[1] = "tty";
+      waitpid(createProcess((uint64_t) testSync, 1, 2, argv2, descriptors));
+    }else{
+    waitpid(createProcess((uint64_t) testSync, 1, 2, argv2, argv));
+    }
 }
-void runTestNoSync(){
-  char **argv = allocMemory(2 * sizeof(char *));
+void runTestNoSync(int argc, char *argv[]){
+  char **argv2 = allocMemory(2 * sizeof(char *));
   argv[1] = "0";
   argv[0] = "10";
-    char **descriptors = allocMemory(2 * sizeof(char *));
-    descriptors[0] = "tty";
-    descriptors[1] = "tty";
- waitpid(createProcess((uint64_t) testSync, 1,  2, argv, descriptors));
+       if (argc == 0){
+    	char **descriptors = allocMemory(2 * sizeof(char *));
+    	descriptors[0] = "tty";
+    	descriptors[1] = "tty";
+        createProcess((uint64_t) testSync, 0, 2, argv2, descriptors);
+    }else{
+    createProcess((uint64_t) testSync, 0, 2, argv2, argv);
+    }
 }
 
-void runPhilo(){
-    char **argv = allocMemory(2 * sizeof(char *));
+void runPhilo(int argc, char *argv[]){
+    char **argv2 = allocMemory(2 * sizeof(char *));
     argv[1] = "1";//cantidad inicial de filosofos
     argv[0] = "10";//cantdiad maxima de filosofos
-    char **descriptors = allocMemory(2 * sizeof(char *));
-    descriptors[0] = "tty";
-    descriptors[1] = "tty";
-    waitpid(createProcess((uint64_t) philo, 1,  2, argv,descriptors));
+      if (argc == 0){
+    	char **descriptors = allocMemory(2 * sizeof(char *));
+    	descriptors[0] = "tty";
+    	descriptors[1] = "tty";
+        createProcess((uint64_t) philo, 0, 2, argv2, descriptors);
+    }else{
+    createProcess((uint64_t) philo, 0, 2, argv2, argv);
+    }
 }
 
 void lineRead(char *buffer) {
@@ -340,10 +352,10 @@ char reSize(char * buffer){
         return 0;
     return (char) call_setFontSize(strToInt(init));
 }
-void call_InvalidOp(){
+void call_InvalidOp(int argc, char *argv[]){
     InvalidOpasm();
 }
-void call_div0(){
+void call_div0(int argc, char *argv[]){
     int a=7;
     int b=0;
     a=a/b;
