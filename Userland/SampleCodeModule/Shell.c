@@ -13,9 +13,9 @@ int exitFlag =0;
 int registerFlag = 0;
 typedef void (*CommandFunction)(int argc, char *argv[]);
 void lineRead(char * buffer);
-void call_InvalidOp(int argc, char *argv[]);
+
 char reSize(char * buffer);
-void call_div0(int argc, char *argv[]);
+
 
 void startingLine(){
     char * startingLine = "$>";
@@ -24,7 +24,8 @@ void startingLine(){
 }
 
 
-
+void call_div0();
+void call_InvalidOp();
 void showTime(int argc, char *argv[]);
 void resizeFont(int argc, char *argv[]);
 void getRegisters(int argc, char *argv[]);
@@ -188,7 +189,10 @@ void executeCommand(const char *buffer) {
         commandBuffer[strlen(commandBuffer) - 1] = '\0';
     }
 
+
+
     for (int i = 0; i < sizeof(commands) / sizeof(commands[0]); i++) {
+
         if (strncmp(commandBuffer, commands[i].command, strlen(commands[i].command)) == 0) {
         char **descriptors = allocMemory(2 * sizeof(char *));
         descriptors[0] = "tty";
@@ -228,7 +232,6 @@ void getRegisters(int argc, char *argv[]) {
 void clearTerminal(int argc, char *argv[]) {
     call_clear();
     clearBuffer(buffer);
-    startingLine();
 }
 
 void exitShell(int argc, char *argv[]) {
@@ -238,11 +241,11 @@ void exitShell(int argc, char *argv[]) {
 }
 
 void testDiv0(int argc, char *argv[]) {
-    call_div0(argc, argv);
+    call_div0();
 }
 
 void testInvalidOp(int argc, char *argv[]) {
-    call_InvalidOp(argc, argv);
+    call_InvalidOp();
 }
 
 void testMemory(int argc, char *argv[]) {
@@ -327,10 +330,10 @@ char reSize(char * buffer){
         return 0;
     return (char) call_setFontSize(strToInt(init));
 }
-void call_InvalidOp(int argc, char *argv[]){
+void call_InvalidOp(){
     InvalidOpasm();
 }
-void call_div0(int argc, char *argv[]){
+void call_div0(){
     int a=7;
     int b=0;
     a=a/b;
