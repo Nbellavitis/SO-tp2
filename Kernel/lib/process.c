@@ -4,6 +4,7 @@
 #include "../collections/hashMap.h"
 #include "../Drivers/include/videoDriver.h"
 #include "../collections/queue.h"
+#include "../include/pipe.h"
 #define MAX_PROCESSES 7000
 static HashMapADT PCBMap;
 
@@ -92,6 +93,8 @@ PCB aux = lookup(PCBMap,pid);
     if(aux == getCurrentForegroundProcess()){
         setNullForegroundProcess();
     }
+    pipeClose(aux->fd[STDIN]);
+    pipeClose(aux->fd[STDOUT]);
     if(pid == getActivePid()){
         yield();
     }

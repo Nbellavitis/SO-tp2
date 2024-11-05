@@ -6,21 +6,21 @@
 #include "include/registerHandling.h"
 #include "include/syscalls.h"
 #include "include/interrupts.h"
-static void zero_division();
-static void invalid_opcode();
+static void zeroDivision();
+static void invalidOpcode();
 
 void exceptionDispatcher(int exception) {
 	if (exception == ZERO_EXCEPTION_ID){
-		zero_division();
+		zeroDivision();
 	}else{
-		invalid_opcode();
+		invalidOpcode();
 		}
     printRegisters(getRegisters(), 0x00ff0000);
     drawWord(0x00ff0000,"Press any key to continue");
     while(1) {
         char c;
         _hlt();
-        sys_read(STDIN, &c, 1); // no se si esta bien usarlo asi
+        sysRead(STDIN, &c, 1); // no se si esta bien usarlo asi
         if (c != 0) {
             clear();
             return;
@@ -29,13 +29,13 @@ void exceptionDispatcher(int exception) {
 
 }
 
-static void zero_division() {
+static void zeroDivision() {
 	drawWord(0x00FF0000, "Cannot divide by 0");
 	newLine();
     return;
 }
 
-static void invalid_opcode(){
+static void invalidOpcode(){
 
 	drawWord(0x00FF0000, "Error:Invalid opcode");
 	newLine();

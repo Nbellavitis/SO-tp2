@@ -54,7 +54,7 @@ uint32_t cursorX  = 0;
 uint32_t cursorY  = 0;
 uint32_t sizeX = FONT_SIZE;
 uint32_t sizeY = FONT_SIZE * 2;
-uint32_t bg_color = 0x00000000;
+uint32_t bgColor = 0x00000000;
 // uint8_t buff[256*16];
 
 
@@ -84,8 +84,8 @@ void moveUpwards(){
 
 
 void putPixel(uint32_t hexColor, uint32_t x, uint32_t y) {
-   uintptr_t framebuffer_address = VBE_mode_info->framebuffer;
-	uint8_t *framebuffer = (uint8_t *)framebuffer_address;
+   uintptr_t framebufferAddress = VBE_mode_info->framebuffer;
+	uint8_t *framebuffer = (uint8_t *)framebufferAddress;
     uint64_t offset = (x * ((VBE_mode_info->bpp)/8)) + (y * VBE_mode_info->pitch);
     framebuffer[offset]     =  (hexColor) & 0xFF;
     framebuffer[offset+1]   =  (hexColor >> 8) & 0xFF; 
@@ -187,7 +187,7 @@ char setFontSize(uint32_t size){
     sizeY = size * 2 ;
     return 1;
 }
-void clear_bg(uint64_t hexColor){
+void clearBg(uint64_t hexColor){
     for (int x = 0; x < VBE_mode_info->width; x++){
         for (int y = 0; y < VBE_mode_info-> height; y++){
             putPixel(hexColor,x,y);
@@ -199,7 +199,7 @@ void clear_bg(uint64_t hexColor){
 }
 
 void clear(){
-    clear_bg(bg_color);
+    clearBg(bgColor);
     return;
 }
 

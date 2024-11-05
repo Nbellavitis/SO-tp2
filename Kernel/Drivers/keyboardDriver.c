@@ -28,7 +28,7 @@ uint8_t scancodeShiftToAscii[] = {
 uint8_t *keyMap[] = {scancodeToAscii, scancodeShiftToAscii};
 
 
-void keyboard_handler() {
+void keyboardHandler() {
     uint16_t code = getKey();
     if (code < 0x80) { // Key pressed
         char *buff = getBufferAddress();
@@ -43,7 +43,12 @@ void keyboard_handler() {
              killProcess(aux->pid);
           }
             drawWord(0x00FF0000,"Process killed\n");
-        } else if (keyMap[keyMapRow][code] != 0) {
+        } else if(ctrlPressed && keyMap[keyMapRow][code] == 'd'){
+            buff[buff_pos] = EOF;
+            incBufferLen(1);
+            setPos(buff_pos);
+        }
+        else if (keyMap[keyMapRow][code] != 0) {
             buff[buff_pos] = keyMap[keyMapRow][code];
             incBufferLen(1);
             setPos(buff_pos);
