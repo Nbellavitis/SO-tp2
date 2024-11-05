@@ -1,9 +1,9 @@
 #include "include/program.h"
 #include "include/lib.h"
-#define TIME 100000
+#define TIME 1000
 #include "include/usrSysCall.h"
 #define EOF -1
-#define MAX_BUFFER 1024
+#define MAX_BUFFER 2048
 void priotest(int argc, char *argv[]) {
     test_prio();
 }

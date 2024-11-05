@@ -43,4 +43,5 @@ int8_t changePrio(pid_t pid,int priority);
 PCB lookUpOnHashMap(pid_t pid);
 processInfoPtr * getAllProcessInfo();
 uint64_t waitpid(pid_t pid);
+char ** getMyFds();
 #endif

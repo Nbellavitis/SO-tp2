@@ -60,11 +60,11 @@ int64_t comparePid(pid_t pid1, pid_t pid2) {
 void freeProcess(PCB pcb){
     delete(PCBMap,pcb->pid);
     freeMemory((void *)(pcb->stackBase - STACK_SIZE));
-	freeMemory(pcb->argv);
+	//freeMemory(pcb->argv);
     freeQueue(pcb->waitingProcesses);
-    for(int i = 0; i < 3; i++){
-        freeMemory(pcb->fd[i]);
-    }
+//    for(int i = 0; i < 3; i++){
+//        freeMemory(pcb->fd[i]);
+//    }
     freeMemory(pcb);
     aliveProcesses--;
 }
@@ -220,4 +220,11 @@ void exitProcess(uint64_t retStatus){
     pipeClose(activeProcess->fd[STDOUT]);
     activeProcess->status = EXITED;
     yield();
+}
+char ** getMyFds(){
+    PCB activeProcess = getActiveProcess();
+    if(activeProcess == NULL){
+        return NULL;
+    }
+    return activeProcess->fd;
 }

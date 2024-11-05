@@ -309,7 +309,7 @@ void createPhilosophers(int count) {
 
 
 void killPhilo(Philosopher* philo) {
-    if (!isValidId(philo->id)) return;
+    if (!isValidId(satoi(philo->id))) return;
 
     semWait(data->mutex);
     if (philo->pid > 0) {

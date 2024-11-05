@@ -66,12 +66,13 @@ uint64_t test_sync(uint64_t argc, char *argv[]) { //{n, use_sem, 0}
 
     global = 0;
     char ** descriptors = allocMemory(2 * sizeof(char *));
-    descriptors[0] = "tty";
-    descriptors[1] = "tty";
+    char ** aux = getMyFds();
+    strcpy(descriptors[0], aux[0]);
+    strcpy(descriptors[1], aux[1]);
     uint64_t i;
     for (i = 0; i < TOTAL_PAIR_PROCESSES; i++) {
-        pids[i] = createProcess((uint64_t)my_process_inc,1, 3, argvDec, descriptors);
-        pids[i + TOTAL_PAIR_PROCESSES] = createProcess((uint64_t)my_process_inc,1,3, argvInc,descriptors);
+        pids[i] = createProcess((uint64_t)my_process_inc,0, 3, argvDec, descriptors);
+        pids[i + TOTAL_PAIR_PROCESSES] = createProcess((uint64_t)my_process_inc,0,3, argvInc,descriptors);
     }
 
     for (i = 0; i < TOTAL_PAIR_PROCESSES; i++) {
@@ -80,5 +81,6 @@ uint64_t test_sync(uint64_t argc, char *argv[]) { //{n, use_sem, 0}
     }
 
     print(0xFFFFFF,"Final value: %d\n", global);
+    freeMemory(descriptors);
     return 0;
 }
