@@ -294,7 +294,7 @@ void runPhilo(int argc, char *argv[]){
     char **argv2 = allocMemory(2 * sizeof(char *));
     argv2[0] = "1";
     argv2[1] = "10";
-    philo(2,argv);
+    philo(2,argv2);
 }
 
 void lineRead(char *buffer) {
