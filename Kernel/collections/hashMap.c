@@ -1,6 +1,6 @@
 #include "hashMap.h"
 #define TABLE_SIZE 2000
-
+#include "../Drivers/include/videoDriver.h"
 typedef struct Entry {
     pid_t key;
     PCB value;
@@ -21,6 +21,10 @@ uint64_t hash( pid_t key) {
 
 Entry *createEntry( pid_t key, PCB value) {
     Entry *newEntry = (Entry *)allocMemory(sizeof(Entry));
+    if (newEntry == NULL) {
+        drawWord(0xFF0000,"Error creating entry");
+        return NULL;
+    }
     newEntry->key = key; 
     newEntry->value = value;
     newEntry->next = NULL;
@@ -30,6 +34,10 @@ Entry *createEntry( pid_t key, PCB value) {
 
 HashMap *create_hash_map(compareFunc cmpFunc) {
     HashMap *hashMap = (HashMap *)allocMemory(sizeof(HashMap));
+    if (hashMap == NULL) {
+        drawWord(0xFF0000,"Error creating hashmap");
+        return NULL;
+    }
     for (int i = 0; i < TABLE_SIZE; i++) {
         hashMap->buckets[i] = NULL; 
     }

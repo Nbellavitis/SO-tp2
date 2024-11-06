@@ -26,6 +26,10 @@ int64_t comparePCB(void * pcb1, void * pcb2) {
 void startScheduler() {
     status = ACTIVE;
     processQueue = createQueue(comparePCB);
+    if(processQueue == NULL){
+        drawWord( 0xFF0000,"Error creating process queue");
+        return;
+    }
     idleProcess = lookUpOnHashMap((pid_t) newProcess((uint64_t)idle, 0, 1, 0, NULL, (char *[]){"tty", "null"}));
 }
 

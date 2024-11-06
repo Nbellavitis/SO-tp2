@@ -1,5 +1,5 @@
 #include "queue.h"
-
+#include "../Drivers/include/videoDriver.h"
 typedef struct tNode{
     void * element;
     struct tNode * next;
@@ -18,6 +18,7 @@ typedef struct queueCDT{
 queueADT createQueue(compareFunction cmpFunc){
     queueADT newQueue = (queueCDT *) allocMemory(sizeof(queueCDT));
     if(newQueue == NULL){
+        drawWord(0xFF0000,"Error creating queue");
         return NULL;
     }
     newQueue->cmpFunc = cmpFunc;
@@ -31,6 +32,7 @@ queueADT createQueue(compareFunction cmpFunc){
 tList createNode(void * element){
     tList newNode = (tList) allocMemory(sizeof(tNode));
     if(newNode == NULL){
+        drawWord(0xFF0000,"Error creating node");
         return NULL;
     }
     newNode->element = element;
