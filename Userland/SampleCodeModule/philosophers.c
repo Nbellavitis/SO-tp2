@@ -37,7 +37,7 @@ philosData data;
 
 
 
-
+void killPhilo(Philosopher* philo);
 void philosopher(int argc, char *argv[]);
 void generateIdString(const char* prefix, int id, char* output, int maxLen);
 
@@ -186,19 +186,31 @@ void take_fork(int id) {
     //PROBLEMAS ACA CON EL  RIGHT SE PUEDE CAGAR PQ PUEDEN CAMBIAR MSIMO EN El PUT FORK
     if (id % 2 == 0) {
         semWait(data.philosophers[id]->semName);
+        semWait(data.mutex);
+        data.philosophers[id]->forkAmount++;
+        semPost(data.mutex);
         semWait(data.philosophers[getRightBlock(id)]->semName);
+        semWait(data.mutex);
+        data.philosophers[id]->forkAmount++;
+        semPost(data.mutex);
     } else {
         semWait(data.philosophers[getRightBlock(id)]->semName);
+        semWait(data.mutex);
+        data.philosophers[id]->forkAmount++;
+        semPost(data.mutex);
         semWait(data.philosophers[id]->semName);
+        semWait(data.mutex);
+        data.philosophers[id]->forkAmount++;
+        semPost(data.mutex);
     }
     semWait(data.mutex);
-    data.philosophers[id]->status = EATING;
-    if(id == data.philosopherCount - 1){
+    if(data.philosophers[id]->status == THINKING){
         semPost(data.mutex);
-//        semWait(lastEating);
-    } else{
-        semPost(data.mutex);
+        return;
     }
+    data.philosophers[id]->status = EATING;
+    semPost(data.mutex);
+
 }
 
 void put_fork(int id) {
@@ -214,10 +226,22 @@ void put_fork(int id) {
 
     if (id % 2 == 0) {
         semPost(data.philosophers[getRightBlock(id)]->semName);
+        semWait(data.mutex);
+        data.philosophers[id]->forkAmount--;
+        semPost(data.mutex);
         semPost(data.philosophers[id]->semName);
+        semWait(data.mutex);
+        data.philosophers[id]->forkAmount--;
+        semPost(data.mutex);
     } else {
         semPost(data.philosophers[id]->semName);
+        semWait(data.mutex);
+        data.philosophers[id]->forkAmount--;
+        semPost(data.mutex);
         semPost(data.philosophers[getRightBlock(id)]->semName);
+        semWait(data.mutex);
+        data.philosophers[id]->forkAmount--;
+        semPost(data.mutex);
     }
     semWait(data.mutex);
     data.philosophers[id]->status = THINKING;
@@ -225,27 +249,57 @@ void put_fork(int id) {
 
 }
 
-
-void checkEat(int id){
+void checkEat(int id) {
+    if (id < 0 || id >= data.philosopherCount || data.philosophers[id] == NULL) {
+        return;
+    }
     if (data.philosophers[id]->status == EATING) {
         semPost(data.mutex);
         put_fork(id);
         semWait(data.mutex);
+        data.philosophers[id]->status = THINKING;
+
+    } else if (data.philosophers[id]->status == HUNGRY) {
+        if (data.philosophers[id]->forkAmount > 0) {
+            if (data.philosophers[id]->forkAmount == 1) {
+                if (id % 2 == 0) {
+                    semPost(data.philosophers[id]->semName);
+                } else {
+                    semPost(data.philosophers[getRightBlock(id)]->semName);
+                }
+            } else if (data.philosophers[id]->forkAmount == 2) {
+                semPost(data.mutex);
+                put_fork(id);
+                semWait(data.mutex);
+            }
+            data.philosophers[id]->forkAmount = 0;
+            data.philosophers[id]->status = THINKING;
+        }
     }
 }
 
 void removePhilosopher(int id) {
-    //si estaba comiendo, dejo los tenedores y lo borro
-    //si estaba hambriento, dejo el tenedor izquierdo y lo borro
-    //si el de la izquierda estaba comiendo, deja el tendeor y lo borra
-    //si el de la izquierda estaba hambriento, deja el tenedor derecho  y lo borra
     semWait(data.mutex);
+
+    if (!isValidId(id)) {
+        print(WHITE, "Invalid philosopher ID %d\n", id);
+        semPost(data.mutex);
+        return;
+    }
     checkEat(id);
-    checkEat(id-1);
+    if (id > 0) {
+        checkEat(id - 1);
+    }else{
+        checkEat(data.philosopherCount - 1);
+    }
     killPhilo(data.philosophers[id]);
+    data.philosophers[id] = NULL;
     data.philosopherCount--;
+
     semPost(data.mutex);
 }
+
+
 
 void philosopher(int argc, char *argv[]) {
     if (argc < 2) {
@@ -262,14 +316,10 @@ void philosopher(int argc, char *argv[]) {
         semWait(data.mutex);
         data.philosophers[id]->status = THINKING;
         semPost(data.mutex);
-
         for (volatile int i = 0; i < TIME; i++);
-
         take_fork(id);
-
         printState();
         for (volatile int i = 0; i < TIME; i++);
-
         put_fork(id);
     }
 }
@@ -332,18 +382,37 @@ void addPhilosopher() {
 
     if (data.philosopherCount < data.maxPhilosophers) {
         int lastPhiloIndex = data.philosopherCount - 1;
-        //falta caso hungry
         if (data.philosophers[lastPhiloIndex]->status == EATING) {
             semPost(data.mutex);
             put_fork(lastPhiloIndex);
             semWait(data.mutex);
             data.philosophers[lastPhiloIndex]->status = THINKING;
+        } else if (data.philosophers[lastPhiloIndex]->status == HUNGRY) {
+            if (data.philosophers[lastPhiloIndex]->forkAmount > 0) {
+                semPost(data.mutex);
+                if (data.philosophers[lastPhiloIndex]->forkAmount == 1) {
+                    if (lastPhiloIndex % 2 == 0) {
+                        semPost(data.philosophers[lastPhiloIndex]->semName);
+                    } else {
+                        semPost(data.philosophers[getRightBlock(lastPhiloIndex)]->semName);
+                    }
+                } else {
+                    semPost(data.mutex);
+                    put_fork(lastPhiloIndex);
+                    semWait(data.mutex);
+                }
+                semWait(data.mutex);
+                data.philosophers[lastPhiloIndex]->forkAmount = 0;
+                data.philosophers[lastPhiloIndex]->status = THINKING;
+            }
         }
         data.philosophers[data.philosopherCount] = createPhilo(data.philosopherCount);
         data.philosopherCount++;
     }
-    semPost(data.mutex); // Unlock mutex
+
+    semPost(data.mutex);
 }
+
 
 
 
@@ -389,7 +458,9 @@ void philo(int argc, char *argv[]) {
             case 'r':
                 semWait(data.mutex);
                 if (data.philosopherCount > INITIAL) {
+                    semPost(data.mutex);
                     removePhilosopher(data.philosopherCount - 1);
+                    semWait(data.mutex);
                 }
                 semPost(data.mutex);
                 break;
