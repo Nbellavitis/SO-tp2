@@ -15,8 +15,6 @@
 #define FALSE 0
 
 typedef char bool;
-//char * lastEating = "sem_lastEating";
-//char * almostLastThinking = "sem_almostLastThinking";
 
 typedef struct {
     pid_t pid;
@@ -185,7 +183,7 @@ void take_fork(int id) {
     data.philosophers[id]->status = HUNGRY;
     semPost(data.mutex);
 
-    //PROBLEMAS ACA CON EL LEFT Y RIGHT SE PUEDE CAGAR PQ PUEDEN CAMBIAR MSIMO EN El PUT FORK
+    //PROBLEMAS ACA CON EL  RIGHT SE PUEDE CAGAR PQ PUEDEN CAMBIAR MSIMO EN El PUT FORK
     if (id % 2 == 0) {
         semWait(data.philosophers[id]->semName);
         semWait(data.philosophers[getRightBlock(id)]->semName);
@@ -207,6 +205,13 @@ void put_fork(int id) {
     if (!isValidId(id)){
         return;
     }
+    semWait(data.mutex);
+    if(data.philosophers[id]->status == THINKING){
+        semPost(data.mutex);
+        return;
+    }
+    semPost(data.mutex);
+
     if (id % 2 == 0) {
         semPost(data.philosophers[getRightBlock(id)]->semName);
         semPost(data.philosophers[id]->semName);
@@ -216,9 +221,6 @@ void put_fork(int id) {
     }
     semWait(data.mutex);
     data.philosophers[id]->status = THINKING;
-//    if(id == philosopherCount - 1){
-//        semPost(lastEating);
-//    }
     semPost(data.mutex);
 
 }
@@ -234,18 +236,13 @@ void checkEat(int id){
 
 void removePhilosopher(int id) {
     //si estaba comiendo, dejo los tenedores y lo borro
-    //si estaba pensando, lo borro
     //si estaba hambriento, dejo el tenedor izquierdo y lo borro
     //si el de la izquierda estaba comiendo, deja el tendeor y lo borra
-    //si el de la izquierda estaba pensando, lo borra
     //si el de la izquierda estaba hambriento, deja el tenedor derecho  y lo borra
     semWait(data.mutex);
     checkEat(id);
     checkEat(id-1);
-//USAR killPhilo
-    killProcess(data.philosophers[id]->pid);
-    semPost(data.mutex);
-    semClose(data.philosophers[id]->semName);
+    killPhilo(data.philosophers[id]);
     data.philosopherCount--;
     semPost(data.mutex);
 }
@@ -263,13 +260,6 @@ void philosopher(int argc, char *argv[]) {
 
     while (1) {
         semWait(data.mutex);
-
-//        if(id == philosopherCount - 2){
-//            semPost(auxSem);
-//            semWait(almostLastThinking);
-//            semPost(almostLastThinking);
-//            semWait(auxSem);
-//        }
         data.philosophers[id]->status = THINKING;
         semPost(data.mutex);
 
@@ -339,17 +329,22 @@ void killPhilosophers() {
 
 void addPhilosopher() {
     semWait(data.mutex);
+
     if (data.philosopherCount < data.maxPhilosophers) {
         int lastPhiloIndex = data.philosopherCount - 1;
-        //tener en cuenta cuadno esta hungry tmabien
+        //falta caso hungry
         if (data.philosophers[lastPhiloIndex]->status == EATING) {
+            semPost(data.mutex);
             put_fork(lastPhiloIndex);
+            semWait(data.mutex);
+            data.philosophers[lastPhiloIndex]->status = THINKING;
         }
         data.philosophers[data.philosopherCount] = createPhilo(data.philosopherCount);
         data.philosopherCount++;
     }
-    semPost(data.mutex);
+    semPost(data.mutex); // Unlock mutex
 }
+
 
 
 void philo(int argc, char *argv[]) {
