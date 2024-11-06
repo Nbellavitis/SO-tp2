@@ -36,7 +36,7 @@ GLOBAL pipeClose
 GLOBAL pipeRead
 GLOBAL pipeWrite
 GLOBAL pipeOpenAnon
-
+GLOBAL getMyFds
 section .text
 
 %macro call_to_handler 1
@@ -128,6 +128,8 @@ pipeWrite:
     call_to_handler 37
 pipeOpenAnon:
     call_to_handler 38
+getMyFds:
+    call_to_handler 39
 InvalidOpasm:
     mov rax, 0x12345678
     rdpmc

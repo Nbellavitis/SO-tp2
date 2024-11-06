@@ -307,7 +307,7 @@ void createPhilosophers(int count) {
 
 
 void killPhilo(Philosopher* philo) {
-    if (!isValidId(philo->id)) return;
+    if (!isValidId(satoi(philo->id))) return;
 
     if (philo->pid > 0) {
         killProcess(philo->pid);

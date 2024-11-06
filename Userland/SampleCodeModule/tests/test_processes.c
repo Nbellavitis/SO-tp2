@@ -24,14 +24,15 @@ int64_t test_processes(uint64_t argc, char *argv[]) {
   if ((max_processes = satoi(argv[0])) <= 0)
     return -1;
   p_rq p_rqs[max_processes];
- 
+  char ** descriptors = allocMemory(2 * sizeof(char *));
+  char ** aux = getMyFds();
+  strcpy(descriptors[0], aux[0]);
+  strcpy(descriptors[1], aux[1]);
   while (1) {
     // Create max_processes processes
 
     for (rq = 0; rq < max_processes; rq++) {
-        char **descriptors = allocMemory(2 * sizeof(char *));
-        descriptors[0] = "tty";
-        descriptors[1] = "tty";
+
       p_rqs[rq].pid = createProcess((uint64_t)endless_loop, 0, 0, argvAux,descriptors);
 
       if (p_rqs[rq].pid == -1) {
@@ -83,4 +84,5 @@ int64_t test_processes(uint64_t argc, char *argv[]) {
         }
     }
   }
+  freeMemory(descriptors);
 }

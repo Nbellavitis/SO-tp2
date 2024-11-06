@@ -219,6 +219,9 @@ static int pipeCloseWrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t r
 static int pipeOpenAnonWrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
     return pipeOpenAnon((char *)rsi);
 }
+static int getMyFdsWrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
+    return (int64_t)getMyFds();
+}
 syscallHandler_t syscallHandlers[] = {
         NULL,                       // 0 (reservado)
         sysWriteWrapper,           // 1
@@ -258,7 +261,8 @@ syscallHandler_t syscallHandlers[] = {
         pipeWriteWrapper,           // 35
         pipeReadWrapper,            // 36
         pipeCloseWrapper,            // 37
-        pipeOpenAnonWrapper        // 38
+        pipeOpenAnonWrapper,        // 38
+        getMyFdsWrapper        // 39
 };
 
 // Función int_80 utilizando el array de syscalls
