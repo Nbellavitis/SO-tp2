@@ -201,6 +201,7 @@ void letThink(int id) {
         semPost(data.mutex);
         semWait(data.mutex);
     }
+    put_fork(id-1);
 }
 
 void removePhilosopher(int id) {
@@ -209,11 +210,8 @@ void removePhilosopher(int id) {
         if (id < 0 || id >= data.philosopherCount || data.philosophers[id] == NULL) {
             return;
         }
-        while (data.philosophers[id]->status != THINKING && data.philosophers[id-1]->status != THINKING) {
-            semPost(data.mutex);
-            semWait(data.mutex);
-        }
-        //killPhilo(data.philosophers[id]);
+        letThink(id);
+        killPhilo(data.philosophers[id]);
         data.philosophers[id] = NULL;
         data.philosopherCount--;
     }
