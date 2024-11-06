@@ -1,10 +1,10 @@
 #ifndef keyboardBuffer_h
 #define keyboardBuffer_h
 #include <stdint.h>
-#define BUFF_SIZE 4096
+#define BUFF_SIZE 2048
 typedef struct keyboard_buffer* buff_ptr; 
 
-struct keyboard_buffer { 
+struct keyboard_buffer {
     int bufferPos;
     int bufferLen;
     char buffer[BUFF_SIZE];

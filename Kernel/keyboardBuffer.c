@@ -27,7 +27,7 @@ char getCharAt(int position){
     setPos(pos + 1);
  }
 void cleanBuffer(){
-    char * bufferAux=ptr->buffer; 
+    char * bufferAux=ptr->buffer;
     for(int i=0;i<ptr->bufferLen;i++){
         bufferAux[i]='\0';
     }

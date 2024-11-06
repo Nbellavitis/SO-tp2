@@ -30,7 +30,6 @@ void sysWrite(int descriptor, const char * str, int len,uint32_t hexColor){
 }
 
 int sysRead(int descriptor, char * save, int len){
-    
     if(descriptor != STDIN){
         drawWord(0x00ff0000, "no such descriptor");
     }
@@ -38,7 +37,9 @@ int sysRead(int descriptor, char * save, int len){
         return 0;
     }
     if(strcmp( getActiveProcess()->fd[STDIN], "tty") == 0){
-        blockProcess(getActivePid(), READ_STDIN);
+
+        //blockProcess(getActivePid(), READ_STDIN);
+
         int n=getBufferPosition();
         if(getCharAt(n)==0){
             *save=0;

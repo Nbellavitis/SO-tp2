@@ -102,7 +102,9 @@ PCB aux = lookup(PCBMap,pid);
 }
 
 int8_t blockProcess(pid_t pid, int reason) {
+
     PCB aux = lookup(PCBMap,pid);
+
     if(aux == NULL){
         return -1;
     }
@@ -112,6 +114,7 @@ int8_t blockProcess(pid_t pid, int reason) {
 
     aux->status = BLOCKED;
     aux->waitingFor = reason;
+
     if(pid == getActivePid()){
         yield();
     }

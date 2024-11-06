@@ -106,16 +106,20 @@ int initShell() {
 
 int main()
 {
+
 	loadIdt();
-	mmInit(heapAddress, 0x2700000);
+    mmInit(heapAddress, 0x2700000);
     //((EntryPoint)sampleCodeModuleAddress)();  whot
-	initMap();
+    initMap();
 	startScheduler();
-	initShell();
+    initShell();
 	semInit();
     initPipes();
+
+
+
 	 while(1){
-		// Busy-wait loop
+
 	}
 	return 0;
 }

@@ -39,22 +39,35 @@ tList createNode(void * element){
     newNode->next = NULL;
     return newNode;
 }
-
-int8_t queue(queueADT queue, void * in){
-    tList newNode = createNode(in);
-    if(newNode == NULL){
+int8_t queue(queueADT queue, void * in) {
+    if (queue == NULL) {
         return 0;
     }
-    if(queue->first == NULL){
-        queue->first = newNode;
+
+    tList newNode = createNode(in);
+    if (newNode == NULL) {
+        return 0;
     }
-    queue->current->next = newNode;
-    queue->current = newNode;
+
+    // Si la cola está vacía, asignar el primer nodo y también actualizar `current`
+    if (queue->first == NULL) {
+        queue->first = newNode;
+        queue->current = newNode;
+    } else {
+        // Si la cola no está vacía, enlazar el nuevo nodo y actualizar `current`
+        queue->current->next = newNode;
+        queue->current = newNode;
+    }
+
     queue->amount++;
     return 1;
 }
 
+
 void * dequeue(queueADT queue){
+    if(queue == NULL){
+        return NULL;
+    }
     if(queue->first == NULL){
         return NULL;
     }
@@ -89,7 +102,7 @@ tList removeFromList(tList list, compareFunction cmp, void * elem, int8_t *flag)
 }
 
 int8_t remove(queueADT queue, void * elem) {
-    if (queue->first == NULL) {
+    if (queue == NULL || queue->first == NULL) {
         return 0;
     }
 
@@ -100,6 +113,9 @@ int8_t remove(queueADT queue, void * elem) {
 }
 
 int8_t isEmpty(queueADT queue){
+    if(queue == NULL){
+        return 1;
+    }
     if(queue->first == NULL){
         return 1;
     }

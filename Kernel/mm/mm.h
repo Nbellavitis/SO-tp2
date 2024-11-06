@@ -10,10 +10,10 @@
 #define HEAP_STRUCTURE_SIZE 0x800000
 #endif // MM_BUDDY
 
-typedef struct {
-    uint32_t totalMemory;
-    uint32_t usedMemory;
-    uint32_t freeMemory;
+typedef struct MemoryStatus {
+    uint64_t totalMemory;
+    uint64_t usedMemory;
+    uint64_t freeMemory;
 } MemoryStatus;
 
 int mmInit ( void * baseAddress ,uint64_t memorySize) ;

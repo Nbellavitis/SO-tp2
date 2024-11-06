@@ -61,5 +61,17 @@ void keyboardHandler() {
             ctrlPressed = 0;
         }
     }
+    PCB aux = getCurrentForegroundProcess();
+    if (aux != NULL && aux->pid != 1) {
+        if (aux->waitingFor == READ_STDIN) {
+            unblockProcess(aux->pid);
+        }
+    } else {
+        PCB shell = lookUpOnHashMap(1);
+        if (shell->waitingFor == READ_STDIN) {
+            unblockProcess(1);
+        }
+    }
+
     return;
 }

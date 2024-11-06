@@ -38,17 +38,7 @@ void irqDispatcher(uint64_t irq, uint64_t rdi, uint64_t rsi, uint64_t rdx, uint6
 
 void int21() {
     keyboardHandler();
-    PCB aux = getCurrentForegroundProcess();
-    if (aux != NULL && aux->pid != 1) {
-        if (aux->waitingFor == READ_STDIN) {
-            unblockProcess(aux->pid);
-        }
-    } else {
-        PCB shell = lookUpOnHashMap(1);
-        if (shell->waitingFor == READ_STDIN) {
-            unblockProcess(1);
-        }
-    }
+
 }
 
 typedef int (*syscallHandler_t)(uint64_t, uint64_t, uint64_t, uint64_t, uint64_t, uint64_t);
@@ -59,6 +49,7 @@ static int sysWriteWrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rc
 }
 
 static int sysReadWrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+
     return sysRead(rsi, (char *)rdx, rcx);
 }
 

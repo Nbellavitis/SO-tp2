@@ -88,6 +88,7 @@ static void * markGroupAsUsed(uint32_t blocksNeeded, uint32_t index){
 void * allocMemory(size_t  size){
     uint32_t blocksNeeded = sizeToBlockQty(size);
     if(blocksNeeded > memoryManager.blockQty - memoryManager.blocksUsed){
+        drawWord(0xFF0000, "No hay suficiente memoria");
         return NULL;
     }
     uintptr_t initialBlockAddress = findFreeBlocks( blocksNeeded, memoryManager.current, memoryManager.blockQty);
@@ -96,6 +97,7 @@ void * allocMemory(size_t  size){
      initialBlockAddress = findFreeBlocks( blocksNeeded, 0, memoryManager.blockQty);
     }
      if(initialBlockAddress == 0){
+         drawWord(0xFF0000, "No hay suficiente memoria");
          return NULL;
  }
     memoryManager.current = sizeToBlockQty(initialBlockAddress - (uintptr_t) memoryManager.start) +blocksNeeded;
@@ -104,7 +106,7 @@ void * allocMemory(size_t  size){
          memoryManager.blocksUsed++;
        
         memoryManager.bitmap[(initialBlockAddress - (uintptr_t) memoryManager.start) / BLOCK_SIZE] = SINGLE_BLOCK;
-       
+
         return (void *) initialBlockAddress;
      }
      return markGroupAsUsed(blocksNeeded, (initialBlockAddress - (uintptr_t) memoryManager.start) / BLOCK_SIZE);
