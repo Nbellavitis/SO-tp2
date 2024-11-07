@@ -187,7 +187,7 @@ void put_fork(int id) {
 
 void removePhilosopher(int id) {
     semWait(data.mutex);
-    if (data.philosophers[id] != NULL) {
+    if (data.philosopherCount > INITIAL && data.philosophers[id] != NULL) {
         data.philosophers[id]->removeFlag = TRUE;
     }
     semPost(data.mutex);

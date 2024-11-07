@@ -175,9 +175,11 @@ void executePipedCommands(char *buffer) {
     pid1=createProcess((uint64_t)cm1, ground, 2, descriptors1, descriptors1);
     createProcess((uint64_t)cm2, 0, 2, descriptors2, descriptors2);
     waitpid(pid1);
-    pipeClose("shellPipe");
-    freeMemory(descriptors1);
-    freeMemory(descriptors2);
+    if(ground == 1) {
+        pipeClose("shellPipe");
+        freeMemory(descriptors1);
+        freeMemory(descriptors2);
+    }
 }
 
 void executeCommand(const char *buffer) {
