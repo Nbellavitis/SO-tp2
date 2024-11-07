@@ -24,8 +24,8 @@ void startingLine(){
 }
 
 
-void call_div0();
-void call_InvalidOp();
+void callDiv0();
+void callInvalidOp();
 void showTime(int argc, char *argv[]);
 void resizeFont(int argc, char *argv[]);
 void getRegisters(int argc, char *argv[]);
@@ -61,8 +61,8 @@ Command commands[] = {
         {"invalidOp", testInvalidOp, "Test the exception of an invalid operand.", {"invalidOp", NULL}, 1},
         {"testmm", testMemory, "Allocates memory and runs the test.", {"testmm", NULL}, 1},
         {"mmStatus", showMemStatus, "Shows the memory status.", {"mmStatus", NULL}, 1},
-        {"testPrio", test_prio, "Run the priority test.", {"testPrio", NULL}, 1},
-        {"testProcess", processtest, "Run the process test.", {"processtest", "1", NULL}, 2},
+        {"testPrio", testPrio, "Run the priority test.", {"testPrio", NULL}, 1},
+        {"testProcess", processTest, "Run the process test.", {"processtest", "1", NULL}, 2},
         {"ps", showProcesses, "Shows the process list.", {"ps", NULL}, 1},
         {"kill", killProcessCommand, "Kills a process, use: kill n to kill the process with pid n.", {"kill", NULL}, 1},
         {"testSync", testSync, "Run the sync test.", {"50000", "1", NULL}, 2},
@@ -200,14 +200,14 @@ void testeandoo(int argc, char *argv[]){
 }
 void showTime(int argc, char *argv[]) {
     char time[9];
-    call_timeClock(time);
+    callTimeClock(time);
     putString(time, WHITE);
     putString("\n", WHITE);
 }
 
 void resizeFont(int argc, char *argv[]) {
     if (reSize(buffer) != 0) {
-        call_clear();
+        callClear();
     } else {
         putString("Enter a valid size (1 or 2) \n", RED);
     }
@@ -215,30 +215,30 @@ void resizeFont(int argc, char *argv[]) {
 }
 
 void getRegisters(int argc, char *argv[]) {
-    call_printRegisters(1);
+    callPrintRegisters(1);
 }
 
 void clearTerminal(int argc, char *argv[]) {
-    call_clear();
+    callClear();
     clearBuffer(buffer);
 }
 
 void exitShell(int argc, char *argv[]) {
     exitFlag = 1;
-    call_clear();
+    callClear();
     clearBuffer(buffer);
 }
 
 void testDiv0(int argc, char *argv[]) {
-    call_div0();
+    callDiv0();
 }
 
 void testInvalidOp(int argc, char *argv[]) {
-    call_InvalidOp();
+    callInvalidOp();
 }
 
 void testMemory(int argc, char *argv[]) {
-    testmm();
+    testMM();
 }
 
 void showMemStatus(int argc, char *argv[]) {
@@ -246,7 +246,7 @@ void showMemStatus(int argc, char *argv[]) {
 }
 
 void testPriority(int argc, char *argv[]) {
- 	test_prio();
+ 	testPrio();
 }
 
 
@@ -303,12 +303,12 @@ char reSize(char * buffer){
     char * init = buffer + strlen("setFont ");
     if(! strlen(init))
         return 0;
-    return (char) call_setFontSize(strToInt(init));
+    return (char) callSetFontSize(strToInt(init));
 }
-void call_InvalidOp(){
-    InvalidOpasm();
+void callInvalidOp(){
+    invalidOpAsm();
 }
-void call_div0(){
+void callDiv0(){
     int a=7;
     int b=0;
     a=a/b;

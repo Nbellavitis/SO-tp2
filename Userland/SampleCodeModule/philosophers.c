@@ -152,8 +152,8 @@ Philosopher * createPhilo(int i){
 
 void printState(void) {
     semWait(data.mutex);
-    uint64_t current_count = data.philosopherCount;
-    for (int i = 0; i < current_count && i < data.maxPhilosophers; i++) {
+    uint64_t currentCount = data.philosopherCount;
+    for (int i = 0; i < currentCount && i < data.maxPhilosophers; i++) {
         if (data.philosophers[i] != NULL){
             print(WHITE, data.philosophers[i]->status == EATING ? "E" : ".");
             print(WHITE, " ");
@@ -163,7 +163,7 @@ void printState(void) {
     semPost(data.mutex);
 }
 
-void take_fork(int id) {
+void takeFork(int id) {
     if (id % 2 == 0) {
         semWait(data.philosophers[id]->semName);
         semWait(data.philosophers[getRightBlock(id)]->semName);
@@ -173,7 +173,7 @@ void take_fork(int id) {
     }
 }
 
-void put_fork(int id) {
+void putFork(int id) {
     if (id % 2 == 0) {
         semPost(data.philosophers[getRightBlock(id)]->semName);
         semPost(data.philosophers[id]->semName);
@@ -218,9 +218,9 @@ void philosopher(int argc, char *argv[]) {
         data.philosophers[id]->status = HUNGRY;
         semPost(data.mutex);
 
-        call_sleepms(TIME);
+        callSleepMs(TIME);
 
-        take_fork(id);
+        takeFork(id);
 
         semWait(data.mutex);
         data.philosophers[id]->status = EATING;
@@ -240,9 +240,9 @@ void philosopher(int argc, char *argv[]) {
 
         printState();
 
-        call_sleepms(TIME);
+        callSleepMs(TIME);
 
-        put_fork(id);
+        putFork(id);
     }
 }
 

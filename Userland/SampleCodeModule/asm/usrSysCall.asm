@@ -1,19 +1,19 @@
-GLOBAL call_sys_read
-GLOBAL call_sys_write
-GLOBAL call_timeClock
-GLOBAL call_setFontSize
-GLOBAL call_printRegisters
-GLOBAL call_clear
-GLOBAL InvalidOpasm
-GLOBAL call_getHeight
-GLOBAL call_getWidth
-GLOBAL call_moveCursorX
-GLOBAL call_moveCursorY
-GLOBAL call_drawRectangle
-GLOBAL call_sleepms
-GLOBAL call_beep
-GLOBAL call_getTicks
-GLOBAL testmm
+GLOBAL callSysRead
+GLOBAL callSysWrite
+GLOBAL callTimeClock
+GLOBAL callSetFontSize
+GLOBAL callPrintRegisters
+GLOBAL callClear
+GLOBAL invalidOpAsm
+GLOBAL callGetHeight
+GLOBAL callGetWidth
+GLOBAL callMoveCursorX
+GLOBAL callMoveCursorY
+GLOBAL callDrawRectangle
+GLOBAL callSleepMs
+GLOBAL callBeep
+GLOBAL callGetTicks
+GLOBAL testMM
 GLOBAL mmStatus
 GLOBAL createProcess
 GLOBAL killProcess
@@ -39,98 +39,98 @@ GLOBAL pipeOpenAnon
 GLOBAL getMyFds
 section .text
 
-%macro call_to_handler 1
+%macro callToHandler 1
     push rbp
     mov rbp, rsp
-    mov r9, r8      ;arg 5
-    mov r8, rcx     ;arg 4
-    mov rcx, rdx    ;arg 3
-    mov rdx, rsi    ;arg 2
-    mov rsi, rdi    ;arg 1
-    mov rdi, %1     ;syscall deseada
-    int 0x80      ;interrupcion 80
+    mov r9, r8       ; arg 5
+    mov r8, rcx      ; arg 4
+    mov rcx, rdx     ; arg 3
+    mov rdx, rsi     ; arg 2
+    mov rsi, rdi     ; arg 1
+    mov rdi, %1      ; desired syscall
+    int 0x80         ; interrupt 80
     mov rsp, rbp
 	pop rbp
     ret
 %endmacro
 
-call_sys_write:
-    call_to_handler 1
-call_sys_read:
-    call_to_handler 2
-call_timeClock:
-    call_to_handler 3
-call_printRegisters:
-    call_to_handler 4
-call_clear:
-    call_to_handler 5
-call_getTicks:
-    call_to_handler 6
-call_getHeight:
-    call_to_handler 7
-call_getWidth:
-    call_to_handler 8
-call_moveCursorX:
-    call_to_handler 9
-call_moveCursorY:
-    call_to_handler 10
-call_drawRectangle:
-    call_to_handler 11
-call_sleepms:
-    call_to_handler 12
-call_setFontSize:
-    call_to_handler 13
-call_beep:
-    call_to_handler 14
-testmm:
-    call_to_handler 15
+callSysWrite:
+    callToHandler 1
+callSysRead:
+    callToHandler 2
+callTimeClock:
+    callToHandler 3
+callPrintRegisters:
+    callToHandler 4
+callClear:
+    callToHandler 5
+callGetTicks:
+    callToHandler 6
+callGetHeight:
+    callToHandler 7
+callGetWidth:
+    callToHandler 8
+callMoveCursorX:
+    callToHandler 9
+callMoveCursorY:
+    callToHandler 10
+callDrawRectangle:
+    callToHandler 11
+callSleepMs:
+    callToHandler 12
+callSetFontSize:
+    callToHandler 13
+callBeep:
+    callToHandler 14
+testMM:
+    callToHandler 15
 mmStatus:
-    call_to_handler 16
+    callToHandler 16
 createProcess:
-    call_to_handler 18
+    callToHandler 18
 killProcess:
-    call_to_handler 19
+    callToHandler 19
 blockProcess:
-     call_to_handler 20
+     callToHandler 20
 unblockProcess:
-    call_to_handler 21
+    callToHandler 21
 allocMemory:
-    call_to_handler 22
+    callToHandler 22
 freeMemory:
-    call_to_handler 23
+    callToHandler 23
 changePrio:
-    call_to_handler 24
+    callToHandler 24
 getMyPid:
-    call_to_handler 25
+    callToHandler 25
 testeando:
-    call_to_handler 26
+    callToHandler 26
 ps:
-    call_to_handler 27
+    callToHandler 27
 waitpid:
-    call_to_handler 28
+    callToHandler 28
 yield:
-    call_to_handler 29
+    callToHandler 29
 semOpen:
-    call_to_handler 30
+    callToHandler 30
 semWait:
-    call_to_handler 31
+    callToHandler 31
 semPost:
-    call_to_handler 32
+    callToHandler 32
 semClose:
-    call_to_handler 33
+    callToHandler 33
 pipeOpen:
-    call_to_handler 34
+    callToHandler 34
 pipeClose:
-    call_to_handler 35
+    callToHandler 35
 pipeRead:
-    call_to_handler 36
+    callToHandler 36
 pipeWrite:
-    call_to_handler 37
+    callToHandler 37
 pipeOpenAnon:
-    call_to_handler 38
+    callToHandler 38
 getMyFds:
-    call_to_handler 39
-InvalidOpasm:
+    callToHandler 39
+invalidOpAsm:
     mov rax, 0x12345678
     rdpmc
     ret

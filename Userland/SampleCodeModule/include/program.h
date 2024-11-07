@@ -1,9 +1,9 @@
 #ifndef program_h
 #define program_h
-#include "test_util.h"
-void priotest(int argc, char *argv[]);
-void processtest(int argc, char *argv[]);
-void testSync(int argc, char *argv[]);
+#include "testUtil.h"
+void prioTest(int argc, char *argv[]);
+void processTest(int argc, char *argv[]);
+void runTestSync(int argc, char *argv[]);
 void cat();
 void loop();
 void wc();

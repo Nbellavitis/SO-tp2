@@ -8,13 +8,13 @@
 
 
 int getC(char * c){
-    return call_sys_read(STDIN,c, 1);
+    return callSysRead(STDIN,c, 1);
 }
 int getBuffer(char * buf){
-    return call_sys_read(STDIN,buf, 100);
+    return callSysRead(STDIN,buf, 100);
 }
 void putC(char c,uint32_t hexColor){
-    call_sys_write( STDOUT,&c, 1,hexColor);
+    callSysWrite( STDOUT,&c, 1,hexColor);
 }
 
 void putInt(uint64_t num,uint32_t hexColor){
@@ -37,7 +37,7 @@ void putInt(uint64_t num,uint32_t hexColor){
         }
 }
 void putString(const char * s,uint32_t hexColor){
-    call_sys_write( STDOUT,s, strlen(s),hexColor);
+    callSysWrite( STDOUT,s, strlen(s),hexColor);
 }
 
 
@@ -86,7 +86,7 @@ int strlen(const char *str) {
     return length;
 }
 char *strcpy(char *dest, const char *src) {
-    char *original_dest = dest; // Guardar el inicio de dest para retornar al final
+    char *originalDest = dest; // Guardar el inicio de dest para retornar al final
 
     while (*src != '\0') { // Mientras no lleguemos al carácter nulo
         *dest = *src;      // Copiar carácter de src a dest
@@ -95,7 +95,7 @@ char *strcpy(char *dest, const char *src) {
     }
     *dest = '\0'; // Añadir el carácter nulo al final de dest
 
-    return original_dest; // Retornar el inicio de dest
+    return originalDest; // Retornar el inicio de dest
 }
 
 int strcmp( char *str1,  char *str2) {
@@ -287,15 +287,15 @@ char *strstr(const char *haystack, const char *needle) {
     }
 
     for (const char *h = haystack; *h; h++) {
-        const char *h_iter = h;
-        const char *n_iter = needle;
+        const char *hIter = h;
+        const char *nIter = needle;
 
-        while (*h_iter && *n_iter && *h_iter == *n_iter) {
-            h_iter++;
-            n_iter++;
+        while (*hIter && *nIter && *hIter == *nIter) {
+            hIter++;
+            nIter++;
         }
 
-        if (!*n_iter) {
+        if (!*nIter) {
             return (char *)h;
         }
     }

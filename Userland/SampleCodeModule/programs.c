@@ -4,11 +4,11 @@
 #include "include/usrSysCall.h"
 #define EOF -1
 #define MAX_BUFFER 2048
-void priotest(int argc, char *argv[]) {
-    test_prio();
+void prioTest(int argc, char *argv[]) {
+    testPrio();
 }
 
-void processtest(int argc, char *argv[]) {
+void processTest(int argc, char *argv[]) {
 
     if (argc != 2) {
 
@@ -25,18 +25,18 @@ void processtest(int argc, char *argv[]) {
 
     char *testParams[] = {argv[1]};
 
-    int testResult = test_processes(1, testParams);
+    int testResult = testProcesses(1, testParams);
     return;
     print(0xFFFFFFFF,"Process test %s\n", testResult == 0 ? "passed" : "failed");
 
 }
-void testSync(int argc, char *argv[]) {
+void runTestSync(int argc, char *argv[]) {
 
     if (argc != 2) {
         print(0xFFFFFFFF, "Usage: testSync <number_of_processes>\n");
         return;
     }
-    test_sync(argc, argv);
+    testSync(argc, argv);
     return;
 
 }
@@ -107,6 +107,6 @@ void filter(){
 void loop() {
     while (1) {
         print( WHITE, "Hola soy pid: %d\n", getMyPid());
-        call_sleepms(TIME);
+        callSleepMs(TIME);
     }
 }

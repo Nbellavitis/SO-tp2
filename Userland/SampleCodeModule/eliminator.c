@@ -50,13 +50,13 @@ void buffReadTitle(){
         char c;
         getC(&c);
         if (c == '\n') {
-            call_clear();
+            callClear();
             state++;
             configuration();
             return;
         } else if (c == 'x') {
-            call_clear();
-            call_setFontSize(1);
+            callClear();
+            callSetFontSize(1);
             flag = 0;
             return;
         }
@@ -73,8 +73,8 @@ void buffReadMidGame(){
             game(players);
             return;
         }else if(c == 'n'){
-            call_clear();
-            call_setFontSize(1);
+            callClear();
+            callSetFontSize(1);
             state=TITLE;
             flag = 0;
             return;
@@ -89,7 +89,7 @@ void startEliminator(){
     player2.prevKey = 'u';
     player1.points=player2.points=0;
     flag=1;
-    call_clear();
+    callClear();
     title();
     while(flag){
         if(state == TITLE)
@@ -149,25 +149,25 @@ void buffRead(int len, int players){
 
 //Prints the title
 void title(){
-    call_setFontSize(2);
-    call_moveCursorX((WIDTH/2)-(strlen("ELIMINATOR")/2) *8 * 2);
-    call_moveCursorY(HEIGHT/3);
+    callSetFontSize(2);
+    callMoveCursorX((WIDTH/2)-(strlen("ELIMINATOR")/2) *8 * 2);
+    callMoveCursorY(HEIGHT/3);
     print(RED,"ELIMINATOR\n");
-    call_moveCursorX((WIDTH/2)-(strlen("PRESS [ENTER] TO CONTINUE")/2) *8 * 2);
+    callMoveCursorX((WIDTH/2)-(strlen("PRESS [ENTER] TO CONTINUE")/2) *8 * 2);
     print(RED,"PRESS [ENTER] TO CONTINUE\n");
-    call_moveCursorX((WIDTH/2)-(strlen("PRESS [X] TO EXIT")/2) *8 * 2);
+    callMoveCursorX((WIDTH/2)-(strlen("PRESS [X] TO EXIT")/2) *8 * 2);
     print(RED,"PRESS [X] TO EXIT\n");
 }
 
 //Prints the configuration and starts the game
 void configuration(){
-    call_moveCursorX((WIDTH/2)-(strlen("CONFIGURATION")/2) *8 * 2);
+    callMoveCursorX((WIDTH/2)-(strlen("CONFIGURATION")/2) *8 * 2);
     print(RED,"CONFIGURATION\n");
-    call_moveCursorX((WIDTH/2)-(strlen("PLAYER 1 (RED) MOVES WITH A-W-S-D")/2) *8 * 2);
+    callMoveCursorX((WIDTH/2)-(strlen("PLAYER 1 (RED) MOVES WITH A-W-S-D")/2) *8 * 2);
     print(RED,"PLAYER 1 (RED) MOVES WITH A-W-S-D\n");
-    call_moveCursorX((WIDTH/2)-(strlen("PLAYER 2 (GREEN) MOVES WITH H-U-J-K")/2) *8 * 2);
+    callMoveCursorX((WIDTH/2)-(strlen("PLAYER 2 (GREEN) MOVES WITH H-U-J-K")/2) *8 * 2);
     print(RED,"PLAYER 2 (GREEN) MOVES WITH H-U-J-K\n");
-    call_moveCursorX((WIDTH/2)-(strlen("PRESS [ENTER] TO START")/2) *8 * 2);
+    callMoveCursorX((WIDTH/2)-(strlen("PRESS [ENTER] TO START")/2) *8 * 2);
     print(RED,"PRESS [ENTER] TO START\n");
     flagConfig = 0;
     while(state == CONFIGURATION){
@@ -246,9 +246,9 @@ void setMat(player playerA){
 
 //Initializes the game
 void initGame(){
-    call_clear();
-    call_drawRectangle(RED,0,0,HEIGHT,WIDTH);
-    call_drawRectangle(BLACK, MOVE, MOVE, HEIGHT - (MOVE*2), WIDTH - (MOVE*2));
+    callClear();
+    callDrawRectangle(RED,0,0,HEIGHT,WIDTH);
+    callDrawRectangle(BLACK, MOVE, MOVE, HEIGHT - (MOVE*2), WIDTH - (MOVE*2));
     fillWithZeros();
     initializePositions();
     state = GAME;
@@ -269,8 +269,8 @@ void game(int players){
         }else if(checkMat(&player2, &player1)){
             return;
         }
-        call_drawRectangle(RED,player1.posX,player1.posY,MOVE,MOVE);
-        call_drawRectangle(GREEN,player2.posX,player2.posY,MOVE,MOVE);
+        callDrawRectangle(RED,player1.posX,player1.posY,MOVE,MOVE);
+        callDrawRectangle(GREEN,player2.posX,player2.posY,MOVE,MOVE);
         setMat(player2);
         setMat(player1);
     }
@@ -344,13 +344,13 @@ void initializePositions(){
 
 //Prints the midgame
 void midGame(){
-    call_beep();
-    call_moveCursorX((WIDTH/2)-(strlen("Player 1:")/2) *8 * 2);
-    call_moveCursorY(HEIGHT/4);
+    callBeep();
+    callMoveCursorX((WIDTH/2)-(strlen("Player 1:")/2) *8 * 2);
+    callMoveCursorY(HEIGHT/4);
     print(RED,"Player 1: %d\n", player1.points);
-    call_moveCursorX((WIDTH/2)-(strlen("Player 2:")/2) *8 * 2);
+    callMoveCursorX((WIDTH/2)-(strlen("Player 2:")/2) *8 * 2);
     print(GREEN,"Player 2: %d\n", player2.points);
-    call_moveCursorX((WIDTH/2)-(strlen("Do you want to continue? [Y/N]")/2) *8 * 2);
+    callMoveCursorX((WIDTH/2)-(strlen("Do you want to continue? [Y/N]")/2) *8 * 2);
     print(RED,"Do you want to continue? [Y/N]\n");
 
     return;
