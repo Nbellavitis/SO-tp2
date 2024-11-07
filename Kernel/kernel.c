@@ -97,9 +97,10 @@ void * initializeKernelBinary()
 }
 
 int initShell() {
-    char ** fds = (char **) allocMemory(sizeof(char *) * 2);
-    fds[0] = "tty";
-    fds[1] = "tty";
+//    char ** fds = (char **) allocMemory(sizeof(char *) * 2);
+//    fds[0] = "tty";
+//    fds[1] = "tty";
+    char * fds[2] = {"tty", "tty"};
     newProcess((uint64_t)sampleCodeModuleAddress, 1 , 1, 0, NULL, fds);
 	return 1;
 }

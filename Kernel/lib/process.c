@@ -93,8 +93,6 @@ PCB aux = lookup(PCBMap,pid);
     if(aux == getCurrentForegroundProcess()){
         setNullForegroundProcess();
     }
-    pipeClose(aux->fd[STDIN]);
-    pipeClose(aux->fd[STDOUT]);
     if(pid == getActivePid()){
         yield();
     }
@@ -205,6 +203,12 @@ uint64_t waitpid(pid_t pid){
 void exitProcess(uint64_t retStatus){
     PCB activeProcess = getActiveProcess();
     activeProcess->ret = retStatus;
+    if(strcmp(activeProcess->fd[STDIN],"tty")!=0){
+        pipeClose(activeProcess->fd[STDIN]);
+    }
+    if(strcmp(activeProcess->fd[STDOUT],"tty")!=0){
+        pipeClose(activeProcess->fd[STDOUT]);
+    }
     if(activeProcess->ground == 0 && activeProcess->ppid == SHELL_PID){
         killProcess(activeProcess->pid);
         return;
@@ -219,8 +223,6 @@ void exitProcess(uint64_t retStatus){
     if(activeProcess == getCurrentForegroundProcess()){
         setNullForegroundProcess();
     }
-    pipeClose(activeProcess->fd[STDIN]);
-    pipeClose(activeProcess->fd[STDOUT]);
     activeProcess->status = EXITED;
     yield();
 }

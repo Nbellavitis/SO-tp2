@@ -138,12 +138,14 @@ void executePipedCommands(char *buffer) {
     char *command2 = strtok(NULL, "|");
     command1 = trimWhitespace(command1);
     command2 = trimWhitespace(command2);
-    char **descriptors1 = allocMemory(2 * sizeof(char *));
-    descriptors1[0] = "tty";
-    descriptors1[1] = "shellPipe";
-    char **descriptors2 = allocMemory(2 * sizeof(char *));
-    descriptors2[0] = "shellPipe";
-    descriptors2[1] = "tty";
+//    char **descriptors1 = allocMemory(2 * sizeof(char *));
+//    descriptors1[0] = "tty";
+//    descriptors1[1] = "shellPipe";
+//    char **descriptors2 = allocMemory(2 * sizeof(char *));
+//    descriptors2[0] = "shellPipe";
+//    descriptors2[1] = "tty";
+    char * descriptors1[2] = {"tty","shellPipe"};
+    char * descriptors2[2] = {"shellPipe","tty"};
     pipeOpenAnon("shellPipe");
    int pid1=-1;
    CommandFunction cm1 = NULL;
@@ -172,14 +174,9 @@ void executePipedCommands(char *buffer) {
         putString("Command not found\n",WHITE);
         return;
         }
-    pid1=createProcess((uint64_t)cm1, ground, 2, descriptors1, descriptors1);
-    createProcess((uint64_t)cm2, 0, 2, descriptors2, descriptors2);
+    pid1=createProcess((uint64_t)cm1, ground, 0, NULL, descriptors1);
+    createProcess((uint64_t)cm2, 0, 0, NULL, descriptors2);
     waitpid(pid1);
-    if(ground == 1) {
-        pipeClose("shellPipe");
-        freeMemory(descriptors1);
-        freeMemory(descriptors2);
-    }
 }
 
 void executeCommand(const char *buffer) {
@@ -196,9 +193,10 @@ void executeCommand(const char *buffer) {
     for (int i = 0; i < sizeof(commands) / sizeof(commands[0]); i++) {
 
         if (strncmp(commandBuffer, commands[i].command, strlen(commands[i].command)) == 0) {
-        char **descriptors = allocMemory(2 * sizeof(char *));
-        descriptors[0] = "tty";
-        descriptors[1] = "tty";
+//        char **descriptors = allocMemory(2 * sizeof(char *));
+//        descriptors[0] = "tty";
+//        descriptors[1] = "tty";
+        char * descriptors [2] = {"tty","tty"};
         waitpid(createProcess((uint64_t)commands[i].function, !background, 0, NULL, descriptors));
         return;
         }

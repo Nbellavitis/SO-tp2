@@ -23,6 +23,9 @@ void initPipes(){
 int pipeOpen(char * name){
     for(int i = 0; i < MAX_PIPES; i++){
         if(pipes[i] != NULL && strcmp(pipes[i]->name, name) == 0){
+            if(pipes[i]->attachedProcesses == 2){
+                return 0;
+            }
             pipes[i]->attachedProcesses++;
             return 1;
         }
