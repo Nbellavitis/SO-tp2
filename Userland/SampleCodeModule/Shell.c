@@ -306,6 +306,10 @@ void lineRead(char *buffer) {
             putString(commands[i].description, WHITE);
             putString("\n", WHITE);
         }
+    }else if(strcmp(buffer,"div0")==0) {
+        testDiv0(0, NULL);
+    }else if (strcmp(buffer,"invalidOp")==0){
+        testInvalidOp(0, NULL);
     } else {
       if(strstr(buffer,"|") != NULL){
 		executePipedCommands(buffer);
@@ -337,4 +341,5 @@ void call_div0(){
     int a=7;
     int b=0;
     a=a/b;
+
 }
