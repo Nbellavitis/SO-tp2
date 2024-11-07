@@ -2,7 +2,7 @@
 #include "include/lib.h"
 #include <stdio.h>
 
-#define TIME 100000000
+#define TIME 99000000
 #define INITIAL 5
 #define THINKING 2
 #define HUNGRY 1
@@ -32,6 +32,7 @@ typedef struct{
     uint64_t maxPhilosophers;
     Philosopher ** philosophers;
     int newPhilosopher;
+    char * lastThinking;
 } philosData;
 
 philosData data;
@@ -219,25 +220,28 @@ void philosopher(int argc, char *argv[]) {
     while (1) {
         semWait(data.mutex);
         data.philosophers[id]->status = THINKING;
-        if(data.newPhilosopher == TRUE){
-            data.newPhilosopher = FALSE;
-            data.philosophers[data.philosopherCount] = createPhilo(data.philosopherCount);
-            data.philosopherCount++;
+        if(data.newPhilosopher == TRUE && data.philosopherCount-1 == id){
+            semPost(data.mutex);
+            semPost(data.lastThinking);
+            semWait(data.lastThinking);
+            semWait(data.mutex);
         }
         semPost(data.mutex);
         for (volatile int i = 0; i < TIME; i++);
         take_fork(id);
-        printState();
-        for (volatile int i = 0; i < TIME; i++);
         semWait(data.mutex);
         if(data.philosophers[id]->removeFlag){
-            data.philosophers[id] = NULL;
+            int rightIndex = getRightIndex(id);
             data.philosopherCount--;
-            semPost(data.philosophers[getRightIndex(id)]->semName);
+            semPost(data.philosophers[rightIndex]->semName);
+            semPost(data.philosophers[id]->semName);
             semPost(data.mutex);
             killPhilo(id);
         }
         semPost(data.mutex);
+        printState();
+        for (volatile int i = 0; i < TIME; i++);
+
         put_fork(id);
     }
 }
@@ -296,6 +300,13 @@ void addPhilosopher() {
     semWait(data.mutex);
     if (data.philosopherCount < data.maxPhilosophers) {
         data.newPhilosopher = TRUE;
+        semPost(data.mutex);
+        semWait(data.lastThinking);
+        data.newPhilosopher = FALSE;
+        data.philosophers[data.philosopherCount] = createPhilo(data.philosopherCount);
+        data.philosopherCount++;
+        semPost(data.lastThinking);
+        semWait(data.mutex);
     }
     semPost(data.mutex);
 }
@@ -313,6 +324,7 @@ void philo(int argc, char *argv[]) {
         return;
     }
     data.mutex = "mutex";
+    data.lastThinking="lastThinking";
     data.newPhilosopher= FALSE;
     data.philosopherCount = INITIAL;
     data.maxPhilosophers = satoi(argv[1]);
@@ -332,7 +344,12 @@ void philo(int argc, char *argv[]) {
         freeMemory(data.philosophers);
         return;
     }
-
+    if(semOpen(data.lastThinking, 0) == 0){
+        print(WHITE, "Failed to create auxiliary semaphore\n");
+        semClose(data.mutex);
+        freeMemory(data.philosophers);
+        return;
+    }
     createPhilosophers(INITIAL);
     print(WHITE, "\nCommands: 'q' to quit, 'a' to add philosopher, 'r' to remove philosopher\n");
 
