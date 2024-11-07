@@ -97,11 +97,10 @@ void * initializeKernelBinary()
 }
 
 int initShell() {
-//    char ** fds = (char **) allocMemory(sizeof(char *) * 2);
-//    fds[0] = "tty";
-//    fds[1] = "tty";
+
     char * fds[2] = {"tty", "tty"};
-    newProcess((uint64_t)sampleCodeModuleAddress, 1 , 1, 0, NULL, fds);
+    char * argv[] = {"shell", "null"};
+    newProcess((uint64_t)sampleCodeModuleAddress, 1 , 1, 1, argv, fds);
 	return 1;
 }
 
@@ -113,13 +112,13 @@ int main()
     //((EntryPoint)sampleCodeModuleAddress)();  whot
     initMap();
 	startScheduler();
-    initShell();
 	semInit();
     initPipes();
+    initShell();
 
 
 
-	 while(1){
+    while(1){
 
 	}
 	return 0;

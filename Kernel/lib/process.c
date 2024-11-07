@@ -30,6 +30,9 @@ pid_t newProcess(uint64_t rip, int ground, int priority, int argc, char * argv[]
     pcb->priority = priority;
     pcb->pid = nextProcessId;
     pcb->argv= argv;
+    if(argv != NULL) {
+        pcb->name = argv[0];
+    }
     pcb->waitingFor = 0;
     pcb->waitingProcesses = createQueue(comparePCB);
     if(pcb->pid == 0 || pcb->pid == 1){
@@ -90,6 +93,13 @@ PCB aux = lookup(PCBMap,pid);
         return -1;
     }
     aux->status=KILLED;
+    toBegin(aux->waitingProcesses);
+    while(hasNext(aux->waitingProcesses)){
+        PCB toUnblock = next(aux->waitingProcesses);
+        if(toUnblock->status == BLOCKED) {
+            unblockProcess(toUnblock->pid);
+        }
+    }
     if(aux == getCurrentForegroundProcess()){
         setNullForegroundProcess();
     }
@@ -188,7 +198,6 @@ uint64_t waitpid(pid_t pid){
     }
     queue(aux->waitingProcesses,activeProcess);
     if(aux->ground == 1 || aux->ppid != SHELL_PID){
-        //printNumber( aux->pid,0xffff);
       	activeProcess->waitingFor = CHILD_PROCESS;
         blockProcess(activeProcess->pid, CHILD_PROCESS);
         activeProcess->waitingFor = 0;

@@ -16,12 +16,8 @@ void test_prio() {
   pid_t pids[TOTAL_PROCESSES];
   char *argv[] = {"endless_loop_print"};
   uint64_t i;
-  char ** descriptors = allocMemory(2 * sizeof(char *));
-  char ** aux = getMyFds();
-  strcpy(descriptors[0], aux[0]);
-  strcpy(descriptors[1], aux[1]);
   for (i = 0; i < TOTAL_PROCESSES; i++)
-    pids[i] = createProcess((uint64_t)endless_loop_print,0,1, argv, descriptors);
+    pids[i] = createProcess((uint64_t)endless_loop_print,0,1, argv,(char *[]) {"tty", "tty"});
   bussy_wait(WAIT);
   print(0xFFFFFFFF,"\nCHANGING PRIORITIES...\n");
 
@@ -51,7 +47,6 @@ void test_prio() {
     killProcess(pids[i]);
 
   putC('\n',0x80008000);
-  freeMemory(descriptors);
 }
 static void endless_loop_print() {
     int64_t pid = getMyPid();

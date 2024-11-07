@@ -16,7 +16,7 @@ int64_t test_processes(uint64_t argc, char *argv[]) {
   uint8_t alive = 0;
   uint8_t action;
   uint64_t max_processes;
-  char *argvAux[] = {0};
+  char *argvAux[] = {"hijo de test_process",0};
 
   if (argc != 1)
     return -1;
@@ -24,16 +24,12 @@ int64_t test_processes(uint64_t argc, char *argv[]) {
   if ((max_processes = satoi(argv[0])) <= 0)
     return -1;
   p_rq p_rqs[max_processes];
-  char ** descriptors = allocMemory(2 * sizeof(char *));
-  char ** aux = getMyFds();
-  strcpy(descriptors[0], aux[0]);
-  strcpy(descriptors[1], aux[1]);
   while (1) {
     // Create max_processes processes
 
     for (rq = 0; rq < max_processes; rq++) {
 
-      p_rqs[rq].pid = createProcess((uint64_t)endless_loop, 0, 0, argvAux,descriptors);
+      p_rqs[rq].pid = createProcess((uint64_t)endless_loop, 0, 1, argvAux,(char *[]) {"tty", "tty"});
 
       if (p_rqs[rq].pid == -1) {
         print(0xFFFFFFFF,"test_processes: ERROR creating process\n");
@@ -84,5 +80,4 @@ int64_t test_processes(uint64_t argc, char *argv[]) {
         }
     }
   }
-  freeMemory(descriptors);
 }

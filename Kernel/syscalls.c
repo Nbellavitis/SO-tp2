@@ -38,7 +38,7 @@ int sysRead(int descriptor, char * save, int len){
     }
     if(strcmp( getActiveProcess()->fd[STDIN], "tty") == 0){
 
-        //blockProcess(getActivePid(), READ_STDIN);
+        blockProcess(getActivePid(), READ_STDIN);
 
         int n=getBufferPosition();
         if(getCharAt(n)==0){

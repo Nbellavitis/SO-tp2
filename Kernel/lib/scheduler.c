@@ -30,7 +30,8 @@ void startScheduler() {
         drawWord( 0xFF0000,"Error creating process queue");
         return;
     }
-    idleProcess = lookUpOnHashMap((pid_t) newProcess((uint64_t)idle, 0, 1, 0, NULL, (char *[]){"tty", "null"}));
+    char * argv[] = {"idle", "null"};
+    idleProcess = lookUpOnHashMap((pid_t) newProcess((uint64_t)idle, 0, 1, 1, argv, (char *[]){"tty", "null"}));
 }
 
 static PCB findNextReadyProcess(queueADT processQueue) {

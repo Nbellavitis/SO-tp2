@@ -205,7 +205,7 @@ void printProcess(processInfoPtr process){
     print(WHITE,"%d          ",process->ground);
     print(WHITE,"%d        ",process->priority);
     print(WHITE,"%d    ",process->status);
-   // print(WHITE,"%s    ",process->name);
+    print(WHITE,"%s    ",process->name);
 }
 void trimAndRemoveExtraSpaces(const char *src, char *dest) {
     // Remover espacios iniciales

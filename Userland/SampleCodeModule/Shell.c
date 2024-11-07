@@ -36,7 +36,6 @@ void testInvalidOp(int argc, char *argv[]);
 void testMemory(int argc, char *argv[]);
 void showMemStatus(int argc, char *argv[]);
 void testPriority(int argc, char *argv[]);
-void runProcessTest(int argc, char *argv[]);
 void showProcesses(int argc, char *argv[]);
 void killProcessCommand(int argc, char *argv[]);
 void runTestSync(int argc, char *argv[]);
@@ -44,36 +43,38 @@ void runTestNoSync(int argc, char *argv[]);
 void testeandoo(int argc, char *argv[]);
 void runPhilo(int argc, char *argv[]);
 typedef struct {
-     char *command;
+    char *command;
     CommandFunction function;
-     char *description;
+    char *description;
+    char *argv[5];
+    int argc;
 } Command;
 
 Command commands[] = {
-    {"eliminator", startEliminator, "Game similar to tron(the movie)."},
-    {"time", showTime, "Shows the actual time."},
-    {"setFont", resizeFont, "Change the font size, receive an int from 1 to 2."},
-    {"getRegisters", getRegisters, "Show the actual state of the registers."},
-    {"clear", clearTerminal, "Empty the terminal."},
-    {"exit", exitShell, "Kills the terminal."},
-    {"div0", testDiv0, "Test the exception of the zero division."},
-    {"invalidOp", testInvalidOp, "Test the exception of an invalid operand."},
-    {"testmm", testMemory, "Allocates memory and runs the test."},
-    {"mmStatus", showMemStatus, "Shows the memory status."},
-    {"testPrio", testPriority, "Run the priority test."},
-    {"testProcess", runProcessTest, "Run the process test."},
-    {"ps", showProcesses, "Shows the process list."},
-    {"kill", killProcessCommand, "Kills a process, use: kill n to kill the process with pid n."},
-    {"testSync", runTestSync, "Run the sync test."},
-    {"testNoSync", runTestNoSync, "Run the sync test without semaphores."},
-    {"testeando", testeandoo, "testeando"},
-    {"cat",cat,"Reads from stdin and writes to stdout"},
-    {"loop",loop,"prints his pid every 100000 ms"},
-    {"wc",wc,"Counts the number of lines in the input"},
-    {"philo",runPhilo,"run philo"},
- 	{"filter",filter,"filters the inputs vowels"},
-
+        {"eliminator", startEliminator, "Game similar to tron(the movie).", {"eliminator", NULL}, 1},
+        {"time", showTime, "Shows the actual time.", {"time", NULL}, 1},
+        {"setFont", resizeFont, "Change the font size, receive an int from 1 to 2.", {"setFont", NULL}, 1},
+        {"getRegisters", getRegisters, "Show the actual state of the registers.", {"getRegisters", NULL}, 1},
+        {"clear", clearTerminal, "Empty the terminal.", {"clear", NULL}, 1},
+        {"exit", exitShell, "Kills the terminal.", {"exit", NULL}, 1},
+        {"div0", testDiv0, "Test the exception of the zero division.", {"div0", NULL}, 1},
+        {"invalidOp", testInvalidOp, "Test the exception of an invalid operand.", {"invalidOp", NULL}, 1},
+        {"testmm", testMemory, "Allocates memory and runs the test.", {"testmm", NULL}, 1},
+        {"mmStatus", showMemStatus, "Shows the memory status.", {"mmStatus", NULL}, 1},
+        {"testPrio", test_prio, "Run the priority test.", {"testPrio", NULL}, 1},
+        {"testProcess", processtest, "Run the process test.", {"processtest", "1", NULL}, 2},
+        {"ps", showProcesses, "Shows the process list.", {"ps", NULL}, 1},
+        {"kill", killProcessCommand, "Kills a process, use: kill n to kill the process with pid n.", {"kill", NULL}, 1},
+        {"testSync", testSync, "Run the sync test.", {"50000", "1", NULL}, 2},
+        {"testNoSync", testSync, "Run the sync test without semaphores.", {"50000", "0", NULL}, 2},
+        {"testeando", testeandoo, "testeando", {"testeando", NULL}, 1},
+        {"cat", cat, "Reads from stdin and writes to stdout", {"cat", NULL}, 1},
+        {"loop", loop, "Prints its pid every 100000 ms", {"loop", NULL}, 1},
+        {"wc", wc, "Counts the number of lines in the input", {"wc", NULL}, 1},
+        {"philo", runPhilo, "Runs the philosopher's problem simulation", {"philo", NULL}, 1},
+        {"filter", filter, "Filters the input vowels", {"filter", NULL}, 1},
 };
+
 
 void bufferControl(){
     int i = 0;
@@ -138,44 +139,34 @@ void executePipedCommands(char *buffer) {
     char *command2 = strtok(NULL, "|");
     command1 = trimWhitespace(command1);
     command2 = trimWhitespace(command2);
-//    char **descriptors1 = allocMemory(2 * sizeof(char *));
-//    descriptors1[0] = "tty";
-//    descriptors1[1] = "shellPipe";
-//    char **descriptors2 = allocMemory(2 * sizeof(char *));
-//    descriptors2[0] = "shellPipe";
-//    descriptors2[1] = "tty";
     char * descriptors1[2] = {"tty","shellPipe"};
     char * descriptors2[2] = {"shellPipe","tty"};
     pipeOpenAnon("shellPipe");
    int pid1=-1;
-   CommandFunction cm1 = NULL;
-   CommandFunction cm2 = NULL;
+   Command cm1;
+   Command cm2;
 	for(int i = 0; i < sizeof(commands) / sizeof(commands[0]); i++) {
         if (strncmp(command1, commands[i].command, strlen(commands[i].command)) == 0) {
-			cm1=commands[i].function;
+			cm1=commands[i];
             break;
         }
     }
-    if(cm1==NULL){
-        freeMemory(descriptors1);
-        freeMemory(descriptors2);
+    if(cm1.function==NULL){
         putString("Command not found\n",WHITE);
         return;
     }
     for(int i = 0; i < sizeof(commands) / sizeof(commands[0]); i++) {
         if (strncmp(command2, commands[i].command, strlen(commands[i].command)) == 0) {
-          cm2=commands[i].function;
+          cm2=commands[i];
             break;
         }
     }
-	if(cm2==NULL){
-        freeMemory(descriptors1);
-        freeMemory(descriptors2);
+	if(cm2.function==NULL){
         putString("Command not found\n",WHITE);
         return;
         }
-    pid1=createProcess((uint64_t)cm1, ground, 0, NULL, descriptors1);
-    createProcess((uint64_t)cm2, 0, 0, NULL, descriptors2);
+    pid1=createProcess((uint64_t)cm1.function, ground, cm1.argc, cm1.argv, descriptors1);
+    createProcess((uint64_t)cm2.function, 0, cm2.argc, cm2.argv, descriptors2);
     waitpid(pid1);
 }
 
@@ -193,11 +184,9 @@ void executeCommand(const char *buffer) {
     for (int i = 0; i < sizeof(commands) / sizeof(commands[0]); i++) {
 
         if (strncmp(commandBuffer, commands[i].command, strlen(commands[i].command)) == 0) {
-//        char **descriptors = allocMemory(2 * sizeof(char *));
-//        descriptors[0] = "tty";
-//        descriptors[1] = "tty";
+
         char * descriptors [2] = {"tty","tty"};
-        waitpid(createProcess((uint64_t)commands[i].function, !background, 0, NULL, descriptors));
+        waitpid(createProcess((uint64_t)commands[i].function, !background, commands[i].argc, commands[i].argv, descriptors));
         return;
         }
     }
@@ -260,12 +249,6 @@ void testPriority(int argc, char *argv[]) {
  	test_prio();
 }
 
-void runProcessTest(int argc, char *argv[]) {
-    char **argv2 = allocMemory(2 * sizeof(char *));
-    argv2[1] = "1";
-    argv2[0] = "processtest";
-    processtest(2, argv);
-}
 
 void showProcesses(int argc, char *argv[]) {
     printAllProcesses(ps());
@@ -276,18 +259,6 @@ void killProcessCommand(int argc, char *argv[]) {
     if (!strlen(init))
         return;
     killProcess(strToInt(init));
-}
-void runTestSync(int argc, char *argv[]){
-  char **argv2 = allocMemory(2 * sizeof(char *));
-  argv2[1] = "1";
-  argv2[0] = "50000";
-  testSync(2,argv2);
-}
-void runTestNoSync(int argc, char *argv[]){
-  char **argv2 = allocMemory(2 * sizeof(char *));
-  argv2[1] = "0";
-  argv2[0] = "10";
-  testSync(2,argv2);
 }
 
 void runPhilo(int argc, char *argv[]){
