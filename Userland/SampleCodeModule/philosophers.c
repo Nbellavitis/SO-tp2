@@ -2,7 +2,7 @@
 #include "include/lib.h"
 #include <stdio.h>
 
-#define TIME 99000000
+#define TIME 30
 #define INITIAL 5
 #define THINKING 2
 #define HUNGRY 1
@@ -164,11 +164,6 @@ void printState(void) {
 }
 
 void take_fork(int id) {
-
-    semWait(data.mutex);
-    data.philosophers[id]->status = HUNGRY;
-    semPost(data.mutex);
-
     if (id % 2 == 0) {
         semWait(data.philosophers[id]->semName);
         semWait(data.philosophers[getRightBlock(id)]->semName);
@@ -176,10 +171,6 @@ void take_fork(int id) {
         semWait(data.philosophers[getRightBlock(id)]->semName);
         semWait(data.philosophers[id]->semName);
     }
-    semWait(data.mutex);
-    data.philosophers[id]->status = EATING;
-    semPost(data.mutex);
-
 }
 
 void put_fork(int id) {
@@ -191,11 +182,6 @@ void put_fork(int id) {
         semPost(data.philosophers[id]->semName);
         semPost(data.philosophers[getRightBlock(id)]->semName);
     }
-    semWait(data.mutex);
-    data.philosophers[id]->status = THINKING;
-
-    semPost(data.mutex);
-
 }
 
 
@@ -227,8 +213,20 @@ void philosopher(int argc, char *argv[]) {
             semWait(data.mutex);
         }
         semPost(data.mutex);
-        for (volatile int i = 0; i < TIME; i++);
+
+        semWait(data.mutex);
+        data.philosophers[id]->status = HUNGRY;
+        semPost(data.mutex);
+
+        call_sleepms(TIME);
+
         take_fork(id);
+
+        semWait(data.mutex);
+        data.philosophers[id]->status = EATING;
+        semPost(data.mutex);
+
+
         semWait(data.mutex);
         if(data.philosophers[id]->removeFlag){
             int rightIndex = getRightIndex(id);
@@ -239,8 +237,10 @@ void philosopher(int argc, char *argv[]) {
             killPhilo(id);
         }
         semPost(data.mutex);
+
         printState();
-        for (volatile int i = 0; i < TIME; i++);
+
+        call_sleepms(TIME);
 
         put_fork(id);
     }
