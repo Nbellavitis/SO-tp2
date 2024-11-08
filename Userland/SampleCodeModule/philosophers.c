@@ -23,7 +23,6 @@ typedef struct {
     char * semName;
     char ** descriptors;
     int status;
-    int removeFlag;
 } Philosopher;
 
 typedef struct{
@@ -145,7 +144,6 @@ Philosopher * createPhilo(int i){
     }
 
     newPhil->status = THINKING;
-    newPhil->removeFlag = FALSE;
     return newPhil;
 }
 
@@ -185,12 +183,23 @@ void putFork(int id) {
 }
 
 
-void removePhilosopher(int id) {
+void removePhilosopher() {
     semWait(data.mutex);
-    if (data.philosopherCount > INITIAL && data.philosophers[id] != NULL) {
-        data.philosophers[id]->removeFlag = TRUE;
+
+    int id = data.philosopherCount-1;
+    if(data.philosophers[id]->status != HUNGRY){
+        if(data.philosophers[id]->status == THINKING){
+            semPost(data.mutex);
+            takeFork(id);
+            semWait(data.mutex);
+        }
+        semPost(data.mutex);
+        semWait(data.secondLast);
+        semWait(data.mutex);
+        killPhilo(id);
+        semPost(data.mutex);
     }
-    semPost(data.mutex);
+
 
 }
 
@@ -225,18 +234,21 @@ void philosopher(int argc, char *argv[]) {
         semWait(data.mutex);
         data.philosophers[id]->status = EATING;
         semPost(data.mutex);
-
-
-        semWait(data.mutex);
-        if(data.philosophers[id]->removeFlag){
-            int rightIndex = getRightIndex(id);
-            data.philosopherCount--;
-            semPost(data.philosophers[rightIndex]->semName);
-            semPost(data.philosophers[id]->semName);
-            semPost(data.mutex);
-            killPhilo(id);
+        if(id == data.philosopherCount -1){
+            semPost(data.lastEating);
         }
-        semPost(data.mutex);
+
+
+//        semWait(data.mutex);
+//        if(data.philosophers[id]->removeFlag){
+//            int rightIndex = getRightIndex(id);
+//            data.philosopherCount--;
+//            semPost(data.philosophers[rightIndex]->semName);
+//            semPost(data.philosophers[id]->semName);
+//            semPost(data.mutex);
+//            killPhilo(id);
+//        }
+//        semPost(data.mutex);
 
         printState();
 
@@ -363,7 +375,7 @@ void philo(int argc, char *argv[]) {
                 addPhilosopher();
                 break;
             case 'r':
-                removePhilosopher(data.philosopherCount - 1);
+                removePhilosopher();
                 break;
         }
     }
