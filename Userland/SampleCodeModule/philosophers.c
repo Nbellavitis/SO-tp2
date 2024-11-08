@@ -225,9 +225,12 @@ void philosopher(int argc, char *argv[]) {
       semWait(data.mutex);
     }
     data.philosophers[id]->status = THINKING;
-
-
-
+      if (id == data.philosopherCount - 1 && !flag) {
+          semPost(data.mutex);
+          semPost(data.lastHungry);
+          semWait(data.lastHungry);
+          semWait(data.mutex);
+      }
     if (data.newPhilosopher == TRUE && data.philosopherCount - 1 == id && !flag) {
       semPost(data.mutex);
       semPost(data.lastThinking);
