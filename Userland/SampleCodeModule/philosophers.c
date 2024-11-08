@@ -251,8 +251,11 @@ void philosopher(int argc, char *argv[]) {
     printState();
 
     callSleepMs(TIME);
+      semWait(data.mutex);
+      data.philosophers[id]->status = THINKING;
+      semPost(data.mutex);
 
-    putFork(id);
+      putFork(id);
   }
 }
 
@@ -312,10 +315,12 @@ void addPhilosopher() {
     data.newPhilosopher = TRUE;
     semPost(data.mutex);
     semWait(data.lastThinking);
+      semWait(data.mutex);
     data.newPhilosopher = FALSE;
     data.philosophers[data.philosopherCount] =
         createPhilo(data.philosopherCount);
     data.philosopherCount++;
+      semPost(data.mutex);
     semPost(data.lastThinking);
     semWait(data.mutex);
   }
