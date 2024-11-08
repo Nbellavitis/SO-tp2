@@ -39,21 +39,19 @@ int sysRead(int descriptor, char *save, int len) {
   }
   if (strcmp(getActiveProcess()->fd[STDIN], "tty") == 0) {
 
-    blockProcess(getActivePid(), READ_STDIN);
+      int length = MIN(len, getBufferLen());
+      int i = 0;
+      do {
+          semWait("STDIN");
+          int n = getBufferPosition();
+          save[i] = getCharAt(n);
+        if(save[i] == 0){
+            return 0;
+        }
+        consumeBufferAt(n);
+        i++;
+    } while( i < length);
 
-    int n = getBufferPosition();
-    if (getCharAt(n) == 0) {
-      *save = 0;
-      return 0;
-    }
-
-    int length = MIN(len, getBufferLen());
-
-    for (int i = 0; i < length; i++) {
-      n = getBufferPosition();
-      save[i] = getCharAt(n);
-      consumeBufferAt(n);
-    }
     return length;
   } else {
     return pipeRead(getActiveProcess()->fd[STDIN], save, len);

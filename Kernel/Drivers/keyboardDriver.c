@@ -8,6 +8,7 @@
 #include "../include/scheduler.h"
 #include "include/scanCode.h"
 #include "include/videoDriver.h"
+#include "../include/sems.h"
 #define EOF -1
 int keyMapRow = 0;
 int ctrlPressed = 0;
@@ -51,10 +52,12 @@ void keyboardHandler() {
       buff[buff_pos] = EOF;
       incBufferLen(1);
       setPos(buff_pos);
+      semPost("STDIN");
     } else if (keyMap[keyMapRow][code] != 0) {
       buff[buff_pos] = keyMap[keyMapRow][code];
       incBufferLen(1);
       setPos(buff_pos);
+        semPost("STDIN");
     }
   } else { // Key released
     code -= 0x80;
