@@ -41,7 +41,6 @@ void killProcessCommand(int argc, char *argv[]);
 void runTestSync(int argc, char *argv[]);
 void runTestNoSync(int argc, char *argv[]);
 void testeandoo(int argc, char *argv[]);
-void runPhilo(int argc, char *argv[]);
 typedef struct {
     char *command;
     CommandFunction function;
@@ -71,7 +70,7 @@ Command commands[] = {
         {"cat", cat, "Reads from stdin and writes to stdout", {"cat", NULL}, 1},
         {"loop", loop, "Prints its pid every 100000 ms", {"loop", NULL}, 1},
         {"wc", wc, "Counts the number of lines in the input", {"wc", NULL}, 1},
-        {"philo", runPhilo, "Runs the philosopher's problem simulation", {"philo", NULL}, 1},
+        {"philo", philo, "Runs the philosopher's problem simulation", {"philo","10", NULL}, 2},
         {"filter", filter, "Filters the input vowels", {"filter", NULL}, 1},
 };
 
@@ -261,12 +260,7 @@ void killProcessCommand(int argc, char *argv[]) {
     killProcess(strToInt(init));
 }
 
-void runPhilo(int argc, char *argv[]){
-    char **argv2 = allocMemory(2 * sizeof(char *));
-    argv2[0] = "1";
-    argv2[1] = "10";
-    philo(2,argv2);
-}
+
 
 void lineRead(char *buffer) {
     if (strcmp(buffer, "help") == 0) {

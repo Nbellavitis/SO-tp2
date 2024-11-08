@@ -32,6 +32,8 @@ typedef struct{
     Philosopher ** philosophers;
     int newPhilosopher;
     char * lastThinking;
+    char * secondLast;
+    char * lastHungry;
 } philosData;
 
 philosData data;
@@ -98,7 +100,7 @@ Philosopher * createPhilo(int i){
     arg[0] = "philosopher";
     arg[1] = id;
     arg[2] = NULL;
-
+    newPhil->args = arg;
     char** descriptors = allocMemory(2 * sizeof(char*));
     if(!descriptors){
         print(WHITE, "Memory allocation failed\n");
@@ -184,22 +186,22 @@ void putFork(int id) {
 
 
 void removePhilosopher() {
+
+    semWait(data.secondLast);
+    semWait(data.lastHungry);
     semWait(data.mutex);
-
     int id = data.philosopherCount-1;
-    if(data.philosophers[id]->status != HUNGRY){
-        if(data.philosophers[id]->status == THINKING){
-            semPost(data.mutex);
-            takeFork(id);
-            semWait(data.mutex);
-        }
+    if(data.philosophers[id]->status == THINKING){
         semPost(data.mutex);
-        semWait(data.secondLast);
+        takeFork(id);
         semWait(data.mutex);
-        killPhilo(id);
-        semPost(data.mutex);
     }
-
+    killPhilo(id);
+    semPost(data.philosophers[0]->semName);
+    data.philosopherCount--;
+    semPost(data.mutex);
+    semPost(data.lastHungry);
+    semPost(data.secondLast);
 
 }
 
@@ -214,6 +216,12 @@ void philosopher(int argc, char *argv[]) {
     int id = satoi(argv[1]);
     while (1) {
         semWait(data.mutex);
+        if(id == data.philosopherCount - 2){
+            semPost(data.mutex);
+            semPost(data.secondLast);
+            semWait(data.secondLast);
+            semWait(data.mutex);
+        }
         data.philosophers[id]->status = THINKING;
         if(data.newPhilosopher == TRUE && data.philosopherCount-1 == id){
             semPost(data.mutex);
@@ -221,22 +229,22 @@ void philosopher(int argc, char *argv[]) {
             semWait(data.lastThinking);
             semWait(data.mutex);
         }
-        semPost(data.mutex);
+        if(id == data.philosopherCount -1 ){
+            semPost(data.mutex);
+            semWait(data.lastHungry);
+            semWait(data.mutex);
+        }
 
-        semWait(data.mutex);
         data.philosophers[id]->status = HUNGRY;
         semPost(data.mutex);
 
         callSleepMs(TIME);
 
         takeFork(id);
-
+        semPost(data.lastHungry);
         semWait(data.mutex);
         data.philosophers[id]->status = EATING;
         semPost(data.mutex);
-        if(id == data.philosopherCount -1){
-            semPost(data.lastEating);
-        }
 
 
 //        semWait(data.mutex);
@@ -288,11 +296,12 @@ void createPhilosophers(int count) {
 void killPhilo(int id) {
     if (data.philosophers[id]->pid > 0) {
         freeMemory(data.philosophers[id]->id);
+        semClose(data.philosophers[id]->semName);
         freeMemory(data.philosophers[id]->semName);
         freeMemory(data.philosophers[id]->args);
         freeMemory(data.philosophers[id]->descriptors);
-        freeMemory(data.philosophers[id]);
         killProcess(data.philosophers[id]->pid);
+        freeMemory(data.philosophers[id]);
 
     }
 }
@@ -326,6 +335,9 @@ void addPhilosopher() {
 void finish(){
     killPhilosophers();
     semClose(data.mutex);
+    semClose(data.lastThinking);
+    semClose(data.lastHungry);
+    semClose(data.secondLast);
     freeMemory(data.philosophers);
 }
 
@@ -337,6 +349,8 @@ void philo(int argc, char *argv[]) {
     }
     data.mutex = "mutex";
     data.lastThinking="lastThinking";
+    data.lastHungry = "lastHungry";
+    data.secondLast = "secondLast";
     data.newPhilosopher= FALSE;
     data.philosopherCount = INITIAL;
     data.maxPhilosophers = satoi(argv[1]);
@@ -359,6 +373,20 @@ void philo(int argc, char *argv[]) {
     if(semOpen(data.lastThinking, 0) == 0){
         print(WHITE, "Failed to create auxiliary semaphore\n");
         semClose(data.mutex);
+        freeMemory(data.philosophers);
+        return;
+    }
+    if(semOpen(data.secondLast, 0) == 0){
+        print(WHITE, "Failed to create auxiliary semaphore\n");
+        semClose(data.mutex);
+        semClose(data.lastThinking);
+        freeMemory(data.philosophers);
+        return;
+    }
+    if(semOpen( data.lastHungry, 1) == 0){
+        print(WHITE, "Failed to create auxiliary semaphore\n");
+        semClose(data.mutex);
+        semClose(data.lastHungry);
         freeMemory(data.philosophers);
         return;
     }
