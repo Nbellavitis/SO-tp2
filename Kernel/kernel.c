@@ -11,7 +11,6 @@
 #include "include/scheduler.h"
 #include "include/sems.h"
 #include "mm/mm.h"
-#include "tests/testUtil.h"
 #include <idtLoader.h>
 #include <lib.h>
 #include <moduleLoader.h>

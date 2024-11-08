@@ -13,7 +13,6 @@ GLOBAL callDrawRectangle
 GLOBAL callSleepMs
 GLOBAL callBeep
 GLOBAL callGetTicks
-GLOBAL testMM
 GLOBAL mmStatus
 GLOBAL createProcess
 GLOBAL killProcess
@@ -82,8 +81,6 @@ callSetFontSize:
     callToHandler 13
 callBeep:
     callToHandler 14
-testMM:
-    callToHandler 15
 mmStatus:
     callToHandler 16
 createProcess:

@@ -1,3 +1,6 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java:
+// https://pvs-studio.com
 #ifdef BUDDY
 #include "../Drivers/include/videoDriver.h"
 #include "mm.h"
@@ -20,7 +23,7 @@
 #define USED 2
 MemoryStatus status;
 typedef struct Block {
-  uint8_t order;
+  uint32_t order;
   struct Block *next;
   uint8_t status;
 } Block;
@@ -37,8 +40,8 @@ static uint64_t align(uint64_t value, uint64_t alignment) {
 }
 int mmInit(void *baseAddress, uint64_t memorySize) {
   size_t totalNeeded = align(memorySize, 1 << MIN_ALLOC_LOG2);
-  if (totalNeeded > MAX_ALLOC || totalNeeded < MIN_ALLOC ||
-      totalNeeded > HEAP_SIZE) {
+  if (totalNeeded > MAX_ALLOC || totalNeeded < MIN_ALLOC
+      ) {
     return -1;
   }
   buddy.start = baseAddress;
@@ -108,7 +111,7 @@ void freeMemory(void *address) {
     return;
   }
 
-  uint64_t blockSize = 1 << (MIN_ALLOC_LOG2 + block->order);
+  uint64_t blockSize = (uint64_t)1 << (MIN_ALLOC_LOG2 + block->order);
   block->status = FREE;
   status.usedMemory -= blockSize;
   status.freeMemory += blockSize;

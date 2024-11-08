@@ -75,7 +75,6 @@ pid_t getMyPid();
 void * allocMemory(size_t size);
 void  freeMemory(void * mem);
 pid_t createProcess(uint64_t rip, int ground, int argc, char * argv[], char * fd[2]);
-void testMM();
 void mmStatus();
 void testeando();
 processInfoPtr * ps();

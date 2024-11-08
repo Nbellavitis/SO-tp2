@@ -14,7 +14,7 @@ int strncmp(const char *str1, const char *str2, size_t n);
 void putC(char c, uint32_t hexColor);
 
 // Prints the integer number passed as the first argument in the color specified by the second argument.
-void putInt(uint64_t num, uint32_t hexColor);
+void putInt(int64_t num, uint32_t hexColor);
 
 // Prints the formatted string passed as the second argument in the color specified by the hexadecimal color code passed as the first argument. 
 // Similar to c standarlibrary functino printf.
@@ -42,8 +42,8 @@ int getBuffer(char * buf);
 
 // Converts all lowercase characters in the string passed as the argument to uppercase.
 void strToUpper(char *str);
-
-void intToStr(uint64_t num, char* str);
+void memset(void * destination, int32_t c, uint64_t length);
+void intToStr(int64_t num, char* str);
 
 void freeProcessInfo(processInfoPtr * processes);
 

@@ -32,7 +32,6 @@ void clearTerminal(int argc, char *argv[]);
 void exitShell(int argc, char *argv[]);
 void testDiv0(int argc, char *argv[]);
 void testInvalidOp(int argc, char *argv[]);
-void testMemory(int argc, char *argv[]);
 void showMemStatus(int argc, char *argv[]);
 void testPriority(int argc, char *argv[]);
 void showProcesses(int argc, char *argv[]);
@@ -81,10 +80,10 @@ Command commands[] = {
      {"invalidOp", NULL},
      1},
     {"testmm",
-     testMemory,
+     testMm,
      "Allocates memory and runs the test.",
-     {"testmm", NULL},
-     1},
+     {"testmm","266240", NULL},
+     2},
     {"mmStatus",
      showMemStatus,
      "Shows the memory status.",
@@ -165,7 +164,8 @@ void bufferControl() {
 
 char *trimWhitespace(char *str) {
   char *end;
-
+    if(str == NULL)
+        return str;
   while (((unsigned char)*str) == ' ')
     str++;
 
@@ -305,7 +305,6 @@ void niceWrapper(int argc, char *argv[]) {
 }
 void testInvalidOp(int argc, char *argv[]) { callInvalidOp(); }
 
-void testMemory(int argc, char *argv[]) { testMM(); }
 
 void showMemStatus(int argc, char *argv[]) { mmStatus(); }
 

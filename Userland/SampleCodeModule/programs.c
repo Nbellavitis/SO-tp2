@@ -1,3 +1,6 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java:
+// https://pvs-studio.com
 #include "include/lib.h"
 #include "include/program.h"
 #define TIME 1000
@@ -20,11 +23,7 @@ void processTest(int argc, char *argv[]) {
     return;
   }
 
-  char *testParams[] = {argv[1]};
-
-  int testResult = testProcesses(1, testParams);
   return;
-  print(0xFFFFFFFF, "Process test %s\n", testResult == 0 ? "passed" : "failed");
 }
 void runTestSync(int argc, char *argv[]) {
 

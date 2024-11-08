@@ -19,11 +19,11 @@ int strcmp(const char * s1, const char * s2);
 //freezes for the amount of ms indicated
 void sleepms(uint32_t ms);
 void reverseStr(char* str, int length);
-void intToStr(uint64_t num, char* str);
+void intToStr(int64_t num, char* str);
 void printMm();
 void runTestMm();
 void testeando();
-void printNumber(uint64_t num,uint32_t hexColor);
+void printNumber(int64_t num,uint32_t hexColor);
 void exitProcess(uint64_t status);
 int strcmp(const char *s1, const char *s2);
 char * strAppend( char * s1,  char * s2);

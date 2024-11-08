@@ -1,3 +1,6 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java:
+// https://pvs-studio.com
 #include "include/lib.h"
 #include "include/usrSysCall.h"
 #include <stdio.h>
@@ -258,7 +261,7 @@ void generateIdString(const char *prefix, int id, char *output, int maxLen) {
     return;
 
   int i = 0;
-  while (prefix[i] != '\0' && i < maxLen - 12) {
+  while ( i < maxLen - 12 && prefix[i] != '\0' ) {
     output[i] = prefix[i];
     i++;
   }

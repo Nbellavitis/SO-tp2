@@ -11,7 +11,7 @@ int getC(char *c) { return callSysRead(STDIN, c, 1); }
 int getBuffer(char *buf) { return callSysRead(STDIN, buf, 100); }
 void putC(char c, uint32_t hexColor) { callSysWrite(STDOUT, &c, 1, hexColor); }
 
-void putInt(uint64_t num, uint32_t hexColor) {
+void putInt(int64_t num, uint32_t hexColor) {
   if (num < 0) {
     putC('-', hexColor);
     num = -num;
@@ -129,7 +129,7 @@ void reverseStr(char *str, int length) {
     end--;
   }
 }
-void intToStr(uint64_t num, char *str) {
+void intToStr(int64_t num, char *str) {
   int i = 0;
   int isNegative = 0;
 

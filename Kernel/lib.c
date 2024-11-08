@@ -11,7 +11,6 @@
 #include "include/process.h"
 #include "include/scheduler.h"
 #include "mm/mm.h"
-#include "tests/testUtil.h"
 #include <time.h>
 #define WAIT 500000
 
@@ -77,7 +76,7 @@ void reverseStr(char *str, int length) {
   }
 }
 
-void intToStr(uint64_t num, char *str) {
+void intToStr(int64_t num, char *str) {
   int i = 0;
   int isNegative = 0;
 
@@ -99,10 +98,7 @@ void intToStr(uint64_t num, char *str) {
 
   reverseStr(str, i);
 }
-void runTestMm() {
-  char *argv[] = {"266240"};
-  test_mm(1, argv);
-}
+
 void printMm() {
   char status[50];
   MemoryStatus mmStatus = getMemoryStatus();
@@ -120,7 +116,7 @@ void printMm() {
   drawChar(0x00ffffff, '\n');
 }
 
-void printNumber(uint64_t num, uint32_t hexColor) {
+void printNumber(int64_t num, uint32_t hexColor) {
   if (num < 0) {
     drawChar(hexColor, '-');
     num = -num;
@@ -189,9 +185,7 @@ uint64_t p2(int argc, char *argv[]) {
   return 2;
 }
 void testeando() {
-  int a = 1;
-  int b = 0;
-  a = a / b;
+  return;
 }
 int strcmp(const char *s1, const char *s2) {
   while (*s1 && (*s1 == *s2)) {

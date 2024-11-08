@@ -9,7 +9,7 @@
 #include "include/pipe.h"
 #include "include/process.h"
 #include <naiveConsole.h>
-#define MIN(x, y) x < y ? x : y
+#define MIN(x, y) (((x) < (y)) ? (x) : (y))
 
 void sysWrite(int descriptor, const char *str, int len, uint32_t hexColor) {
   switch (descriptor) {
@@ -23,6 +23,7 @@ void sysWrite(int descriptor, const char *str, int len, uint32_t hexColor) {
     }
   case ERROUT:
     drawWordLen(0x00ff0000, str, len);
+          return;
   default:
     drawWord(0x00ff0000, "no such descriptor");
     return;
