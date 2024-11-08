@@ -1,7 +1,7 @@
-#include <stdint.h>
-#include <stdio.h>
 #include "../include/lib.h"
 #include "../include/usrSysCall.h"
+#include <stdint.h>
+#include <stdio.h>
 // Random
 static uint32_t m_z = 362436069;
 static uint32_t m_w = 521288629;
@@ -63,5 +63,3 @@ void endlessLoop() {
   while (1)
     ;
 }
-
-

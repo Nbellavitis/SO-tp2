@@ -5,6 +5,7 @@
 #ifndef TPE_SYSCALLS_H
 #define TPE_SYSCALLS_H
 #define STDIN 0
+#include "lib.h"
 #define STDOUT 1
 #define ERROUT 2
 

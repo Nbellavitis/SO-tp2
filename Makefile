@@ -1,6 +1,9 @@
 
 
-all: bootloader kernel userland image
+all: toolchain bootloader kernel userland image
+
+toolchain:
+	cd Toolchain; make all
 
 bootloader:
 	cd Bootloader; make all
@@ -11,7 +14,7 @@ kernel:
 userland:
 	cd Userland; make all
 
-image: kernel bootloader userland
+image: kernel bootloader toolchain userland
 	cd Image; make all
 
 # Compilar los archivos .c de Kernel/tests, Kernel/mm y externApp solamente cuando se llame a externAppBuild
@@ -31,10 +34,11 @@ cleanObjects:
 cleanExecutable:
 	rm -f  $(wildcard externAppExecutable)
 clean:
+	cd Toolchain; make clean
 	cd Bootloader; make clean
 	cd Image; make clean
 	cd Kernel; make clean
 	cd Userland; make clean
 	rm -f externAppExecutable
 
-.PHONY: bootloader image collections kernel userland externAppBuild all clean
+.PHONY: toolchain bootloader image collections kernel userland externAppBuild all clean
