@@ -6,9 +6,9 @@
 #include "../include/keyboardBuffer.h"
 #include "../include/libasm.h"
 #include "../include/scheduler.h"
+#include "../include/sems.h"
 #include "include/scanCode.h"
 #include "include/videoDriver.h"
-#include "../include/sems.h"
 #define EOF -1
 int keyMapRow = 0;
 int ctrlPressed = 0;
@@ -57,7 +57,7 @@ void keyboardHandler() {
       buff[buff_pos] = keyMap[keyMapRow][code];
       incBufferLen(1);
       setPos(buff_pos);
-        semPost("STDIN");
+      semPost("STDIN");
     }
   } else { // Key released
     code -= 0x80;

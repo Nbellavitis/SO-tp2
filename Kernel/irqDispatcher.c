@@ -119,7 +119,6 @@ static int beepWrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx,
   return 0;
 }
 
-
 static int printMemWrapper(uint64_t rdi, uint64_t rsi, uint64_t rdx,
                            uint64_t rcx, uint64_t r8, uint64_t r9) {
   printMm();
@@ -266,7 +265,7 @@ syscallHandler_t syscallHandlers[] = {
     sleepmsWrapper,           // 12
     setFontSizeWrapper,       // 13
     beepWrapper,              // 14
-    testeandoWrapper,        // 15
+    testeandoWrapper,         // 15
     printMemWrapper,          // 16
     exitProcessWrapper,       // 17
     newProcessWrapper,        // 18

@@ -40,8 +40,7 @@ static uint64_t align(uint64_t value, uint64_t alignment) {
 }
 int mmInit(void *baseAddress, uint64_t memorySize) {
   size_t totalNeeded = align(memorySize, 1 << MIN_ALLOC_LOG2);
-  if (totalNeeded > MAX_ALLOC || totalNeeded < MIN_ALLOC
-      ) {
+  if (totalNeeded > MAX_ALLOC || totalNeeded < MIN_ALLOC) {
     return -1;
   }
   buddy.start = baseAddress;

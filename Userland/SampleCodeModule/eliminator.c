@@ -220,7 +220,7 @@ void gameSpeed() {
           putC(c, RED);
         }
       } else {
-        if (i< BUFFER ) {
+        if (i < BUFFER) {
           buffer[i++] = c;
           putC(c, RED);
         }

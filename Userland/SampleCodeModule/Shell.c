@@ -82,7 +82,7 @@ Command commands[] = {
     {"testmm",
      testMm,
      "Allocates memory and runs the test.",
-     {"testmm","266240", NULL},
+     {"testmm", "266240", NULL},
      2},
     {"mmStatus",
      showMemStatus,
@@ -164,8 +164,8 @@ void bufferControl() {
 
 char *trimWhitespace(char *str) {
   char *end;
-    if(str == NULL)
-        return str;
+  if (str == NULL)
+    return str;
   while (((unsigned char)*str) == ' ')
     str++;
 
@@ -304,7 +304,6 @@ void niceWrapper(int argc, char *argv[]) {
   changePrio(strToInt(pid), strToInt(prio));
 }
 void testInvalidOp(int argc, char *argv[]) { callInvalidOp(); }
-
 
 void showMemStatus(int argc, char *argv[]) { mmStatus(); }
 

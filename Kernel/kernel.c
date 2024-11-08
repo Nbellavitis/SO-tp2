@@ -103,7 +103,7 @@ int main() {
   startScheduler();
   semInit();
   initPipes();
-  semOpen("STDIN",0);
+  semOpen("STDIN", 0);
   initShell();
 
   while (1) {

@@ -184,9 +184,7 @@ uint64_t p2(int argc, char *argv[]) {
   }
   return 2;
 }
-void testeando() {
-  return;
-}
+void testeando() { return; }
 int strcmp(const char *s1, const char *s2) {
   while (*s1 && (*s1 == *s2)) {
     s1++;

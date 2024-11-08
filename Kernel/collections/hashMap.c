@@ -16,10 +16,12 @@ typedef struct HashMap {
   compareFunc cmpFunc;
 } HashMap;
 
-uint64_t hash(pid_t key) { if(key < 0){
-        return -key % TABLE_SIZE;
+uint64_t hash(pid_t key) {
+  if (key < 0) {
+    return -key % TABLE_SIZE;
+  }
+  return key % TABLE_SIZE;
 }
-    return key % TABLE_SIZE; }
 
 Entry *createEntry(pid_t key, PCB value) {
   Entry *newEntry = (Entry *)allocMemory(sizeof(Entry));
@@ -49,7 +51,7 @@ HashMap *create_hash_map(compareFunc cmpFunc) {
 void insert(HashMap *hashMap, pid_t key, PCB value) {
   unsigned int index = hash(key);
   Entry *newEntry = createEntry(key, value);
-  if(newEntry == NULL){
+  if (newEntry == NULL) {
     return;
   }
   if (hashMap->buckets[index] == NULL) {

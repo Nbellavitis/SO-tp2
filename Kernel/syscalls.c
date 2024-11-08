@@ -23,7 +23,7 @@ void sysWrite(int descriptor, const char *str, int len, uint32_t hexColor) {
     }
   case ERROUT:
     drawWordLen(0x00ff0000, str, len);
-          return;
+    return;
   default:
     drawWord(0x00ff0000, "no such descriptor");
     return;
@@ -39,18 +39,18 @@ int sysRead(int descriptor, char *save, int len) {
   }
   if (strcmp(getActiveProcess()->fd[STDIN], "tty") == 0) {
 
-      int length = MIN(len, getBufferLen());
-      int i = 0;
-      do {
-          semWait("STDIN");
-          int n = getBufferPosition();
-          save[i] = getCharAt(n);
-        if(save[i] == 0){
-            return 0;
-        }
-        consumeBufferAt(n);
-        i++;
-    } while( i < length);
+    int length = MIN(len, getBufferLen());
+    int i = 0;
+    do {
+      semWait("STDIN");
+      int n = getBufferPosition();
+      save[i] = getCharAt(n);
+      if (save[i] == 0) {
+        return 0;
+      }
+      consumeBufferAt(n);
+      i++;
+    } while (i < length);
 
     return length;
   } else {
