@@ -11,5 +11,5 @@ void endlessLoop();
 int64_t testProcesses(uint64_t argc, char *argv[]);
 void testPrio();
 void testMm(int argc, char *argv[]) ;
-uint64_t testSync(uint64_t argc, char *argv[]);
+void testSync(int argc, char *argv[]);
 #endif

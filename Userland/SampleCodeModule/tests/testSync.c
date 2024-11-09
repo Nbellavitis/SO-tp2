@@ -54,14 +54,16 @@ uint64_t myProcessInc(uint64_t argc, char *argv[]) {
   return 0;
 }
 
-uint64_t testSync(uint64_t argc, char *argv[]) { //{n, use_sem, 0}
+void testSync(int argc, char *argv[]) { //{n, use_sem, 0}
   uint64_t pids[2 * TOTAL_PAIR_PROCESSES];
 
-  if (argc != 2)
-    return -1;
+  if (argc != 3) {
+    print(0xFFFFFF, "Usage: testSync <n> <use_sem>\n");
+    return;
+  }
 
-  char *argvDec[] = {argv[0], "-1", argv[1], NULL};
-  char *argvInc[] = {argv[0], "1", argv[1], NULL};
+  char *argvDec[] = {argv[1], "-1", argv[2], NULL};
+  char *argvInc[] = {argv[1], "1", argv[2], NULL};
 
   global = 0;
   uint64_t i;
@@ -78,5 +80,5 @@ uint64_t testSync(uint64_t argc, char *argv[]) { //{n, use_sem, 0}
   }
 
   print(0xFFFFFF, "Final value: %d\n", global);
-  return 0;
+  return;
 }
