@@ -9,13 +9,16 @@
 #define KERNEL_PID -1
 #define ACTIVE 1
 #define INACTIVE 0
-static queueADT processQueue = NULL;
-static PCB idleProcess;
-static pid_t activePid = KERNEL_PID;
-static size_t status = INACTIVE;
-static PCB activeProcess = NULL;
-static int timesActiveExecuted = 0;
-static PCB currentForegroundProcess = NULL;
+typedef struct {
+  queueADT processQueue;
+  PCB idleProcess;
+  pid_t activePid;
+  PCB activeProcess;
+  int timesActiveExecuted;
+  PCB currentForegroundProcess;
+} SchedulerData;
+static SchedulerData data;
+static int8_t status = INACTIVE;
 static void idle();
 int64_t comparePCB(void *pcb1, void *pcb2) {
   if (pcb1 == NULL || pcb2 == NULL) {
@@ -27,39 +30,45 @@ int64_t comparePCB(void *pcb1, void *pcb2) {
 }
 
 void startScheduler() {
+  data.timesActiveExecuted = 0;
+  data.processQueue = NULL;
+  data.activePid = KERNEL_PID;
+  data.activeProcess = NULL;
+  data.timesActiveExecuted = 0;
+  data.currentForegroundProcess = NULL;
   status = ACTIVE;
-  processQueue = createQueue(comparePCB);
-  if (processQueue == NULL) {
+  data.processQueue = createQueue(comparePCB);
+  if (data.processQueue == NULL) {
     drawWord(0xFF0000, "Error creating process queue");
     return;
   }
   char *argv[] = {"idle", "null"};
-  idleProcess = lookUpOnHashMap((pid_t)newProcess((uint64_t)idle, 0, 1, 1, argv,
-                                                  (char *[]){"tty", "null"}));
+  data.idleProcess = lookUpOnHashMap((pid_t)newProcess(
+      (uint64_t)idle, 0, 1, 1, argv, (char *[]){"tty", "null"}));
 }
 
-static PCB findNextReadyProcess(queueADT processQueue) {
-  int size = sizeQ(processQueue);
+static PCB findNextReadyProcess() {
+  int size = sizeQ(data.processQueue);
   for (int i = 0; i < size; i++) {
-    activeProcess = dequeue(processQueue);
-    if (activeProcess != NULL) {
-      if (activeProcess->status == READY) {
-        activePid = activeProcess->pid;
-        activeProcess->status = RUNNING;
-        if (activeProcess->ground == FOREGROUND) {
-          currentForegroundProcess = activeProcess;
+    data.activeProcess = dequeue(data.processQueue);
+    if (data.activeProcess != NULL) {
+      if (data.activeProcess->status == READY) {
+        data.activePid = data.activeProcess->pid;
+        data.activeProcess->status = RUNNING;
+        if (data.activeProcess->ground == FOREGROUND) {
+          data.currentForegroundProcess = data.activeProcess;
         }
-        return activeProcess;
-      } else if (activeProcess->status == BLOCKED) {
-        queue(processQueue, activeProcess);
-      } else if (activeProcess->status == KILLED) {
-        freeProcess(activeProcess);
-      } else if (activeProcess->status == EXITED) {
-        PCB parent = lookUpOnHashMap(activeProcess->ppid);
+        return data.activeProcess;
+      } else if (data.activeProcess->status == BLOCKED) {
+        queue(data.processQueue, data.activeProcess);
+      } else if (data.activeProcess->status == KILLED) {
+        freeProcess(data.activeProcess);
+      } else if (data.activeProcess->status == EXITED) {
+        PCB parent = lookUpOnHashMap(data.activeProcess->ppid);
         if (parent == NULL || parent->status == EXITED) {
-          killProcess(activeProcess->pid);
+          killProcess(data.activeProcess->pid);
         }
-        queue(processQueue, activeProcess);
+        queue(data.processQueue, data.activeProcess);
       }
     }
   }
@@ -71,53 +80,52 @@ uint64_t contextSwitch(uint64_t rsp) {
   if (status == INACTIVE)
     return rsp;
 
-  // printNumber(activePid,0xFFFFFFFF);
-  if (activePid == KERNEL_PID) {
-    activeProcess = dequeue(processQueue);
-    activePid = 0;
-    if (activeProcess->rip == (uint64_t)idle) {
-      activeProcess = dequeue(processQueue);
+  if (data.activePid == KERNEL_PID) {
+    data.activeProcess = dequeue(data.processQueue);
+    data.activePid = 0;
+    if (data.activeProcess->rip == (uint64_t)idle) {
+      data.activeProcess = dequeue(data.processQueue);
     }
-    activePid = activeProcess->pid;
-    activeProcess->status = RUNNING;
-    if (activeProcess->ground == FOREGROUND) {
-      currentForegroundProcess = activeProcess;
+    data.activePid = data.activeProcess->pid;
+    data.activeProcess->status = RUNNING;
+    if (data.activeProcess->ground == FOREGROUND) {
+      data.currentForegroundProcess = data.activeProcess;
     }
-    return activeProcess->rsp;
+    return data.activeProcess->rsp;
   }
-  activeProcess->rsp = rsp;
-  if (activeProcess->status != KILLED) {
-    if (activeProcess->status != EXITED) {
-      if (activeProcess->status != BLOCKED) {
-        if (activeProcess->priority - 1 > timesActiveExecuted) {
-          timesActiveExecuted++;
-          if (activeProcess->ground == FOREGROUND) {
-            currentForegroundProcess = activeProcess;
+  data.activeProcess->rsp = rsp;
+  if (data.activeProcess->status != KILLED) {
+    if (data.activeProcess->status != EXITED) {
+      if (data.activeProcess->status != BLOCKED) {
+        if (data.activeProcess->priority - 1 > data.timesActiveExecuted) {
+          data.timesActiveExecuted++;
+          if (data.activeProcess->ground == FOREGROUND) {
+            data.currentForegroundProcess = data.activeProcess;
           }
-          return activeProcess->rsp;
+          return data.activeProcess->rsp;
         }
-        activeProcess->status = READY;
+        data.activeProcess->status = READY;
       }
-      if (activeProcess->pid != idleProcess->pid) {
-        timesActiveExecuted = 0;
-        queue(processQueue, activeProcess);
+      if (data.activeProcess->pid != data.idleProcess->pid) {
+        data.timesActiveExecuted = 0;
+        queue(data.processQueue, data.activeProcess);
       }
 
     } else {
-      queue(processQueue, activeProcess);
+      queue(data.processQueue, data.activeProcess);
     }
   } else {
-    freeProcess(activeProcess);
+    freeProcess(data.activeProcess);
   }
-  activeProcess = findNextReadyProcess(processQueue);
-  if (activeProcess == NULL) {
-    activeProcess = idleProcess;
-    activePid = idleProcess->pid;
+  data.activeProcess = findNextReadyProcess(data.processQueue);
+  if (data.activeProcess == NULL) {
+    data.activeProcess = data.idleProcess;
+    data.activePid = data.idleProcess->pid;
   }
-  if (activeProcess->ground == FOREGROUND) {
-    currentForegroundProcess = activeProcess;
+  if (data.activeProcess->ground == FOREGROUND) {
+    data.currentForegroundProcess = data.activeProcess;
   }
-  return activeProcess->rsp;
+  return data.activeProcess->rsp;
 }
 
 static void idle() {
@@ -126,17 +134,17 @@ static void idle() {
   }
 }
 
-pid_t getActivePid() { return activeProcess->pid; }
+pid_t getActivePid() { return data.activeProcess->pid; }
 
-void addToReadyQueue(PCBType *pcb) { queue(processQueue, pcb); }
+void addToReadyQueue(PCBType *pcb) { queue(data.processQueue, pcb); }
 
 PCBType *findProcessByPid(pid_t pid) {
-  if (processQueue == NULL || isEmpty(processQueue)) {
+  if (data.processQueue == NULL || isEmpty(data.processQueue)) {
     return NULL;
   }
-  toBegin(processQueue);
-  while (hasNext(processQueue)) {
-    PCBType *currentProcess = (PCBType *)next(processQueue);
+  toBegin(data.processQueue);
+  while (hasNext(data.processQueue)) {
+    PCBType *currentProcess = (PCBType *)next(data.processQueue);
     if (currentProcess->pid == pid) {
       return currentProcess;
     }
@@ -144,8 +152,8 @@ PCBType *findProcessByPid(pid_t pid) {
   return NULL;
 }
 
-PCB getActiveProcess() { return activeProcess; }
+PCB getActiveProcess() { return data.activeProcess; }
 
-int8_t removeFromReadyQueue(PCB pcb) { return remove(processQueue, pcb); }
-PCB getCurrentForegroundProcess() { return currentForegroundProcess; }
-void setNullForegroundProcess() { currentForegroundProcess = NULL; }
+int8_t removeFromReadyQueue(PCB pcb) { return remove(data.processQueue, pcb); }
+PCB getCurrentForegroundProcess() { return data.currentForegroundProcess; }
+void setNullForegroundProcess() { data.currentForegroundProcess = NULL; }

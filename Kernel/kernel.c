@@ -87,7 +87,6 @@ void *initializeKernelBinary() {
 }
 
 int initShell() {
-
   char *fds[2] = {"tty", "tty"};
   char *argv[] = {"shell", "null"};
   newProcess((uint64_t)sampleCodeModuleAddress, 1, 1, 1, argv, fds);
@@ -95,10 +94,8 @@ int initShell() {
 }
 
 int main() {
-
   loadIdt();
   mmInit(heapAddress, 0x2700000);
-  //((EntryPoint)sampleCodeModuleAddress)();  whot
   initMap();
   startScheduler();
   semInit();
@@ -108,5 +105,4 @@ int main() {
 
   while (1) {
   }
-  return 0;
 }

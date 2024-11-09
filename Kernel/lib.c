@@ -175,15 +175,6 @@ void sprint(char *buffer, const char *string, ...) {
   return;
 }
 
-uint64_t p2(int argc, char *argv[]) {
-  uint64_t i = 0;
-  while (i < 1000000) {
-    i++;
-    //        drawWord(0xFFFFFFFF,"soy p4");
-    // newLine();
-  }
-  return 2;
-}
 void testeando() { return; }
 int strcmp(const char *s1, const char *s2) {
   while (*s1 && (*s1 == *s2)) {
@@ -209,17 +200,16 @@ size_t strlen(const char *str) {
   return length;
 }
 char *strcpy(char *dest, const char *src) {
-  char *original_dest =
-      dest; // Guardar el inicio de dest para retornar al final
+  char *original_dest = dest;
 
-  while (*src != '\0') { // Mientras no lleguemos al carácter nulo
-    *dest = *src;        // Copiar carácter de src a dest
-    dest++;              // Avanzar al siguiente carácter en dest
-    src++;               // Avanzar al siguiente carácter en src
+  while (*src != '\0') {
+    *dest = *src;
+    dest++;
+    src++;
   }
-  *dest = '\0'; // Añadir el carácter nulo al final de dest
+  *dest = '\0';
 
-  return original_dest; // Retornar el inicio de dest
+  return original_dest;
 }
 char *strcat(char *destination, const char *source) {
   char *original_dest = destination;

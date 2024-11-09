@@ -2,9 +2,9 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java:
 // https://pvs-studio.com
 #ifdef BITMAP
-#include "mm.h"
 #include "../Drivers/include/videoDriver.h"
 #include "../include/lib.h"
+#include "mm.h"
 #include <stdint.h>
 #define START_HEAP 0x600000
 

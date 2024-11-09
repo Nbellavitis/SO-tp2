@@ -22,7 +22,6 @@ void startingLine() {
   putString(startingLine, GREEN);
   clearBuffer(buffer);
 }
-
 void callInvalidOp();
 void showTime(int argc, char *argv[]);
 void resizeFont(int argc, char *argv[]);

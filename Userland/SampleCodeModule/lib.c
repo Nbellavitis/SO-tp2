@@ -77,16 +77,16 @@ int strlen(const char *str) {
   return length;
 }
 char *strcpy(char *dest, const char *src) {
-  char *originalDest = dest; // Guardar el inicio de dest para retornar al final
+  char *originalDest = dest;
 
-  while (*src != '\0') { // Mientras no lleguemos al carácter nulo
-    *dest = *src;        // Copiar carácter de src a dest
-    dest++;              // Avanzar al siguiente carácter en dest
-    src++;               // Avanzar al siguiente carácter en src
+  while (*src != '\0') {
+    *dest = *src;
+    dest++;
+    src++;
   }
-  *dest = '\0'; // Añadir el carácter nulo al final de dest
+  *dest = '\0';
 
-  return originalDest; // Retornar el inicio de dest
+  return originalDest;
 }
 
 int strcmp(char *str1, char *str2) {
@@ -111,7 +111,7 @@ int strncmp(const char *str1, const char *str2, size_t n) {
 char *cutString(char *str) {
   for (int i = 0; str[i] != '\0'; i++) {
     if (str[i] == ' ') {
-      str[i] = '\0'; // Reemplazar el espacio con el terminador nulo
+      str[i] = '\0';
       return str;
     }
   }
