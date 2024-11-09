@@ -23,14 +23,12 @@ void startingLine() {
   clearBuffer(buffer);
 }
 
-void callDiv0();
 void callInvalidOp();
 void showTime(int argc, char *argv[]);
 void resizeFont(int argc, char *argv[]);
 void getRegisters(int argc, char *argv[]);
 void clearTerminal(int argc, char *argv[]);
 void exitShell(int argc, char *argv[]);
-void testDiv0(int argc, char *argv[]);
 void testInvalidOp(int argc, char *argv[]);
 void showMemStatus(int argc, char *argv[]);
 void testPriority(int argc, char *argv[]);
@@ -51,11 +49,6 @@ typedef struct {
 } Command;
 
 Command commands[] = {
-    {"eliminator",
-     startEliminator,
-     "Game similar to tron(the movie).",
-     {"eliminator", NULL},
-     1},
     {"time", showTime, "Shows the actual time.", {"time", NULL}, 1},
     {"setFont",
      resizeFont,
@@ -69,11 +62,6 @@ Command commands[] = {
      1},
     {"clear", clearTerminal, "Empty the terminal.", {"clear", NULL}, 1},
     {"exit", exitShell, "Kills the terminal.", {"exit", NULL}, 1},
-    {"div0",
-     testDiv0,
-     "Test the exception of the zero division.",
-     {"div0", NULL},
-     1},
     {"invalidOp",
      testInvalidOp,
      "Test the exception of an invalid operand.",
@@ -134,7 +122,7 @@ void bufferControl() {
     char c;
     getC(&c);
 
-    if (c != 0 && c != '\t' && c != EOF) {
+    if (c != 0 && c != '\t' && c != (char)EOF) {
       if (c == '\n') {
         putC(c, WHITE);
         if (i == 0) {
@@ -190,6 +178,10 @@ void executePipedCommands(char *buffer) {
   char *command2 = strtok(NULL, "|");
   command1 = trimWhitespace(command1);
   command2 = trimWhitespace(command2);
+  if (command1 == NULL || command2 == NULL) {
+    putString("Command not found\n", WHITE);
+    return;
+  }
   char *descriptors1[2] = {"tty", "shellPipe"};
   char *descriptors2[2] = {"shellPipe", "tty"};
   pipeOpenAnon("shellPipe");
@@ -282,7 +274,6 @@ void exitShell(int argc, char *argv[]) {
   clearBuffer(buffer);
 }
 
-void testDiv0(int argc, char *argv[]) { callDiv0(); }
 void blockWrapper(int argc, char *argv[]) {
   char *init = buffer + strlen("block ");
   if (!strlen(init))
@@ -327,8 +318,6 @@ void lineRead(char *buffer) {
       putString(commands[i].description, WHITE);
       putString("\n", WHITE);
     }
-  } else if (strcmp(buffer, "div0") == 0) {
-    testDiv0(0, NULL);
   } else if (strcmp(buffer, "invalidOp") == 0) {
     testInvalidOp(0, NULL);
   } else {
@@ -356,8 +345,3 @@ char reSize(char *buffer) {
   return (char)callSetFontSize(strToInt(init));
 }
 void callInvalidOp() { invalidOpAsm(); }
-void callDiv0() {
-  int a = 7;
-  int b = 0;
-  a = a / b;
-}

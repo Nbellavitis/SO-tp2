@@ -3,7 +3,7 @@
 // https://pvs-studio.com
 #include "../include/sems.h"
 #include "../Drivers/include/videoDriver.h"
-#define SEMAPHORES_CAPACITY 20
+
 typedef struct semData {
   uint64_t sem;
   const char *name;

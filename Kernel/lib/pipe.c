@@ -40,10 +40,6 @@ int pipeOpen(char *name) {
         return 0;
       }
       pipe->name = name;
-      //            pipe->mutex = name;
-      //            if(!semOpen(pipe->sem, 1)){
-      //               return 0;
-      //            }
       pipe->writeSem = strAppend(name, "-write");
       if (!semOpen(pipe->writeSem, BUFF_SIZE)) {
         freeMemory(pipe->writeSem);
@@ -70,14 +66,12 @@ int pipeOpen(char *name) {
 int pipeWrite(char *name, const char *str, int len) {
   for (int i = 0; i < MAX_PIPES; i++) {
     if (pipes[i] != NULL && strcmp(pipes[i]->name, name) == 0) {
-      // semWait(pipes[i]->mutex);
       for (int j = 0; j < len; j++) {
         semWait(pipes[i]->writeSem);
         pipes[i]->buffer[pipes[i]->writeIndex] = str[j];
         pipes[i]->writeIndex = (pipes[i]->writeIndex + 1) % BUFF_SIZE;
         semPost(pipes[i]->readSem);
       }
-      // semPost(pipes[i]->mutex);
       return 1;
     }
   }
@@ -86,14 +80,12 @@ int pipeWrite(char *name, const char *str, int len) {
 int pipeRead(char *name, char *save, int len) {
   for (int i = 0; i < MAX_PIPES; i++) {
     if (pipes[i] != NULL && strcmp(pipes[i]->name, name) == 0) {
-      // semWait(pipes[i]->mutex);
       for (int j = 0; j < len; j++) {
         semWait(pipes[i]->readSem);
         save[j] = pipes[i]->buffer[pipes[i]->readIndex];
         pipes[i]->readIndex = (pipes[i]->readIndex + 1) % BUFF_SIZE;
         semPost(pipes[i]->writeSem);
       }
-      // semPost(pipes[i]->mutex);
       return 1;
     }
   }

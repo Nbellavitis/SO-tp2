@@ -40,7 +40,7 @@ void cat() {
   getC(&c);
   char comm[MAX_BUFFER] = {0};
   int i = 0;
-  while (c != EOF) {
+  while (c != (char)EOF) {
     if (c != 0) {
       putC(c, WHITE);
       comm[i++] = c;
@@ -61,7 +61,7 @@ void wc() {
   int lines = 1;
   char c;
   getC(&c);
-  while (c != EOF) {
+  while (c != (char)EOF) {
     if (c != 0) {
       if (c == '\n') {
         lines++;
@@ -81,7 +81,7 @@ void filter() {
   getC(&c);
   char comm[MAX_BUFFER] = {0};
   int i = 0;
-  while (c != EOF) {
+  while (c != (char)EOF) {
     if (c != 0) {
       putC(c, WHITE);
       if (c != 'a' && c != 'e' && c != 'i' && c != 'o' && c != 'u' &&

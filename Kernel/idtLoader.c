@@ -1,9 +1,10 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java:
-// https://pvs-studio.com#include <stdint.h>
+// https://pvs-studio.com
 #include <defs.h>
 #include <idtLoader.h>
 #include <interrupts.h>
+#include <stdint.h>
 
 #pragma pack(push) /* Push de la alineación actual */
 #pragma pack(1)    /* Alinear las siguiente estructuras a 1 byte */

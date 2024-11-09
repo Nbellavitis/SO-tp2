@@ -168,7 +168,6 @@ int strToInt(char *str) {
   return rta;
 }
 
-// Function to convert a string to uppercase
 void strToUpper(char *str) {
   while (*str) {
     *str = TO_UPPER(*str);
@@ -192,11 +191,10 @@ void printProcess(processInfoPtr process) {
   print(WHITE, "%s    ", process->name);
 }
 void trimAndRemoveExtraSpaces(const char *src, char *dest) {
-  // Remover espacios iniciales
+
   while (*src == ' ')
     src++;
 
-  // Remover espacios finales y múltiples espacios intermedios
   int spaceFound = 0;
   while (*src) {
     if (*src != ' ') {
@@ -208,7 +206,7 @@ void trimAndRemoveExtraSpaces(const char *src, char *dest) {
     }
     src++;
   }
-  // Remover espacio final si quedó
+
   if (dest > src && *(dest - 1) == ' ')
     dest--;
   *dest = '\0';
@@ -244,7 +242,6 @@ char *strtok(char *str, const char *delim) {
     return NULL;
   }
 
-  // Skip leading delimiters
   while (*str && strchr(delim, *str)) {
     str++;
   }
@@ -255,7 +252,6 @@ char *strtok(char *str, const char *delim) {
 
   char *token = str;
 
-  // Find the end of the token
   while (*str && !strchr(delim, *str)) {
     str++;
   }

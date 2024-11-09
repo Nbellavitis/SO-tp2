@@ -8,7 +8,7 @@
 #include "process.h"
 #include "interrupts.h"
 #include "scheduler.h"
-
+#define SEMAPHORES_CAPACITY 32
 int semInit();
 void semWait(char * sem);
 void semPost(char * sem);

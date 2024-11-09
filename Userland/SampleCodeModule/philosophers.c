@@ -395,7 +395,8 @@ void philo(int argc, char *argv[]) {
                "philosopher\n");
 
   char c = 0;
-  while (getC(&c) >= 0 && c != 'q' && data.philosopherCount > 0 && c != EOF) {
+  while (getC(&c) >= 0 && c != 'q' && data.philosopherCount > 0 &&
+         c != (char)EOF) {
     switch (c) {
     case 'q':
       finish();
