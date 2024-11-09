@@ -66,7 +66,7 @@ Command commands[] = {
      "Test the exception of an invalid operand.",
      {"invalidOp", NULL},
      1},
-    {"mmStatus",
+    {"mem",
      showMemStatus,
      "Shows the memory status.",
      {"mmStatus", NULL},
