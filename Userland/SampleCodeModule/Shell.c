@@ -9,8 +9,10 @@
 #include "include/program.h"
 #include "include/usrSysCall.h"
 #include <stdio.h>
+#define IDMAX 100
 static char buffer[BUFFER_SIZE] = {0};
 int exitFlag = 0;
+int pipedCommands=0;
 int registerFlag = 0;
 typedef void (*CommandFunction)(int argc, char *argv[]);
 void lineRead(char *buffer);
@@ -191,9 +193,19 @@ void executePipedCommands(char *buffer) {
     putString("Command not found\n", WHITE);
     return;
   }
-  char *descriptors1[2] = {"tty", "shellPipe"};
-  char *descriptors2[2] = {"shellPipe", "tty"};
-  pipeOpenAnon("shellPipe");
+  char * pipeName = allocMemory(IDMAX);
+  if (pipeName == NULL) {
+    putString("Error allocating memory\n", RED);
+    return;
+  }
+  intToStr(pipedCommands, pipeName);
+  strAppend(pipeName, "shellPipe");
+  char *descriptors1[2] = {"tty", pipeName};
+  char *descriptors2[2] = {pipeName, "tty"};
+  if(!pipeOpenAnon(pipeName)){
+    putString("Error opening pipe\n", RED);
+    return;
+  }
   int pid1 = -1;
   Command cm1;
   Command cm2;
@@ -222,6 +234,7 @@ void executePipedCommands(char *buffer) {
     putString("Command not found\n", WHITE);
     return;
   }
+  pipedCommands++;
   pid1 = createProcess((uint64_t)cm1.function, ground, cm1.argc, cm1.argv,
                        descriptors1);
   createProcess((uint64_t)cm2.function, 0, cm2.argc, cm2.argv, descriptors2);

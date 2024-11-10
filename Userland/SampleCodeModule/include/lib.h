@@ -44,7 +44,7 @@ int getBuffer(char * buf);
 void strToUpper(char *str);
 void memset(void * destination, int32_t c, uint64_t length);
 void intToStr(int64_t num, char* str);
-
+void strAppend(char * str1, char * str2);
 void freeProcessInfo(processInfoPtr * processes);
 
 void printAllProcesses(processInfoPtr * processes);
