@@ -15,8 +15,9 @@ typedef struct Pipe {
   int pidWrite;
   int pidRead;
 } Pipe;
-char eof = -1;
+char eof = EOF;
 Pipe *pipes[MAX_PIPES];
+int pipeCount = 0;
 
 void initPipes() {
   for (int i = 0; i < MAX_PIPES; i++) {
@@ -60,6 +61,7 @@ int pipeOpen(char *name) {
       pipe->pidWrite = -1;
       pipes[i] = pipe;
       pipe->attachedProcesses = 1;
+      pipeCount++;
       return 1;
     }
   }
@@ -116,6 +118,7 @@ int pipeClose(char *name) {
       freeMemory(pipes[i]->writeSem);
       freeMemory(pipes[i]->readSem);
       freeMemory(pipes[i]);
+      pipeCount--;
       pipes[i] = NULL;
       return 1;
     }

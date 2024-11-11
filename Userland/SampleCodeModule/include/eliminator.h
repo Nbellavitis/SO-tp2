@@ -8,6 +8,5 @@
 #define HEIGHT 768
 #define WIDTH 1024
 
-//Starts the game
 void startEliminator();
 #endif

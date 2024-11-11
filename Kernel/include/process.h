@@ -38,6 +38,7 @@ void freeProcess(PCB process);
 int8_t removeFromReadyQueue(PCB pcb);
 int8_t unblockProcess(pid_t pid);
 int8_t killProcess(pid_t pid);
+int8_t killAndClose(pid_t pid);
 int8_t blockProcess(pid_t pid, int reason);
 int8_t changePrio(pid_t pid,int priority);
 PCB lookUpOnHashMap(pid_t pid);

@@ -85,27 +85,6 @@ int8_t unblockProcess(pid_t pid) {
   return 0;
 }
 
-int8_t killProcess(pid_t pid) {
-  PCB aux = lookup(PCBMap, pid);
-  if (aux == NULL || pid == 0) {
-    return -1;
-  }
-  aux->status = KILLED;
-  toBegin(aux->waitingProcesses);
-  while (hasNext(aux->waitingProcesses)) {
-    PCB toUnblock = next(aux->waitingProcesses);
-    if (toUnblock->status == BLOCKED) {
-      unblockProcess(toUnblock->pid);
-    }
-  }
-  if (aux == getCurrentForegroundProcess()) {
-    setNullForegroundProcess();
-  }
-  if (pid == getActivePid()) {
-    yield();
-  }
-  return 0;
-}
 
 int8_t blockProcess(pid_t pid, int reason) {
 
@@ -204,16 +183,54 @@ uint64_t waitpid(pid_t pid) {
   }
   return -1;
 }
+void killing(PCB pcb) {
+    pcb->status = KILLED;
+    toBegin(pcb->waitingProcesses);
+    while (hasNext(pcb->waitingProcesses)) {
+        PCB toUnblock = next(pcb->waitingProcesses);
+        if (toUnblock->status == BLOCKED) {
+            unblockProcess(toUnblock->pid);
+        }
+    }
+    if (pcb == getCurrentForegroundProcess()) {
+        setNullForegroundProcess();
+    }
+
+    if (pcb->pid == getActivePid()) {
+        yield();
+    }
+}
+int8_t killProcess(pid_t pid) {
+    PCB aux = lookup(PCBMap, pid);
+    if (aux == NULL || pid == 0) {
+        return -1;
+    }
+    killing(aux);
+    return 0;
+}
+
+
+int8_t killAndClose(pid_t pid){
+    PCB aux = lookup(PCBMap, pid);
+    if (aux == NULL || pid == 0) {
+        return -1;
+    }
+    if (strcmp(aux->fd[STDIN], "tty") != 0) {
+        pipeClose(aux->fd[STDIN]);
+    }if (strcmp(aux->fd[STDOUT], "tty") != 0) {
+        pipeClose(aux->fd[STDOUT]);}
+    killing(aux);
+    return 0;
+}
 
 void exitProcess(uint64_t retStatus) {
   PCB activeProcess = getActiveProcess();
   activeProcess->ret = retStatus;
-  if (strcmp(activeProcess->fd[STDIN], "tty") != 0) {
-    pipeClose(activeProcess->fd[STDIN]);
-  }
-  if (strcmp(activeProcess->fd[STDOUT], "tty") != 0) {
-    pipeClose(activeProcess->fd[STDOUT]);
-  }
+    if (strcmp(activeProcess->fd[STDIN], "tty") != 0) {
+        pipeClose(activeProcess->fd[STDIN]);
+    }if (strcmp(activeProcess->fd[STDOUT], "tty") != 0) {
+        pipeClose(activeProcess->fd[STDOUT]);}
+
   if (activeProcess->ground == 0 && activeProcess->ppid == SHELL_PID) {
     killProcess(activeProcess->pid);
     return;

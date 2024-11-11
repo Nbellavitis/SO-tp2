@@ -6,8 +6,6 @@
 #include "include/program.h"
 
 int main() {
-
-  // All the following code may be removed
-  shellInit();
+    shellInit();
   return 0;
 }

@@ -45,7 +45,7 @@ void keyboardHandler() {
     } else if (ctrlPressed && keyMap[keyMapRow][code] == 'c') {
       PCB aux = getCurrentForegroundProcess();
       if (aux != NULL && aux->pid != 1) {
-        killProcess(aux->pid);
+        killAndClose(aux->pid);
       }
       drawWord(0x00FF0000, "Process killed\n");
     } else if (ctrlPressed && keyMap[keyMapRow][code] == 'd') {

@@ -4,7 +4,7 @@
 #include "keyboardBuffer.h"
 #include "lib.h"
 #include "sems.h"
-#define MAX_PIPES 16
+#define MAX_PIPES 32
 
 void initPipes();
 int pipeOpen(char * name);

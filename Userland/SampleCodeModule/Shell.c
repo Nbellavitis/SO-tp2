@@ -12,18 +12,12 @@
 #define IDMAX 100
 static char buffer[BUFFER_SIZE] = {0};
 int exitFlag = 0;
-int pipedCommands=0;
+int pipedCommands = 0;
 int registerFlag = 0;
 typedef void (*CommandFunction)(int argc, char *argv[]);
+
 void lineRead(char *buffer);
-
 char reSize(char *buffer);
-
-void startingLine() {
-  char *startingLine = "$>";
-  putString(startingLine, GREEN);
-  clearBuffer(buffer);
-}
 void callInvalidOp();
 void showTime(int argc, char *argv[]);
 void resizeFont(int argc, char *argv[]);
@@ -40,6 +34,13 @@ void testeandoo(int argc, char *argv[]);
 void blockWrapper(int argc, char *argv[]);
 void unblockWrapper(int argc, char *argv[]);
 void niceWrapper(int argc, char *argv[]);
+
+void startingLine() {
+  char *startingLine = "$>";
+  putString(startingLine, GREEN);
+  clearBuffer(buffer);
+}
+
 typedef struct {
   char *command;
   CommandFunction function;
@@ -67,11 +68,7 @@ Command commands[] = {
      "Test the exception of an invalid operand.",
      {"invalidOp", NULL},
      1},
-    {"mem",
-     showMemStatus,
-     "Shows the memory status.",
-     {"mmStatus", NULL},
-     1},
+    {"mem", showMemStatus, "Shows the memory status.", {"mmStatus", NULL}, 1},
     {"testmm",
      testMm,
      "Allocates memory and runs the test.",
@@ -180,7 +177,7 @@ char *trimWhitespace(char *str) {
 }
 
 void executePipedCommands(char *buffer) {
-  int ground = !(buffer[strlen(buffer) - 1] == '&');
+  int ground = (buffer[strlen(buffer) - 1] != '&');
   if (!ground) {
     buffer[strlen(buffer) - 1] = '\0';
   }
@@ -192,7 +189,7 @@ void executePipedCommands(char *buffer) {
     putString("Command not found\n", WHITE);
     return;
   }
-  char * pipeName = allocMemory(IDMAX);
+  char *pipeName = allocMemory(IDMAX);
   if (pipeName == NULL) {
     putString("Error allocating memory\n", RED);
     return;
@@ -201,11 +198,11 @@ void executePipedCommands(char *buffer) {
   strAppend(pipeName, "shellPipe");
   char *descriptors1[2] = {"tty", pipeName};
   char *descriptors2[2] = {pipeName, "tty"};
-  if(!pipeOpenAnon(pipeName)){
+  if (!pipeOpenAnon(pipeName)) {
     putString("Error opening pipe\n", RED);
     return;
   }
-  int pid1 = -1;
+  int pid1;
   Command cm1;
   Command cm2;
   int flag = 0;
@@ -318,7 +315,6 @@ void niceWrapper(int argc, char *argv[]) {
 void testInvalidOp(int argc, char *argv[]) { callInvalidOp(); }
 
 void showMemStatus(int argc, char *argv[]) { mmStatus(); }
-
 
 void showProcesses(int argc, char *argv[]) { printAllProcesses(ps()); }
 
