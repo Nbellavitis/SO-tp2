@@ -32,7 +32,6 @@ void clearTerminal(int argc, char *argv[]);
 void exitShell(int argc, char *argv[]);
 void testInvalidOp(int argc, char *argv[]);
 void showMemStatus(int argc, char *argv[]);
-void testPriority(int argc, char *argv[]);
 void showProcesses(int argc, char *argv[]);
 void killProcessCommand(int argc, char *argv[]);
 void runTestSync(int argc, char *argv[]);
@@ -80,7 +79,7 @@ Command commands[] = {
      2},
     {"testPrio", testPrio, "Run the priority test.", {"testPrio", NULL}, 1},
     {"testProcess",
-     processTest,
+     testProcesses,
      "Run the process test.",
      {"processtest", "1", NULL},
      2},
@@ -320,7 +319,6 @@ void testInvalidOp(int argc, char *argv[]) { callInvalidOp(); }
 
 void showMemStatus(int argc, char *argv[]) { mmStatus(); }
 
-void testPriority(int argc, char *argv[]) { testPrio(); }
 
 void showProcesses(int argc, char *argv[]) { printAllProcesses(ps()); }
 

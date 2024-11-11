@@ -8,33 +8,6 @@
 #define EOF -1
 #define MAX_BUFFER 2048
 void prioTest(int argc, char *argv[]) { testPrio(); }
-
-void processTest(int argc, char *argv[]) {
-
-  if (argc != 2) {
-
-    print(0xFFFFFFFF, "Usage: proctest <number_of_processes>\n");
-    return;
-  }
-
-  if (satoi(argv[1]) <= 0) {
-
-    print(0xFFFFFFFF, "debe ser mayor a 0\n");
-    return;
-  }
-
-  return;
-}
-void runTestSync(int argc, char *argv[]) {
-
-  if (argc != 2) {
-    print(0xFFFFFFFF, "Usage: testSync <number_of_processes>\n");
-    return;
-  }
-  testSync(argc, argv);
-  return;
-}
-
 void cat() {
   char c;
   getC(&c);
