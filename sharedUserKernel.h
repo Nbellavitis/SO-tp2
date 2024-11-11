@@ -1,7 +1,7 @@
 //
 // Created by nicol on 10/14/2024.
 //
-
+#include <stdint.h>
 #ifndef SO_SHAREDUSERKERNEL_H
 #define SO_SHAREDUSERKERNEL_H
 #define MAX 10

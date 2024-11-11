@@ -6,6 +6,6 @@
 #include "include/program.h"
 
 int main() {
-    shellInit();
+  shellInit();
   return 0;
 }

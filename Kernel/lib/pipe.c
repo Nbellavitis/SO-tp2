@@ -71,11 +71,11 @@ int pipeOpen(char *name) {
 int pipeWrite(char *name, const char *str, int len) {
   for (int i = 0; i < MAX_PIPES; i++) {
     if (pipes[i] != NULL && strcmp(pipes[i]->name, name) == 0) {
-        if(pipes[i]->pidWrite == -1){
-            pipes[i]->pidWrite = getActivePid();
-        }else if(pipes[i]->pidWrite != getActivePid()){
-                return -1;
-            }
+      if (pipes[i]->pidWrite == -1) {
+        pipes[i]->pidWrite = getActivePid();
+      } else if (pipes[i]->pidWrite != getActivePid()) {
+        return -1;
+      }
       for (int j = 0; j < len; j++) {
         semWait(pipes[i]->writeSem);
         pipes[i]->buffer[pipes[i]->writeIndex] = str[j];
@@ -90,11 +90,11 @@ int pipeWrite(char *name, const char *str, int len) {
 int pipeRead(char *name, char *save, int len) {
   for (int i = 0; i < MAX_PIPES; i++) {
     if (pipes[i] != NULL && strcmp(pipes[i]->name, name) == 0) {
-        if(pipes[i]->pidRead == -1){
-            pipes[i]->pidRead = getActivePid();
-        }else if(pipes[i]->pidRead != getActivePid()){
-            return -1;
-        }
+      if (pipes[i]->pidRead == -1) {
+        pipes[i]->pidRead = getActivePid();
+      } else if (pipes[i]->pidRead != getActivePid()) {
+        return -1;
+      }
       for (int j = 0; j < len; j++) {
         semWait(pipes[i]->readSem);
         save[j] = pipes[i]->buffer[pipes[i]->readIndex];

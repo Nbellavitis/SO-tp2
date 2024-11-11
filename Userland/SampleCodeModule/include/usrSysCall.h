@@ -3,7 +3,7 @@
 #include "stdint.h"
 #ifndef USERSYSCALLS_H
 #define USERSYSCALLS_H
-
+#include <stddef.h>
 #define STDIN 0
 #define STDOUT 1
 #define STDERR 2

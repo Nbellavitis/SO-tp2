@@ -19,14 +19,14 @@ void testProcesses(int argc, char *argv[]) {
   uint64_t maxProcesses;
   char *argvAux[] = {"hijo de test_process", 0};
 
-  if (argc != 2){
+  if (argc != 2) {
     print(0xFFFFFFFF, "Wrong number of arguments\n");
-    return ;
-}
-  if ((maxProcesses = satoi(argv[1])) <= 0){
+    return;
+  }
+  if ((maxProcesses = satoi(argv[1])) <= 0) {
     print(0xFFFFFFFF, "Number of processes must be greater than 0\n");
-    return ;
-    }
+    return;
+  }
   pRq pRqs[maxProcesses];
   while (1) {
     // Create max_processes processes
