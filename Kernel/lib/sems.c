@@ -17,6 +17,7 @@ typedef struct semData {
 typedef struct semCollectionCDT {
   semdata_t *semaphores[SEMAPHORES_CAPACITY];
   uint64_t semaphoresCount;
+  uint8_t lock;
 } semCollectionCDT;
 semCollectionCDT *semCollection;
 int semInit() {
@@ -27,6 +28,7 @@ int semInit() {
   for (int i = 0; i < SEMAPHORES_CAPACITY; i++) {
     semCollection->semaphores[i] = NULL;
   }
+  semCollection->lock = 1;
   return 0;
 }
 
@@ -43,16 +45,16 @@ static uint8_t *getSemLock(semCollectionCDT *semCollection, semdata_t *sem) {
   return &(sem->lock);
 }
 int semOpen(char *name, int initialValue) {
+  acquire(&(semCollection->lock));
   int aux = lookupSemaphore(name);
   if (aux != -1) {
     acquire(&(semCollection->semaphores[aux]->lock));
-    if (semCollection->semaphores[aux] == NULL) {
-      return 0;
-    }
     semCollection->semaphores[aux]->attachedProcesses++;
     release(&(semCollection->semaphores[aux]->lock));
+	release(&(semCollection->lock));
     return 1;
   }
+
   for (int i = 0; i < SEMAPHORES_CAPACITY; i++) {
     if (semCollection->semaphores[i] == NULL) {
       semdata_t *sem = (semdata_t *)allocMemory(sizeof(semdata_t));
@@ -68,9 +70,11 @@ int semOpen(char *name, int initialValue) {
       semCollection->semaphores[i] = sem;
       sem->lock = 1;
       semCollection->semaphoresCount++;
+      release(&(semCollection->lock));
       return 1;
     }
   }
+  release(&(semCollection->lock));
   return 0;
 }
 void semPost(char *name) {
@@ -111,8 +115,10 @@ void semWait(char *name) {
   return;
 }
 void semClose(char *name) {
+  acquire(&(semCollection->lock));
   int aux = lookupSemaphore(name);
   if (aux == -1) {
+    release(&(semCollection->lock));
     return;
   }
   semdata_t *sem = semCollection->semaphores[aux];
@@ -121,11 +127,13 @@ void semClose(char *name) {
   sem->attachedProcesses--;
   if (sem->attachedProcesses > 0) {
     release(semLock);
+    release(&(semCollection->lock));
     return;
   }
   semCollection->semaphores[aux] = NULL;
   semCollection->semaphoresCount--;
   release(semLock);
+  release(&(semCollection->lock));
   freeQueue(sem->waitingQueue);
   freeMemory(sem);
 
