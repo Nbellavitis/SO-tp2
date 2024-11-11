@@ -9,8 +9,8 @@
 #include "../include/pipe.h"
 #include "../include/scheduler.h"
 #define MAX_PROCESSES 7000
-static statusNames[] = {"READY",    "BLOCKED", "KILLED",
-"SLEEPING", "RUNNING", "EXITED"};
+static char statusNames[][MAX] = {"READY",    "BLOCKED", "KILLED",
+                                  "SLEEPING", "RUNNING", "EXITED"};
 static HashMapADT PCBMap;
 static int nextProcessId = 0;
 static int aliveProcesses = 0;
