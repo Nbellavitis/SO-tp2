@@ -34,7 +34,6 @@ void startScheduler() {
   data.processQueue = NULL;
   data.activePid = KERNEL_PID;
   data.activeProcess = NULL;
-  data.timesActiveExecuted = 0;
   data.currentForegroundProcess = NULL;
   status = ACTIVE;
   data.processQueue = createQueue(comparePCB);
@@ -117,7 +116,7 @@ uint64_t contextSwitch(uint64_t rsp) {
   } else {
     freeProcess(data.activeProcess);
   }
-  data.activeProcess = findNextReadyProcess(data.processQueue);
+  data.activeProcess = findNextReadyProcess();
   if (data.activeProcess == NULL) {
     data.activeProcess = data.idleProcess;
     data.activePid = data.idleProcess->pid;
