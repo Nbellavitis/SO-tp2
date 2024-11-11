@@ -9,8 +9,9 @@
 #include "../include/pipe.h"
 #include "../include/scheduler.h"
 #define MAX_PROCESSES 7000
+static statusNames[] = {"READY",    "BLOCKED", "KILLED",
+"SLEEPING", "RUNNING", "EXITED"};
 static HashMapADT PCBMap;
-
 static int nextProcessId = 0;
 static int aliveProcesses = 0;
 #define SHELL_PID 1
@@ -155,7 +156,7 @@ processInfoPtr getProcessInfo(pid_t pid) {
   toRet->rip = aux->rip;
   toRet->ground = aux->ground;
   toRet->priority = aux->priority;
-  toRet->status = aux->status;
+  toRet->status = statusNames[aux->status];
   toRet->name = aux->name;
   return toRet;
 }
