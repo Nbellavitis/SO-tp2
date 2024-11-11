@@ -327,7 +327,7 @@ void killProcessCommand(int argc, char *argv[]) {
 
 void lineRead(char *buffer) {
   if (strcmp(buffer, "help") == 0) {
-    putString("The following commands may be used: \n", WHITE);
+    putString("The following commands may be used: (add & at the end to run the process on background) \n", WHITE);
     for (int i = 0; i < sizeof(commands) / sizeof(commands[0]); i++) {
       putString(commands[i].command, WHITE);
       putString(": ", WHITE);
